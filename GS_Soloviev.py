@@ -10,8 +10,9 @@ import matplotlib.pyplot as plt
 import datetime
 
 #paremeters definition
-mesh_r = 10 #mesh
-mesh_z = 10
+mesh_r = 100 #mesh
+mesh_z = 100
+plot_mesh = 0 #choose whether to plot mesh or not
 A1 = 1 #4*pi*p'
 A2 = 1 #FF'
 
@@ -25,7 +26,7 @@ u_D = Expression('0', degree=0) #psi flux is zero if you go far away
 def boundary(x, on_boundary):
     return on_boundary
 
-bc = DirichletBC(V, u_D, boundary) #задача дирихле
+bc = DirichletBC(V, u_D, boundary) #гран условие как в задаче дирихле
 
 # Define variational problem
 u = TrialFunction(V)
@@ -53,11 +54,12 @@ ttime = datetime.datetime.now().strftime("%d%m%Y:%H%M%S")
 time_title = str(ttime)  #get current time to make figure name unique
 
 plot(u)
-plot(mesh)
+if plot_mesh == 1:
+    plot(mesh)
 
 #plt.savefig('Figures/' + time_title + '_no_title') #no title figure for reports
 plt.title(mesh_title + "\n" + A1_title + ', ' + A2_title) # titled figure for my self
-plt.savefig('Figures/' + time_title + '_title')
+plt.savefig('Figures/' + time_title + '_title', dpi = 200)
 
 # Save solution to file in VTK format
 vtkfile = File('poisson/solution.pvd')
