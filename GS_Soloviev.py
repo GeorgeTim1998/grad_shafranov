@@ -7,17 +7,22 @@ from __future__ import print_function
 from math import degrees
 from fenics import *
 import matplotlib.pyplot as plt
+from matplotlib.pyplot import figure, gcf
 import datetime
 
 #paremeters definition
 mesh_r = 100 #mesh
 mesh_z = 100
 plot_mesh = 0 #choose whether to plot mesh or not
+rectangle_low = Point(0, -1) #define rectangle size
+rectangle_high = Point(1, 1)
+
 A1 = 1 #4*pi*p'
 A2 = 1 #FF'
 
 # Create mesh and define function space
-mesh = UnitSquareMesh(mesh_r, mesh_z)
+#mesh = UnitSquareMesh(mesh_r, mesh_z)
+mesh = RectangleMesh(rectangle_low, rectangle_high, mesh_r, mesh_z) # points define domain size [0, -1]x[1, 1]
 V = FunctionSpace(mesh, 'P', 1) # standard triangular mesh
 
 # Define boundary condition
@@ -33,11 +38,15 @@ u = TrialFunction(V)
 v = TestFunction(V)
 f = Expression(str(A1) + '*x[0]*x[0]+' + str(A2), degree = 2) 
 #f = Expression('x[0]*x[0]+1', degree = 2) 
-f1 = interpolate(Expression('x[0]*x[0]', degree = 2), V) #this function is used to define operator just like in G-Sh equation
-#make f1 available for spacial deriviations
-#if I want to state the problem as in
-# my "Вывод ур-ия Г-Ш.pdf" file then I probably need 'Expression' func
-# just like Ineed it to define right hand side of the equation
+f1 = interpolate(Expression('x[0]*x[0]', degree = 2), V) 
+{
+    #f1 is basically r^2 that appears during
+    #this function is used to define operator just like in G-Sh equation
+    #make f1 available for spacial deriviations
+    #if I want to state the problem as in
+    # my "Вывод ур-ия Г-Ш.pdf" file then I probably need 'Expression' func
+    # just like Ineed it to define right hand side of the equation
+}
 
 a = dot(grad(u)/f1, grad(f1*v))*dx
 L = f*v*dx
@@ -53,7 +62,12 @@ A2_title = 'A2 = ' + str(A2)
 ttime = datetime.datetime.now().strftime("%d%m%Y:%H%M%S")
 time_title = str(ttime)  #get current time to make figure name unique
 
-plot(u)
+#fig = plt.figure(figsize=(8,4))
+#ax = fig.gca()
+plot(u) # its fenics' plot not python's
+#figure(figsize=(10, 10), dpi = 200)
+# fig = gcf()
+# fig.set_size_inches(10, 5)
 if plot_mesh == 1:
     plot(mesh)
 
