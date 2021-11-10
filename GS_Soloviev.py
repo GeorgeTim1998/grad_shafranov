@@ -1,4 +1,4 @@
-#%% main code
+#%% imports
 ## in terminal do 'conda start phenics project'
 # comment lines: cntr+K+C
 # uncomment lines: cntr+K+U
@@ -7,21 +7,45 @@ from __future__ import print_function
 from math import degrees
 from fenics import *
 import matplotlib.pyplot as plt
-from matplotlib.pyplot import figure, gcf
+from matplotlib.pyplot import figure, gcf, title
 import datetime
+import sympy
 
-#paremeters definition
+from ufl.constantvalue import ConstantValue
+
+#%% paremeters definition
 mesh_r = 100 #mesh
 mesh_z = 100
 plot_mesh = 0 #choose whether to plot mesh or not
 rectangle_low = Point(0, -1) #define rectangle size
 rectangle_high = Point(1, 1)
 
-A1 = 1 #4*pi*p'
-A2 = 1 #FF'
+save_NoTitle = 0 #save figure that doesnt have title in it
+dpi = 200 # saved figures quality
 
-# Create mesh and define function space
-#mesh = UnitSquareMesh(mesh_r, mesh_z)
+# expression is inverced because f deined as -f0 (what you see in GS equation)
+#!!!calc deriviation using sympy
+psi = sympy.symbols('u') # flux function #think tomorrow how to define argument psi!
+x = sympy.symbols('x[0]') # r coordinate
+
+p_psi = psi #pressure function
+F_psi = pow(psi, 1) # poloidal current function
+
+dp_psi = sympy.diff(p_psi, psi) #pressure and F deriviation
+dF_psi = sympy.diff(F_psi, psi) #compiler breaks when 
+#u is present on the right side of equation
+# посмотри про переменнкю degree!!!
+
+f_1 = 4 * pi * pow(x, 2) *dp_psi + F_psi * dF_psi
+#f_1 = sympy.simplify(f_1) #make expression simpler then it is
+f_1 = sympy.printing.ccode(f_1)
+print(f_1)
+#x2 = 2*pi*pow(x, 3)+x*10+1/(x+1) #examples!
+#!!!calc deriviation using sympy
+
+A1 = 1 #-4*pi*p'
+A2 = 1 #-FF'
+#%% Create mesh and define function space
 mesh = RectangleMesh(rectangle_low, rectangle_high, mesh_r, mesh_z) # points define domain size [0, -1]x[1, 1]
 V = FunctionSpace(mesh, 'P', 1) # standard triangular mesh
 
@@ -36,9 +60,9 @@ bc = DirichletBC(V, u_D, boundary) #гран условие как в задач
 # Define variational problem
 u = TrialFunction(V)
 v = TestFunction(V)
-f = Expression(str(A1) + '*x[0]*x[0]+' + str(A2), degree = 2) 
-#f = Expression('x[0]*x[0]+1', degree = 2) 
-f1 = interpolate(Expression('x[0]*x[0]', degree = 2), V) 
+#f = Expression(str(A1) + '*x[0]*x[0]+' + str(A2), degree = 2)
+f = Expression(f_1, degree = 2)
+f1 = interpolate(Expression('x[0]*x[0]', degree = 2), V) # comment in {}
 {
     #f1 is basically r^2 that appears during
     #this function is used to define operator just like in G-Sh equation
@@ -62,36 +86,19 @@ A2_title = 'A2 = ' + str(A2)
 ttime = datetime.datetime.now().strftime("%d%m%Y:%H%M%S")
 time_title = str(ttime)  #get current time to make figure name unique
 
-#fig = plt.figure(figsize=(8,4))
-#ax = fig.gca()
+
 plot(u) # its fenics' plot not python's
-#figure(figsize=(10, 10), dpi = 200)
-# fig = gcf()
-# fig.set_size_inches(10, 5)
 if plot_mesh == 1:
     plot(mesh)
 
-#plt.savefig('Figures/' + time_title + '_no_title') #no title figure for reports
-plt.title(mesh_title + "\n" + A1_title + ', ' + A2_title) # titled figure for my self
-plt.savefig('Figures/' + time_title + '_title', dpi = 200)
+if save_NoTitle != 0:
+    plt.savefig('Figures/' + time_title + '_no_title', dpi = dpi) #no title figure for reports
+#plt.title('Soloviev: ' + mesh_title + "\n" + A1_title + ', ' + A2_title) # titled figure for my self
+plt.title('Soloviev: ' + mesh_title + "\n" + f._cppcode) # titled figure for my self
+plt.savefig('Figures/' + time_title + '_title', dpi = dpi)
 
 # Save solution to file in VTK format
 vtkfile = File('poisson/solution.pvd')
 vtkfile << u
-#%% compare with exact solution
-  
-# # Compute error in L2 norm
-# error_L2 = errornorm(u_D, u, 'L2')
-
-# # Compute maximum error at vertices
-# vertex_values_u_D = u_D.compute_vertex_values(mesh)
-# vertex_values_u = u.compute_vertex_values(mesh)
-# import numpy as np
-# error_max = np.max(np.abs(vertex_values_u_D - vertex_values_u))
-
-# # Print errors
-# print('error_L2  =', error_L2)
-# print('error_max =', error_max)
-
 #%% hold plot to show. Programm is still running
 #plt.show()
