@@ -1,0 +1,4 @@
+#ignore files. Syntacsis as in file system
+*.png
+*.pvd
+*.vtu

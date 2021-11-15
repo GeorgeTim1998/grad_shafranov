@@ -11,8 +11,6 @@ from matplotlib.pyplot import figure, gcf, title
 import datetime
 import sympy
 from ufl.constantvalue import ConstantValue
-a = 10
-
 #%% paremeters definition
 mesh_r = 100 #mesh
 mesh_z = 100
@@ -22,13 +20,13 @@ rectangle_high = Point(1, 1)
 
 save_NoTitle = 1 #save figure that doesnt have title in it
 dpi = 200 # saved figures quality
-
+#%% Equation's right hand definition 
 # expression is inverced because f deined as -f0 (what you see in GS equation)
 #!!!calc deriviation using sympy
-psi = sympy.symbols('x[0]') # flux function #think tomorrow how to define argument psi!
-x = sympy.symbols('x[0]') # r coordinate
+psi = sympy.symbols('u') # flux function #think tomorrow how to define argument psi!
+x = sympy.symbols('x[0]') # r coordinate. used for easy writing of expressions
 
-p_psi = psi #pressure function
+p_psi = pow(psi, 2) #pressure function
 F_psi = pow(psi, 1) # poloidal current function
 
 dp_psi = sympy.diff(p_psi, psi) #pressure and F deriviation
@@ -36,10 +34,10 @@ dF_psi = sympy.diff(F_psi, psi) #compiler breaks when
 #u is present on the right side of equation.
 # посмотри про переменную degree!!!
 
-f_1 = 4 * pi * pow(x, 2) *dp_psi + F_psi * dF_psi
-#f_1 = sympy.simplify(f_1) #make expression simpler then it is
+f_1 = 4 * pi * pow(x, 2) * dp_psi + F_psi * dF_psi #right hand expression
 f_1 = sympy.printing.ccode(f_1)
 print(f_1)
+#f_1 = sympy.simplify(f_1) #make expression simpler then it is
 #x2 = 2*pi*pow(x, 3)+x*10+1/(x+1) #examples!
 #!!!calc deriviation using sympy
 #screw u guys -> home
