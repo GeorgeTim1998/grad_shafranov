@@ -37,15 +37,17 @@ dF_psi = sympy.diff(F_psi, psi) #compiler breaks when
 f_text = 4 * pi * pow(x, 2) * dp_psi + F_psi * dF_psi #right hand expression
 f_text = sympy.printing.ccode(f_text)
 print(f_text)
-f = Expression(f_text, degree = 1)
+
+mesh = RectangleMesh(rectangle_low, rectangle_high, mesh_r, mesh_z) # points define domain size [0, -1]x[1, 1]
+V = FunctionSpace(mesh, 'P', 1) # standard triangular mesh
+u = TrialFunction(V)
+f = Expression(f_text, u = u, degree = 2)
 
 #f_text = sympy.simplify(f_text) #make expression simpler then it is
 #x2 = 2*pi*pow(x, 3)+x*10+1/(x+1) #examples!
 #!!!calculate deriviation using sympy
-#%% Create mesh and define function space
-mesh = RectangleMesh(rectangle_low, rectangle_high, mesh_r, mesh_z) # points define domain size [0, -1]x[1, 1]
-V = FunctionSpace(mesh, 'P', 1) # standard triangular mesh
-
+#%% Create problem
+#  mesh, u and V defined above
 # Define boundary condition
 u_D = Expression('0', degree=0) #psi flux is zero if you go far away
 
@@ -55,7 +57,6 @@ def boundary(x, on_boundary):
 bc = DirichletBC(V, u_D, boundary) #гран условие как в задаче дирихле
 
 # Define variational problem
-u = TrialFunction(V)
 v = TestFunction(V)
 r2weigth = interpolate(Expression('x[0]*x[0]', degree = 2), V) # comment in {}
 {
@@ -78,7 +79,6 @@ solve(a - L == 0, u, bc)
 mesh_title = str(mesh_r) + 'x' + str(mesh_z) + ' mesh'
 ttime = datetime.datetime.now().strftime("%d%m%Y_%H%M%S")
 time_title = str(ttime)  #get current time to make figure name unique
-
 
 plot(u) # its fenics' plot not python's
 if plot_mesh == 1:
