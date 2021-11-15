@@ -23,27 +23,14 @@ dpi = 200 # saved figures quality
 
 # expression is inverced because f deined as -f0 (what you see in GS equation)
 #!!!calc deriviation using sympy
-psi = sympy.symbols('x[0]') # flux function #think tomorrow how to define argument psi!
+A1 = 1#-4*pi*p'
+A2 = 2#-FF'
 x = sympy.symbols('x[0]') # r coordinate
-
-p_psi = psi #pressure function
-F_psi = pow(psi, 1) # poloidal current function
-
-dp_psi = sympy.diff(p_psi, psi) #pressure and F deriviation
-dF_psi = sympy.diff(F_psi, psi) #compiler breaks when 
-#u is present on the right side of equation.
-# посмотри про переменную degree!!!
-
-f_1 = 4 * pi * pow(x, 2) *dp_psi + F_psi * dF_psi
+f_1 = A1 * pow(x, 2) + A2
 #f_1 = sympy.simplify(f_1) #make expression simpler then it is
 f_1 = sympy.printing.ccode(f_1)
 print(f_1)
-#x2 = 2*pi*pow(x, 3)+x*10+1/(x+1) #examples!
-#!!!calc deriviation using sympy
-#screw u guys -> home
-
-A1 = 1 #-4*pi*p'
-A2 = 1 #-FF'
+#x2 = 2*pi*pow(x, 3)+x*10+1/(x+1) #examples of expressions!
 #%% Create mesh and define function space
 mesh = RectangleMesh(rectangle_low, rectangle_high, mesh_r, mesh_z) # points define domain size [0, -1]x[1, 1]
 V = FunctionSpace(mesh, 'P', 1) # standard triangular mesh
@@ -92,7 +79,7 @@ if plot_mesh == 1:
 
 
 #create a path to save my figure to. For some reason now I cant save using relative path
-path_my_file = '/home/george/Projects/FEniCS/Projects/Figures/' + time_title
+path_my_file = '/home/george/Projects2/Projects/Figures/' + time_title
 
 if save_NoTitle != 0:
     plt.savefig(path_my_file + '_notitle.png', dpi = dpi) #no title figure for reports
