@@ -76,8 +76,6 @@ solve(a - L == 0, u, bc)
 
 # Plot solution and mesh. Save plot
 mesh_title = str(mesh_r) + 'x' + str(mesh_z) + ' mesh'
-A1_title = 'A1 = ' + str(A1) 
-A2_title = 'A2 = ' + str(A2)
 ttime = datetime.datetime.now().strftime("%d%m%Y_%H%M%S")
 time_title = str(ttime)  #get current time to make figure name unique
 
@@ -86,13 +84,11 @@ plot(u) # its fenics' plot not python's
 if plot_mesh == 1:
     plot(mesh)
 
-
 #create a path to save my figure to. For some reason now I cant save using relative path
 path_my_file = '/home/george/Projects/FEniCS/Projects/Figures/' + time_title
 
 if save_NoTitle != 0:
     plt.savefig(path_my_file + '_notitle.png', dpi = dpi) #no title figure for reports
-#plt.title('Soloviev: ' + mesh_title + "\n" + A1_title + ', ' + A2_title) # titled figure for my self
 plt.title('Soloviev: ' + mesh_title + "\n" + f._cppcode) # titled figure for my self
 plt.savefig(path_my_file + '_title.png', dpi = dpi)
 
