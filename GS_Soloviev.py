@@ -11,8 +11,6 @@ from matplotlib.pyplot import figure, gcf, title
 import datetime
 import sympy
 from ufl.constantvalue import ConstantValue
-a = 10
-
 #%% paremeters definition
 mesh_r = 100 #mesh
 mesh_z = 100
