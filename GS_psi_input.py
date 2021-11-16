@@ -32,7 +32,7 @@ dF_psi = sympy.diff(F_psi, psi) #compiler breaks when
 
 f_text = 4 * pi * pow(x, 2) * dp_psi + F_psi * dF_psi #right hand expression
 f_text = sympy.printing.ccode(f_text)
-print(f_text)
+print("\n" + f_text + "\n")
 
 mesh = RectangleMesh(rectangle_low, rectangle_high, mesh_r, mesh_z) # points define domain size [0, -1]x[1, 1]
 V = FunctionSpace(mesh, 'P', 1) # standard triangular mesh

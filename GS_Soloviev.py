@@ -25,7 +25,7 @@ x = sympy.symbols('x[0]') # r coordinate
 f_1 = A1 * pow(x, 2) + A2
 #f_1 = sympy.simplify(f_1) #make expression simpler then it is
 f_1 = sympy.printing.ccode(f_1)
-print(f_1)
+print("\n" + f_1 + "\n")
 #x2 = 2*pi*pow(x, 3)+x*10+1/(x+1) #examples of expressions!
 #%% Create mesh and define function space
 mesh = RectangleMesh(rectangle_low, rectangle_high, mesh_r, mesh_z) # points define domain size [0, -1]x[1, 1]
