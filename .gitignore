@@ -3,5 +3,7 @@
 *.pvd
 *.vtu
 *.log
+Figures
+poisson
 jitfailure-dolfin_expression_e07c626d00b63875443c5b44dd1fc871
 jitfailure-dolfin_expression_1e9a0689348c45fe1016e408d7a98b6e
