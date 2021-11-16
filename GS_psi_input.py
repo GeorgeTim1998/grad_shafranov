@@ -1,8 +1,4 @@
 #%% imports
-## in terminal do 'source /home/george/anaconda3/bin/activate' then 'conda activate fenicsproject'
-# comment lines: cntr+K+C
-# uncomment lines: cntr+K+U
-
 from __future__ import print_function
 from math import degrees
 from fenics import *
@@ -10,7 +6,7 @@ import matplotlib.pyplot as plt
 from matplotlib.pyplot import figure, gcf, title
 import datetime
 import sympy
-from ufl.constantvalue import ConstantValue
+#from ufl.constantvalue import ConstantValue
 #%% paremeters definition
 mesh_r = 100 #mesh
 mesh_z = 100
@@ -18,7 +14,7 @@ plot_mesh = 0 #choose whether to plot mesh or not
 rectangle_low = Point(0, -1) #define rectangle size
 rectangle_high = Point(1, 1)
 
-save_NoTitle = 1 #save figure that doesnt have title in it
+save_NoTitle = 0 #save figure that doesnt have title in it
 dpi = 200 # saved figures quality
 #%% Equation's right hand definition 
 # expression is inverced because f deined as -f0 (what you see in GS equation)
@@ -26,7 +22,7 @@ dpi = 200 # saved figures quality
 psi = sympy.symbols('u') # flux function #think tomorrow how to define argument psi!
 x = sympy.symbols('x[0]') # r coordinate. used for easy writing of expressions
 
-p_psi = pow(psi, 2) #pressure function
+p_psi = pow(psi, 0) #pressure function
 F_psi = pow(psi, 1) # poloidal current function
 
 dp_psi = sympy.diff(p_psi, psi) #pressure and F deriviation
@@ -40,7 +36,8 @@ print(f_text)
 
 mesh = RectangleMesh(rectangle_low, rectangle_high, mesh_r, mesh_z) # points define domain size [0, -1]x[1, 1]
 V = FunctionSpace(mesh, 'P', 1) # standard triangular mesh
-u = TrialFunction(V)
+#u = TrialFunction(V) 
+u = Function(V) # for non linear equations 'u' must be defined via Function() 
 f = Expression(f_text, u = u, degree = 2)
 
 #f_text = sympy.simplify(f_text) #make expression simpler then it is
@@ -48,6 +45,7 @@ f = Expression(f_text, u = u, degree = 2)
 #!!!calculate deriviation using sympy
 #%% Create problem
 #  mesh, u and V defined above
+
 # Define boundary condition
 u_D = Expression('0', degree=0) #psi flux is zero if you go far away
 
@@ -74,7 +72,7 @@ L = f*v*dx
 # Compute solution
 u = Function(V)
 solve(a - L == 0, u, bc)
-
+#%% create a path to save my figure to. For some reason now I cant save using relative path
 # Plot solution and mesh. Save plot
 mesh_title = str(mesh_r) + 'x' + str(mesh_z) + ' mesh'
 ttime = datetime.datetime.now().strftime("%d%m%Y_%H%M%S")
@@ -84,8 +82,7 @@ plot(u) # its fenics' plot not python's
 if plot_mesh == 1:
     plot(mesh)
 
-#create a path to save my figure to. For some reason now I cant save using relative path
-path_my_file = '/home/george/Projects/FEniCS/Projects/Figures/' + time_title
+path_my_file = '/home/george/Projects2/Projects/Figures/' + time_title
 
 if save_NoTitle != 0:
     plt.savefig(path_my_file + '_notitle.png', dpi = dpi) #no title figure for reports
