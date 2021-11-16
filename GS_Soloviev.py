@@ -1,8 +1,4 @@
 #%% imports
-## in terminal do 'conda start phenics project'
-# comment lines: cntr+K+C
-# uncomment lines: cntr+K+U
-
 from __future__ import print_function
 from math import degrees
 from fenics import *
