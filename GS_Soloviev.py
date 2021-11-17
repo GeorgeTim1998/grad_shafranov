@@ -6,7 +6,6 @@ import matplotlib.pyplot as plt
 from matplotlib.pyplot import figure, gcf, title
 import datetime
 import sympy
-from ufl.constantvalue import ConstantValue
 #%% paremeters definition
 mesh_r = 100 #mesh
 mesh_z = 100
@@ -23,10 +22,9 @@ A1 = 1#-4*pi*p'
 A2 = 2#-FF'
 x = sympy.symbols('x[0]') # r coordinate
 f_1 = A1 * pow(x, 2) + A2
-#f_1 = sympy.simplify(f_1) #make expression simpler then it is
 f_1 = sympy.printing.ccode(f_1)
+
 print("\n" + f_1 + "\n")
-#x2 = 2*pi*pow(x, 3)+x*10+1/(x+1) #examples of expressions!
 #%% Create mesh and define function space
 mesh = RectangleMesh(rectangle_low, rectangle_high, mesh_r, mesh_z) # points define domain size [0, -1]x[1, 1]
 V = FunctionSpace(mesh, 'P', 1) # standard triangular mesh
@@ -45,14 +43,6 @@ v = TestFunction(V)
 #f = Expression(str(A1) + '*x[0]*x[0]+' + str(A2), degree = 2)
 f = Expression(f_1, degree = 2)
 f1 = interpolate(Expression('x[0]*x[0]', degree = 2), V) # comment in {}
-{
-    #f1 is basically r^2 that appears during
-    #this function is used to define operator just like in G-Sh equation
-    #make f1 available for spacial deriviations
-    #if I want to state the problem as in
-    # my "Вывод ур-ия Г-Ш.pdf" file then I probably need 'Expression' func
-    # just like Ineed it to define right hand side of the equation
-}
 
 a = dot(grad(u)/f1, grad(f1*v))*dx
 L = f*v*dx
@@ -79,7 +69,6 @@ path_my_file = '/home/george/Projects2/Projects/Figures/' + time_title
 
 if save_NoTitle != 0:
     plt.savefig(path_my_file + '_notitle.png', dpi = dpi) #no title figure for reports
-#plt.title('Soloviev: ' + mesh_title + "\n" + A1_title + ', ' + A2_title) # titled figure for my self
 plt.title('Soloviev: ' + mesh_title + "\n" + f._cppcode) # titled figure for my self
 plt.savefig(path_my_file + '_title.png', dpi = dpi)
 
