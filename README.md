@@ -2,9 +2,13 @@
 # $source /home/george/anaconda3/bin/activate 
 # $conda activate fenicsproject
 
-
+## Shortcuts
 # comment lines: cntr+K+C
 # uncomment lines: cntr+K+U
+# fold/unfold section: cntr+shift+[/]
+# F8 Go to next error or warning
+# Shift+F8 Go to previous error or warning
+# go forward/back alt+arror 
 
 {
     #r2weigth is r^2 that appears during
@@ -15,6 +19,6 @@
     # just like Ineed it to define right hand side of the equation
 }
 
-#f_text = sympy.simplify(f_text) #make expression simpler then it is
-#x2 = 2*pi*pow(x, 3)+x*10+1/(x+1) #examples!
-#!!!calculate deriviation using sympy
+# f_text = sympy.simplify(f_text) #make expression simpler then it is
+# x2 = 2*pi*pow(x, 3)+x*10+1/(x+1) #examples!
+# !!!calculate deriviation using sympy
