@@ -10,12 +10,11 @@ import sympy
 from termcolor import colored
 #%% Functions
 def Form_f_text(A1, A2):
-    #A1 = -4*pi*p', A2 = -FF'
-    #expression is inverced because f deined as -f0 (what you see in GS equation)
+    #A1 = 4*pi*p', A2 = FF'
     #deriviation are calculated using sympy library
     x = sympy.symbols('x[0]') # r coordinate
     f_text = sympy.printing.ccode(A1 * pow(x, 2) + A2)
-    print(colored("\nRight equation side: ", 'magenta') + f_text)
+    print(colored("\nINVERCED right-hand equation side: ", 'magenta') + f_text)
 
     return f_text
 
@@ -42,19 +41,21 @@ def Save_figure(addition):
         plt.title(addition) # titled figure for my self
         plt.savefig(path_my_file + addition + '.png', dpi = dpi)
 
-def Analyt_sol(c):
+def Analyt_sol(c, A1, A2):
     x = sympy.symbols('x[0]') # r coordinate
     z = sympy.symbols('x[1]') # r coordinate
-
-    psi_p = A1 * pow(x, 4) + A2 * pow(z, 2) #private splotion
+    #sympy.log
+    psi_p = A1 * pow(x, 4) + A2 * pow(z, 2) #private solution
     psi_gen = \
         c[0] + \
         c[1] * pow(x, 2) + \
         c[2] * (pow(x, 4) - 4*pow(x, 2)*pow(z, 2)) + \
-        c[3] * (- pow(z, 2)) # general solution
+        c[3] * (pow(x, 2)*sympy.log(x)- pow(z, 2)) # general solution
         #pow(x, 2)*sympy.log(x) 
     psi_text = sympy.printing.ccode(psi_p + psi_gen)
+    psi_p_text = sympy.printing.ccode(psi_p)
     print(colored("\nAnalytical solution: ", 'magenta') + psi_text + "\n")
+    print(colored("Private solution: ", 'magenta') + psi_p_text + "\n")
 
     return psi_text
 #%% paremeters definition
@@ -73,7 +74,7 @@ A1, A2 = 0.14, -0.01
 c = [1, -0.22, -0.01, -0.08] #coefficients used for analytical solution
 
 f_text = Form_f_text(A1 * 8, A2 * 2) # form right hand side that corresponds to analytical solution
-psi_text = Analyt_sol(c)
+psi_text = Analyt_sol(c, -A1, -A2) #A1&A2 defined as: A1 = 4*pi*p', A2 = FF'!!!
 #%% Create mesh and define function space
 mesh = RectangleMesh(rect_low, rect_high, mesh_r, mesh_z) # points define domain size rect_low x rect_high
 V = FunctionSpace(mesh, 'P', 1) # standard triangular mesh

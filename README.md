@@ -1,3 +1,6 @@
+## RIGHT HAND SIDE f THAT YOU SEE IN PYTHON FILES IS INVERCED BECAUSE OF THE 
+## VARIATIONSL FORMULATION  
+
 ## in terminal do before u start: 
 # $source /home/george/anaconda3/bin/activate 
 # $conda activate fenicsproject
