@@ -26,12 +26,10 @@ def Save_figure(addition):
         plot(mesh)
 
     mesh_title = str(mesh_r) + 'x' + str(mesh_z) + ' mesh'
-    
     ttime = datetime.datetime.now().strftime("%d%m%Y_%H%M%S")
     time_title = str(ttime)  #get current time to make figure name unique
-
-    #create a path to save my figure to. For some reason now I cant save using relative path
     path_my_file = '/home/george/Projects2/Projects/Figures/' + time_title
+
 
     if addition == '_notitle':
         plt.savefig(path_my_file + addition + '.png', dpi = dpi) #no title figure for reports
@@ -62,9 +60,14 @@ def CreatePointSource(r, I, disp):
     x = sympy.symbols('x[0]') # r coordinate
     z = sympy.symbols('x[1]') # r coordinate
 
-    point_source = -4*pi * I * x * exp(- (pow(x - r[0], 2) + pow(z - r[1], 2)) / pow(disp, 2))
-    point_source2 = []
-    point_source_text = sympy.printing.ccode(point_source)
+    #point_source = -4*pi * I * x * exp(- (pow(x - r[0], 2) + pow(z - r[1], 2)) / pow(disp, 2))
+    point_source_text = \
+        "-4*pi * 1 * x[0] * \
+        exp(\
+            -(pow(x[0] - 0.9, 2) + pow(x[1] - 0.9, 2)) / pow(0.01, 2)\
+            )\
+                " 
+    #point_source_text = sympy.printing.ccode(point_source)
     print(colored("\nPoint source: ", 'magenta') + point_source_text + "\n")
     return point_source_text 
 #%% paremeters definition
