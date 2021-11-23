@@ -25,20 +25,20 @@ def Save_figure(addition):
     if plot_mesh == 1:
         plot(mesh)
 
-    mesh_title = str(mesh_r) + 'x' + str(mesh_z) + ' mesh'
-    ttime = datetime.datetime.now().strftime("%d%m%Y_%H%M%S")
-    time_title = str(ttime)  #get current time to make figure name unique
-    path_my_file = '/home/george/Projects2/Projects/Figures/' + time_title
+    mesh_title = "%sx%s mesh" % (str(mesh_r), str(mesh_z))
+    curr_time = datetime.datetime.now().strftime("%d%m%Y_%H%M%S")
+    time_title = str(curr_time)  #get current time to make figure name unique
+    path_my_file = '/home/george/Projects2/Projects/Figures/Point_source/%s' % time_title
 
 
     if addition == '_notitle':
-        plt.savefig(path_my_file + addition + '.png', dpi = dpi) #no title figure for reports
+        plt.savefig("%s%s.png" %(path_my_file, addition), dpi = dpi) #no title figure for reports
     elif addition == '_title':
-        plt.title('Point source: ' + mesh_title + "\n" + f_expr._cppcode) # titled figure for my self
-        plt.savefig(path_my_file + addition + '.png', dpi = dpi)
+        plt.title('Point source: %s\n%s' % (mesh_title, f_expr._cppcode)) # titled figure for my self
+        plt.savefig("%s%s.png" %(path_my_file, addition), dpi = dpi) #no title figure for reports
     else:
         plt.title(addition) # titled figure for my self
-        plt.savefig(path_my_file + addition + '.png', dpi = dpi)
+        plt.savefig("%s%s.png" %(path_my_file, addition), dpi = dpi) #no title figure for reports
 
 def Analyt_sol(c):
     x = sympy.symbols('x[0]') # r coordinate
@@ -75,7 +75,6 @@ rect_low = Point(area[0], area[2]) #define rectangle size: lower point
 rect_high = Point(area[1], area[3]) #define rectangle size: upper point
 
 plot_mesh = 0 #choose whether to plot mesh or not
-save_NoTitle = 0 #save figure that doesnt have title in it
 show_plot = 0 # show plot by the end of the program or not
 dpi = 200 # quality of a figure 
 
@@ -110,6 +109,7 @@ u = Function(V)
 solve(a == L, u, bc)
 plot(u) # its fenics' plot not python's
 #%% Save output
+Save_figure('_notitle')
 Save_figure('_title')
 vtkfile = File('poisson/solution.pvd') # Save solution to file in VTK format
 vtkfile << u
