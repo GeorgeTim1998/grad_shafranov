@@ -60,14 +60,12 @@ def CreatePointSource(r, I, disp):
     x = sympy.symbols('x[0]') # r coordinate
     z = sympy.symbols('x[1]') # r coordinate
 
-    #point_source = -4*pi * I * x * exp(- (pow(x - r[0], 2) + pow(z - r[1], 2)) / pow(disp, 2))
-    point_source_text = \
-        "-4*pi * 1 * x[0] * \
-        exp(\
-            -(pow(x[0] - 0.9, 2) + pow(x[1] - 0.9, 2)) / pow(0.01, 2)\
-            )\
-                " 
-    #point_source_text = sympy.printing.ccode(point_source)
+    pre_exp = -4*pi * I * x # in sympy write stuff that works
+    inner_exp = - (pow(x - r[0], 2) + pow(z - r[1], 2)) / pow(disp, 2) # in sympy write stuff that works
+    pre_exp_text = sympy.printing.ccode(pre_exp) # transfer it to text
+    inner_exp_text = sympy.printing.ccode(inner_exp) # transfer it to text
+    
+    point_source_text = "%s*exp(%s)" % (pre_exp_text, inner_exp_text) # assemble function of the point source
     print(colored("\nPoint source: ", 'magenta') + point_source_text + "\n")
     return point_source_text 
 #%% paremeters definition
@@ -81,12 +79,11 @@ save_NoTitle = 0 #save figure that doesnt have title in it
 show_plot = 0 # show plot by the end of the program or not
 dpi = 200 # quality of a figure 
 
-
 A1, A2 = 0.14, -0.01
 f_text = Form_f_text(A1, A2) # form right hand side that corresponds to analytical solution
 
 I, disp = 1, 0.01 # I in Amperes, disp in sm
-point_soure_text = CreatePointSource([0.9, 0.9], I, disp)
+point_soure_text = CreatePointSource([0.75, 0.5], I, disp)
 
 # c = [1, -0.22, -0.01, -0.08] #coefficients used for analytical solution
 # psi_text = Analyt_sol(c)
