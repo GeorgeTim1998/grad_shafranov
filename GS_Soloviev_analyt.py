@@ -52,6 +52,7 @@ def Analyt_sol(c, A1, A2):
         c[2] * (pow(x, 4) - 4*pow(x, 2)*pow(z, 2)) + \
         c[3] * (pow(x, 2)*sympy.log(x)- pow(z, 2)) # general solution
         #pow(x, 2)*sympy.log(x) 
+        
     psi_text = sympy.printing.ccode(psi_p + psi_gen)
     psi_p_text = sympy.printing.ccode(psi_p)
     print(colored("\nAnalytical solution: ", 'magenta') + psi_text + "\n")
@@ -70,11 +71,11 @@ show_plot = 0 # show plot by the end of the program or not
 dpi = 200 # quality of a figure 
 
 
-A1, A2 = 0.14, -0.01
-c = [1, -0.22, -0.01, -0.08] #coefficients used for analytical solution
+A1, A2 = 0.14, -0.01 # values from Ilgisonis2016, 244
+c = [1, -0.22, -0.01, 0] # values from Ilgisonis2016, 244
 
-f_text = Form_f_text(A1 * 8, A2 * 2) # form right hand side that corresponds to analytical solution
-psi_text = Analyt_sol(c, -A1, -A2) #A1&A2 defined as: A1 = 4*pi*p', A2 = FF'!!!
+f_text = Form_f_text(-8 * A1, -2 * A2) # form right hand side that corresponds to analytical solution
+psi_text = Analyt_sol(c, A1, A2) # см. научка.txt. Там есть вывод, как и куда надо подставлять
 #%% Create mesh and define function space
 mesh = RectangleMesh(rect_low, rect_high, mesh_r, mesh_z) # points define domain size rect_low x rect_high
 V = FunctionSpace(mesh, 'P', 1) # standard triangular mesh
