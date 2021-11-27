@@ -8,6 +8,7 @@ import datetime
 from numpy import add
 import sympy
 from termcolor import colored
+import point_source_data as psd
 #%% Functions
 def Form_f_text(A1, A2):
     #A1 = -4*pi*p', A2 = -FF'
@@ -68,6 +69,8 @@ def CreatePointSource(r, I, disp):
     point_source_text = "%s*exp(%s)" % (pre_exp_text, inner_exp_text) # assemble function of the point source
     print(colored("\nPoint source: ", 'magenta') + point_source_text + "\n")
     return point_source_text 
+def ArrayOfPointSources(pnt_src_data):
+    pass
 #%% paremeters definition
 mesh_r, mesh_z = 100, 100 # mesh for r-z space
 area = [0, 1, -1, 1] # format is: [r1, r2, z1, z2]
@@ -82,6 +85,7 @@ A1, A2 = 0.14, -0.01
 f_text = Form_f_text(A1, A2) # form right hand side that corresponds to analytical solution
 
 I, disp = 1, 0.01 # I in Amperes, disp in sm
+pnt_src_data = psd.PointSource()
 point_soure_text = CreatePointSource([0.75, 0.5], I, disp)
 
 # c = [1, -0.22, -0.01, -0.08] #coefficients used for analytical solution
