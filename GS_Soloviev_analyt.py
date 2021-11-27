@@ -14,7 +14,7 @@ def Form_f_text(A1, A2):
     #deriviation are calculated using sympy library
     x = sympy.symbols('x[0]') # r coordinate
     f_text = sympy.printing.ccode(A1 * pow(x, 2) + A2)
-    print(colored("\nINVERCED right-hand equation side: ", 'magenta') + f_text)
+    print(colored("INVERCED right-hand equation side: ", 'magenta') + f_text)
 
     return f_text
 
@@ -55,12 +55,12 @@ def Analyt_sol(c, A1, A2):
         
     psi_text = sympy.printing.ccode(psi_p + psi_gen)
     psi_p_text = sympy.printing.ccode(psi_p)
-    print(colored("\nAnalytical solution: ", 'magenta') + psi_text + "\n")
-    print(colored("Private solution: ", 'magenta') + psi_p_text + "\n")
+    print(colored("Analytical solution: ", 'magenta') + psi_text)
+    print(colored("Private solution: ", 'magenta') + psi_p_text)
 
     return psi_text
 #%% paremeters definition
-mesh_r, mesh_z = 100, 100 # mesh for r-z space
+mesh_r, mesh_z = 200, 200 # mesh for r-z space
 area = [0.2, 2.2, -1, 1] # format is: [r1, r2, z1, z2]
 rect_low = Point(area[0], area[2]) #define rectangle size: lower point
 rect_high = Point(area[1], area[3]) #define rectangle size: upper point
@@ -79,7 +79,7 @@ psi_text = Analyt_sol(c, A1, A2) # см. научка.txt. Там есть вы�
 #%% Create mesh and define function space
 mesh = RectangleMesh(rect_low, rect_high, mesh_r, mesh_z) # points define domain size rect_low x rect_high
 V = FunctionSpace(mesh, 'P', 1) # standard triangular mesh
-u_D = Expression(psi_text, degree = 3) # Define boundary condition
+u_D = Expression(psi_text, degree = 4) # Define boundary condition
 
 psi = interpolate(u_D, V) #plot exact solution
 plot(psi)
