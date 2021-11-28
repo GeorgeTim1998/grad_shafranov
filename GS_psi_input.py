@@ -6,29 +6,28 @@ import matplotlib.pyplot as plt
 from matplotlib.pyplot import figure, gcf, title
 import datetime
 import sympy
+from termcolor import colored
 #%% Functions
-def Save_figure(addition):
+def Save_figure(addition, f_expr):
     # Plot solution and mesh. Save plot
     #nothing passed to function, because variables are global
     if plot_mesh == 1:
         plot(mesh)
 
-    mesh_title = str(mesh_r) + 'x' + str(mesh_z) + ' mesh'
-    
-    ttime = datetime.datetime.now().strftime("%d%m%Y_%H%M%S")
-    time_title = str(ttime)  #get current time to make figure name unique
+    mesh_title = "%sx%s mesh" % (str(mesh_r), str(mesh_z))
+    curr_time = datetime.datetime.now().strftime("%d%m%Y_%H%M%S")
+    time_title = str(curr_time)  #get current time to make figure name unique
+    path_my_file = '/home/george/Projects2/Projects/Figures/Psi_input/%s' % time_title
 
-    #create a path to save my figure to. For some reason now I cant save using relative path
-    path_my_file = '/home/george/Projects2/Projects/Figures/Analytical/' + time_title
 
     if addition == '_notitle':
-        plt.savefig(path_my_file + addition + '.png', dpi = dpi) #no title figure for reports
+        plt.savefig("%s%s.png" %(path_my_file, addition), dpi = dpi) #no title figure for reports
     elif addition == '_title':
-        plt.title('Analyt Soloviev: ' + mesh_title + "\n" + f_expr._cppcode) # titled figure for my self
-        plt.savefig(path_my_file + addition + '.png', dpi = dpi)
+        plt.title('Point source: %s\n%s' % (mesh_title, f_expr._cppcode)) # titled figure for my self
+        plt.savefig("%s%s.png" %(path_my_file, addition), dpi = dpi) #no title figure for reports
     else:
         plt.title(addition) # titled figure for my self
-        plt.savefig(path_my_file + addition + '.png', dpi = dpi)
+        plt.savefig("%s%s.png" %(path_my_file, addition), dpi = dpi) #no title figure for reports
 #%% paremeters, mesh, V, u definition
 mesh_r, mesh_z = 100, 100 # mesh for r-z space
 area = [0, 1, -1, 1] # format is: [r1, r2, z1, z2]
@@ -49,7 +48,7 @@ psi = sympy.symbols('u') # flux function #think tomorrow how to define argument 
 x = sympy.symbols('x[0]') # r coordinate. used for easy writing of expressions
 
 p_psi = pow(psi, 2) #pressure function
-F_psi = pow(psi, 2) # poloidal current function
+F_psi = pow(psi, 1) # poloidal current function
 
 dp_psi = sympy.diff(p_psi, psi) #pressure and F deriviation
 dF_psi = sympy.diff(F_psi, psi) #compiler breaks when 
@@ -57,7 +56,7 @@ dF_psi = sympy.diff(F_psi, psi) #compiler breaks when
 f_text = 4 * pi * pow(x, 2) * dp_psi + F_psi*dF_psi #right hand expression
 #f_text = 4 * pi * pow(x, 2) * psi + 1 #right hand expression
 f_text = sympy.printing.ccode(f_text)
-print("\n" + f_text + "\n")
+print(colored("Right-hand side: ", 'magenta') + f_text)
 f_expr = Expression(f_text, u = u, degree = 2)
 #%% Create problem
 #  mesh, u and V defined above
@@ -84,16 +83,8 @@ mesh_title = str(mesh_r) + 'x' + str(mesh_z) + ' mesh'
 ttime = datetime.datetime.now().strftime("%d%m%Y_%H%M%S")
 time_title = str(ttime)  #get current time to make figure name unique
 
-plot(u) # its fenics' plot not python's
-if plot_mesh == 1:
-    plot(mesh)
-
-path_my_file = '/home/george/Projects2/Projects/Figures/' + time_title
-
-if save_NoTitle != 0:
-    plt.savefig(path_my_file + '_notitle.png', dpi = dpi) #no title figure for reports
-plt.title('Psi_input: ' + mesh_title + "\n" + f_expr._cppcode) # titled figure for my self
-plt.savefig(path_my_file + '_title.png', dpi = dpi)
+plot(u, tol = 1e-6 ) # its fenics' plot not python's
+Save_figure('_title', f_expr)
 
 # Save solution to file in VTK format
 vtkfile = File('poisson/solution.pvd')
