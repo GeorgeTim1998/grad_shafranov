@@ -20,7 +20,7 @@ def Form_f_text(A1, A2):
 
     return f_text
 
-def Save_figure(addition):
+def Save_figure(addition, f_expr):
     # Plot solution and mesh. Save plot
     #nothing passed to function, because variables are global
     if plot_mesh == 1:
@@ -115,8 +115,8 @@ u = Function(V)
 solve(a == L, u, bc)
 plot(u) # its fenics' plot not python's
 #%% Save output
-Save_figure('_notitle')
-Save_figure('_title')
+Save_figure('_notitle', f_expr)
+Save_figure('_title', f_expr)
 vtkfile = File('poisson/solution.pvd') # Save solution to file in VTK format
 vtkfile << u
 #%% 'plt.show()' holds plot while the programm is still running
