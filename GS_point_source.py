@@ -67,10 +67,16 @@ def CreatePointSource(r, I, disp):
     inner_exp_text = sympy.printing.ccode(inner_exp) # transfer it to text
     
     point_source_text = "%s*exp(%s)" % (pre_exp_text, inner_exp_text) # assemble function of the point source
-    print(colored("\nPoint source: ", 'magenta') + point_source_text + "\n")
+    print(colored("Point source: ", 'magenta') + point_source_text)
     return point_source_text 
 def ArrayOfPointSources(pnt_src_data):
-    pass
+    #create an array of all point source text expressions 
+    
+    pnt_src_text = []
+    for i in range(len(pnt_src_data.r)):
+        pnt_src_text.append(CreatePointSource(pnt_src_data.r[i], pnt_src_data.i_disp[i][0], pnt_src_data.i_disp[i][1]))
+        
+    return pnt_src_text
 #%% paremeters definition
 mesh_r, mesh_z = 100, 100 # mesh for r-z space
 area = [0, 1, -1, 1] # format is: [r1, r2, z1, z2]
@@ -84,12 +90,8 @@ dpi = 200 # quality of a figure
 A1, A2 = 0.14, -0.01
 f_text = Form_f_text(A1, A2) # form right hand side that corresponds to analytical solution
 
-I, disp = 1, 0.01 # I in Amperes, disp in sm
 pnt_src_data = psd.PointSource()
-point_soure_text = CreatePointSource([0.75, 0.5], I, disp)
-
-# c = [1, -0.22, -0.01, -0.08] #coefficients used for analytical solution
-# psi_text = Analyt_sol(c)
+point_source_text = ArrayOfPointSources(pnt_src_data)
 #%% Create mesh and define function space
 mesh = RectangleMesh(rect_low, rect_high, mesh_r, mesh_z) # points define domain size rect_low x rect_high
 V = FunctionSpace(mesh, 'P', 1) # standard triangular mesh
@@ -103,11 +105,11 @@ bc = DirichletBC(V, u_D, boundary) #гран условие как в задач
 u = TrialFunction(V)
 v = TestFunction(V)
 f_expr = Expression(f_text, degree = 2)
-point_source = Expression(point_soure_text, degree = 2)
+point_source = Expression(point_source_text, degree = 2)
 w = interpolate(Expression('x[0]*x[0]', degree = 2), V) # interpolation is needed so that 'a' could evaluate deriviations and such
 
 a = dot(grad(u)/w, grad(w*v))*dx
-L = (f_expr + point_source)*v*dx
+L = (f_expr + sum(point_source))*v*dx
 #%% Compute solution
 u = Function(V)
 solve(a == L, u, bc)
