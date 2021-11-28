@@ -105,7 +105,7 @@ bc = DirichletBC(V, u_D, boundary) #гран условие как в задач
 u = TrialFunction(V)
 v = TestFunction(V)
 f_expr = Expression(f_text, degree = 2)
-point_source = Expression(point_source_text, degree = 2)
+point_source = Expression(point_source_text, degree = 2) #Expression is expected to modify array of text into array of expressions
 w = interpolate(Expression('x[0]*x[0]', degree = 2), V) # interpolation is needed so that 'a' could evaluate deriviations and such
 
 a = dot(grad(u)/w, grad(w*v))*dx
