@@ -12,6 +12,7 @@ Test problem is chosen to give an exact solution at all nodes of the mesh.
 from __future__ import print_function
 from fenics import *
 import matplotlib.pyplot as plt
+from termcolor import colored
 
 # Create mesh and define function space
 mesh = UnitSquareMesh(8, 8)
@@ -54,8 +55,8 @@ import numpy as np
 error_max = np.max(np.abs(vertex_values_u_D - vertex_values_u))
 
 # Print errors
-print('error_L2  =', error_L2)
-print('error_max =', error_max)
+print(colored('error_L2  = ', 'red'), error_L2)
+print(colored('error_max = ', 'red'), error_max)
 
 # Hold plot
 plt.show()

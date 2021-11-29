@@ -5,7 +5,7 @@ from fenics import *
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import figure, gcf, title
 import datetime
-from numpy import add
+import numpy 
 import sympy
 from termcolor import colored
 #%% Functions
@@ -49,8 +49,8 @@ def Analyt_sol(c, A1, A2):
     psi_gen = \
         c[0] + \
         c[1] * pow(x, 2) + \
-        c[2] * (pow(x, 4) - 4*pow(x, 2)*pow(z, 2)) + \
-        c[3] * (pow(x, 2)*sympy.log(x)- pow(z, 2)) # general solution
+        c[2] * (pow(x, 4) - 4*pow(x, 2)*pow(z, 2))
+        #c[3] * (pow(x, 2)*sympy.log(x)- pow(z, 2)) # general solution
         #pow(x, 2)*sympy.log(x) 
         
     psi_text = sympy.printing.ccode(psi_p + psi_gen)
@@ -59,6 +59,20 @@ def Analyt_sol(c, A1, A2):
     print(colored("Private solution: ", 'magenta') + psi_p_text)
 
     return psi_text
+
+def ErrorEstimate(u, u_D, mesh):
+    # Compute error in L2 norm
+    error_L2 = errornorm(u_D, u, 'L2')
+
+    # Compute maximum error at vertices
+    vertex_values_u_D = u_D.compute_vertex_values(mesh)
+    vertex_values_u = u.compute_vertex_values(mesh)
+    error_max = numpy.max(numpy.abs(vertex_values_u_D - vertex_values_u))
+
+    # Print errors
+    print(colored('error_L2  = ', 'red'), error_L2)
+    print(colored('error_max = ', 'red'), error_max)
+
 #%% paremeters definition
 mesh_r, mesh_z = 200, 200 # mesh for r-z space
 area = [0.2, 2.2, -1, 1] # format is: [r1, r2, z1, z2]
@@ -101,6 +115,9 @@ L = f_expr*v*dx
 u = Function(V)
 solve(a == L, u, bc)
 plot(u) # its fenics' plot not python's
+
+#%% Compute errors
+ErrorEstimate(u, u_D, mesh)
 #%% Save output
 Save_figure('_title')
 vtkfile = File('poisson/solution.pvd') # Save solution to file in VTK format
