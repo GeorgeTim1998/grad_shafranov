@@ -73,6 +73,7 @@ def ErrorEstimate(u, u_D, mesh):
     print(colored('error_L2  = ', 'red'), error_L2)
     print(colored('error_max = ', 'red'), error_max)
 
+print(colored("GS_Soloviev_analyt", 'green'))
 #%% paremeters definition
 mesh_r, mesh_z = 200, 200 # mesh for r-z space
 area = [0.2, 2.2, -1, 1] # format is: [r1, r2, z1, z2]
@@ -122,6 +123,8 @@ ErrorEstimate(u, u_D, mesh)
 Save_figure('_title')
 vtkfile = File('poisson/solution.pvd') # Save solution to file in VTK format
 vtkfile << u
+# vtkfile_analyt = File('poisson/solution_analyt.pvd') # Save solution to file in VTK format
+# vtkfile_analyt << u_D
 #%% 'plt.show()' holds plot while the programm is still running
 if show_plot == 1:
     plt.show()
