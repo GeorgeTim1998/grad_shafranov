@@ -2,8 +2,9 @@
 from __future__ import print_function
 from math import degrees
 from fenics import *
+import fenics
 import matplotlib.pyplot as plt
-from matplotlib.pyplot import figure, gcf, title
+from matplotlib.pyplot import figure, gcf, isinteractive, title
 import datetime
 import numpy 
 import sympy
@@ -14,7 +15,7 @@ def Form_f_text(A1, A2):
     #deriviation are calculated using sympy library
     x = sympy.symbols('x[0]') # r coordinate
     f_text = sympy.printing.ccode(A1 * pow(x, 2) + A2)
-    print(colored("INVERCED right-hand equation side: ", 'magenta') + f_text)
+    print(colored("INVERCED right-hand equation side: \n", 'magenta') + f_text)
 
     return f_text
 
@@ -49,16 +50,34 @@ def Analyt_sol(c, A1, A2):
     psi_gen = \
         c[0] + \
         c[1] * pow(x, 2) + \
-        c[2] * (pow(x, 4) - 4*pow(x, 2)*pow(z, 2))
+        c[2] * (pow(x, 4) - 4*pow(x, 2)*pow(z, 2)) + \
+        c[3] * (-pow(z, 2)) # general solution the rest of the 4th term is defined in MyLog(c) func
         #c[3] * (pow(x, 2)*sympy.log(x)- pow(z, 2)) # general solution
         #pow(x, 2)*sympy.log(x) 
-        
+    
+    my_log = MyLog(c)
+    
     psi_text = sympy.printing.ccode(psi_p + psi_gen)
     psi_p_text = sympy.printing.ccode(psi_p)
-    print(colored("Analytical solution: ", 'magenta') + psi_text)
-    print(colored("Private solution: ", 'magenta') + psi_p_text)
+    
+    # final_sol = psi_text + ' + ' + my_log
+    final_sol = psi_text 
+    print(colored("Private solution: \n", 'magenta') + psi_p_text)
+    print(colored("Analytical solution: \n", 'magenta') + final_sol)
+    # print(colored("Analytical solution: \n", 'magenta') + psi_text)
 
-    return psi_text
+    return final_sol
+
+def MyLog(c):
+    x = sympy.symbols('x[0]') # r coordinate
+    pre_log = c[3] * pow(x, 2)
+    
+    pre_log_text = sympy.printing.ccode(pre_log)
+    log_text = "%s*log(%s)" % (pre_log_text, 'x[0]') # assemble function of the point source
+    print(colored("Problem term in analyt solution: \n", 'magenta') + log_text)
+    #c[3] * (pow(x, 2)*log(x)) # general solution
+    
+    return log_text
 
 def ErrorEstimate(u, u_D, mesh):
     # Compute error in L2 norm
@@ -86,11 +105,12 @@ show_plot = 0 # show plot by the end of the program or not
 dpi = 200 # quality of a figure 
 
 
-A1, A2 = 0.14, -0.01 # values from Ilgisonis2016, 244
-c = [1, -0.22, -0.01, 0] # values from Ilgisonis2016, 244
+A1, A2 = -0.2, -0.1 # values from Ilgisonis2016, 244
+c = [1, -0.22, -0.1, 0.5] # values from Ilgisonis2016, 244
 
 f_text = Form_f_text(-8 * A1, -2 * A2) # form right hand side that corresponds to analytical solution
 psi_text = Analyt_sol(c, A1, A2) # см. научка.txt. Там есть вывод, как и куда надо подставлять
+print(psi_text)
 #%% Create mesh and define function space
 mesh = RectangleMesh(rect_low, rect_high, mesh_r, mesh_z) # points define domain size rect_low x rect_high
 V = FunctionSpace(mesh, 'P', 1) # standard triangular mesh
@@ -128,3 +148,5 @@ vtkfile << u
 #%% 'plt.show()' holds plot while the programm is still running
 if show_plot == 1:
     plt.show()
+
+isinteractive()
