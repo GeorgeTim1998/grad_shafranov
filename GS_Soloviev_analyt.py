@@ -2,7 +2,6 @@
 from __future__ import print_function
 from math import degrees
 from fenics import *
-import fenics
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import figure, gcf, isinteractive, title
 import datetime
@@ -60,8 +59,8 @@ def Analyt_sol(c, A1, A2):
     psi_text = sympy.printing.ccode(psi_p + psi_gen)
     psi_p_text = sympy.printing.ccode(psi_p)
     
-    # final_sol = psi_text + ' + ' + my_log
-    final_sol = psi_text 
+    # final_sol = psi_text 
+    final_sol = psi_text + ' + ' + my_log
     print(colored("Private solution: \n", 'magenta') + psi_p_text)
     print(colored("Analytical solution: \n", 'magenta') + final_sol)
     # print(colored("Analytical solution: \n", 'magenta') + psi_text)
@@ -73,7 +72,7 @@ def MyLog(c):
     pre_log = c[3] * pow(x, 2)
     
     pre_log_text = sympy.printing.ccode(pre_log)
-    log_text = "%s*log(%s)" % (pre_log_text, 'x[0]') # assemble function of the point source
+    log_text = "%s*std::log(%s)" % (pre_log_text, 'x[0]') # assemble function of the point source
     print(colored("Problem term in analyt solution: \n", 'magenta') + log_text)
     #c[3] * (pow(x, 2)*log(x)) # general solution
     
@@ -110,7 +109,7 @@ c = [1, -0.22, -0.1, 0.5] # values from Ilgisonis2016, 244
 
 f_text = Form_f_text(-8 * A1, -2 * A2) # form right hand side that corresponds to analytical solution
 psi_text = Analyt_sol(c, A1, A2) # см. научка.txt. Там есть вывод, как и куда надо подставлять
-print(psi_text)
+# print(psi_text)
 #%% Create mesh and define function space
 mesh = RectangleMesh(rect_low, rect_high, mesh_r, mesh_z) # points define domain size rect_low x rect_high
 V = FunctionSpace(mesh, 'P', 1) # standard triangular mesh
