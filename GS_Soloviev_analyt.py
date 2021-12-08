@@ -128,6 +128,8 @@ u = TrialFunction(V)
 v = TestFunction(V)
 f_expr = Expression(f_text, degree = 2)
 w = interpolate(Expression('x[0]*x[0]', degree = 2), V) # interpolation is needed so that 'a' could evaluate deriviations and such
+r_2 = interpolate(Expression('x[0]*x[0]', degree = 2), V) # interpolation is needed so that 'a' could evaluate deriviations and such
+r = interpolate(Expression('x[0]', degree = 2), V) # interpolation is needed so that 'a' could evaluate deriviations and such
 
 a = dot(grad(u)/w, grad(w*v))*dx
 L = f_expr*v*dx
