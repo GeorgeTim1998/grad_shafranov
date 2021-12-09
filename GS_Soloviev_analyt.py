@@ -91,9 +91,9 @@ def ErrorEstimate(u, u_D, mesh):
     print(colored('error_L2  = ', 'red'), error_L2)
     print(colored('error_max = ', 'red'), error_max)
 
-print(colored("GS_Soloviev_analyt", 'green'))
+print(colored("GS_Soloviev_analyt.py", 'green'))
 #%% paremeters definition
-mesh_r, mesh_z = 200, 200 # mesh for r-z space
+mesh_r, mesh_z = 300, 300 # mesh for r-z space
 area = [0.2, 2.2, -1, 1] # format is: [r1, r2, z1, z2]
 rect_low = Point(area[0], area[2]) #define rectangle size: lower point
 rect_high = Point(area[1], area[3]) #define rectangle size: upper point
@@ -127,12 +127,11 @@ bc = DirichletBC(V, u_D, boundary) #гран условие как в задач
 u = TrialFunction(V)
 v = TestFunction(V)
 f_expr = Expression(f_text, degree = 2)
-w = interpolate(Expression('x[0]*x[0]', degree = 2), V) # interpolation is needed so that 'a' could evaluate deriviations and such
 r_2 = interpolate(Expression('x[0]*x[0]', degree = 2), V) # interpolation is needed so that 'a' could evaluate deriviations and such
-r = interpolate(Expression('x[0]', degree = 2), V) # interpolation is needed so that 'a' could evaluate deriviations and such
+r = Expression('x[0]', degree = 1) # interpolation is needed so that 'a' could evaluate deriviations and such
 
-a = dot(grad(u)/w, grad(w*v))*dx
-L = f_expr*v*dx
+a = dot(grad(u)/r, grad(r_2*v))*dx
+L = f_expr*r*v*dx
 #%% Compute solution
 u = Function(V)
 solve(a == L, u, bc)
