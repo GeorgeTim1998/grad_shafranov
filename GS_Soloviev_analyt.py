@@ -8,6 +8,7 @@ import datetime
 import numpy 
 import sympy
 from termcolor import colored
+import pylab as plt
 #%% Functions
 def Form_f_text(A1, A2):
     #A1 = 4*pi*p', A2 = FF'
@@ -104,8 +105,8 @@ show_plot = 0 # show plot by the end of the program or not
 dpi = 200 # quality of a figure 
 
 
-A1, A2 = -0.2, -0.1 # values from Ilgisonis2016, 244
-c = [1, -0.22, -0.1, 0.5] # values from Ilgisonis2016, 244
+A1, A2 = 0.14, -0.01 # values from Ilgisonis2016, 244
+c = [1, -0.22, -0.01, -0.08] # values from Ilgisonis2016, 244
 
 f_text = Form_f_text(-8 * A1, -2 * A2) # form right hand side that corresponds to analytical solution
 psi_text = Analyt_sol(c, A1, A2) # см. научка.txt. Там есть вывод, как и куда надо подставлять
@@ -116,7 +117,8 @@ V = FunctionSpace(mesh, 'P', 1) # standard triangular mesh
 u_D = Expression(psi_text, degree = 4) # Define boundary condition
 
 psi = interpolate(u_D, V) #plot exact solution
-plot(psi)
+fig = plot(psi)
+plt.colorbar(fig)
 Save_figure('_Analit')
 
 def boundary(x, on_boundary):
@@ -149,4 +151,4 @@ vtkfile << u
 if show_plot == 1:
     plt.show()
 
-isinteractive()
+#isinteractive()
