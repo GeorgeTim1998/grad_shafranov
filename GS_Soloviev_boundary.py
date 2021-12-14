@@ -9,16 +9,8 @@ import numpy
 import sympy
 from termcolor import colored
 import pylab as plt
+import funcs as fu
 #%% Functions
-def Form_f_text(A1, A2):
-    #A1 = 4*pi*p', A2 = FF'
-    #deriviation are calculated using sympy library
-    x = sympy.symbols('x[0]') # r coordinate
-    f_text = sympy.printing.ccode(A1 * pow(x, 2) + A2)
-    print(colored("INVERCED right-hand equation side: \n", 'magenta') + f_text)
-
-    return f_text
-
 def Save_figure(addition):
     # Plot solution and mesh. Save plot
     #nothing passed to function, because variables are global
@@ -94,7 +86,7 @@ def ErrorEstimate(u, u_D, mesh):
 
 print(colored("GS_Soloviev_new.py", 'green'))
 #%% paremeters definition
-mesh_r, mesh_z = 300, 300 # mesh for r-z space
+mesh_r, mesh_z = 200, 200 # mesh for r-z space
 area = [0.2, 2.2, -1, 1] # format is: [r1, r2, z1, z2]
 rect_low = Point(area[0], area[2]) #define rectangle size: lower point
 rect_high = Point(area[1], area[3]) #define rectangle size: upper point
@@ -104,23 +96,12 @@ save_NoTitle = 0 #save figure that doesnt have title in it
 show_plot = 0 # show plot by the end of the program or not
 dpi = 200 # quality of a figure 
 
-
-A1, A2 = 0.14, -0.01 # values from Ilgisonis2016, 244
-c = [1, -0.22, -0.01, -0.08] # values from Ilgisonis2016, 244
-
-f_text = Form_f_text(-8 * A1, -2 * A2) # form right hand side that corresponds to analytical solution
-psi_text = Analyt_sol(c, A1, A2) # см. научка.docx. Там есть вывод, как и куда надо подставлять
-# print(psi_text)
+A1, A2 = 0.14, 0.01 # values from Ilgisonis2016, 244
+f_text = fu.Form_f_text(A1, A2) # form right hand side that corresponds to analytical solution
 #%% Create mesh and define function space
 mesh = RectangleMesh(rect_low, rect_high, mesh_r, mesh_z) # points define domain size rect_low x rect_high
 V = FunctionSpace(mesh, 'P', 1) # standard triangular mesh
-u_D = Expression(psi_text, degree = 4) # Define boundary condition
-
-psi = interpolate(u_D, V) #plot exact solution
-fig = plot(psi)
-plt.colorbar(fig)
-
-Save_figure('_Analit')
+u_D = Expression('0', degree = 1) # Define boundary condition
 
 def boundary(x, on_boundary):
     return on_boundary
@@ -138,18 +119,12 @@ L = f_expr*r*v*dx
 #%% Compute solution
 u = Function(V)
 solve(a == L, u, bc)
-plot(u) # its fenics' plot not python's
-
-#%% Compute errors
-ErrorEstimate(u, u_D, mesh)
+fig = plot(u) # its fenics' plot not python's
+plt.colorbar(fig)
 #%% Save output
 Save_figure('_title')
 vtkfile = File('poisson/solution.pvd') # Save solution to file in VTK format
 vtkfile << u
-# vtkfile_analyt = File('poisson/solution_analyt.pvd') # Save solution to file in VTK format
-# vtkfile_analyt << u_D
 #%% 'plt.show()' holds plot while the programm is still running
 if show_plot == 1:
     plt.show()
-
-#isinteractive()
