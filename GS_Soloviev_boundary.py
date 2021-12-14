@@ -13,7 +13,8 @@ import funcs as fu
 
 path = 'Border'
 #%% Functions
-def Save_figure(addition):
+def Save_figure(addition, path):
+    # move to funcs, add missing args, fix save path 
     # Plot solution and mesh. Save plot
     #nothing passed to function, because variables are global
     if plot_mesh == 1:
@@ -24,7 +25,7 @@ def Save_figure(addition):
     time_title = fu.Time_name()
 
     #create a path to save my figure to. For some reason now I cant save using relative path
-    path_my_file = '/home/george/Projects2/Projects/Figures/Bourder/' + time_title
+    path_my_file = 'Figures/%s' + path + time_title
 
     if addition == '_notitle':
         matplt.savefig(path_my_file + addition + '.png', dpi = dpi) #no title figure for reports
@@ -126,13 +127,13 @@ L = f_expr*r*v*dx
 u = Function(V)
 solve(a == L, u, bc)
 
-fu.Twod_plot(u, r0, z1, z2, path)
-fu.Twod_plot(u, z0, r1, r2, path)
+#fu.Twod_plot(u, r0, z1, z2, path)
+#fu.Twod_plot(u, z0, r1, r2, path)
 
 fig = plot(u) # its fenics' plot not python's
 pylab.colorbar(fig)
 #%% Save output
-Save_figure('_title')
+Save_figure('_title', path)
 vtkfile = File('poisson/solution.pvd') # Save solution to file in VTK format
 vtkfile << u
 #%% 'plt.show()' holds plot while the programm is still running
