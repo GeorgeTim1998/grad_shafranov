@@ -1,8 +1,8 @@
-#%% imports
+#%% imports and constants
 from __future__ import print_function
 from math import degrees
 from fenics import *
-import matplotlib.pyplot as plt
+import matplotlib.pyplot as matplt
 from matplotlib.pyplot import figure, gcf, isinteractive, title
 import datetime
 import numpy 
@@ -10,6 +10,8 @@ import sympy
 from termcolor import colored
 import pylab
 import funcs as fu
+
+path = 'Border'
 #%% Functions
 def Save_figure(addition):
     # Plot solution and mesh. Save plot
@@ -19,20 +21,19 @@ def Save_figure(addition):
 
     mesh_title = str(mesh_r) + 'x' + str(mesh_z) + ' mesh'
     
-    ttime = datetime.datetime.now().strftime("%d%m%Y_%H%M%S")
-    time_title = str(ttime)  #get current time to make figure name unique
+    time_title = fu.Time_name()
 
     #create a path to save my figure to. For some reason now I cant save using relative path
     path_my_file = '/home/george/Projects2/Projects/Figures/Bourder/' + time_title
 
     if addition == '_notitle':
-        plt.savefig(path_my_file + addition + '.png', dpi = dpi) #no title figure for reports
+        matplt.savefig(path_my_file + addition + '.png', dpi = dpi) #no title figure for reports
     elif addition == '_title':
-        plt.title('Analyt Soloviev: ' + mesh_title + "\n" + f_expr._cppcode) # titled figure for my self
-        plt.savefig(path_my_file + addition + '.png', dpi = dpi)
+        matplt.title('Analyt Soloviev: ' + mesh_title + "\n" + f_expr._cppcode) # titled figure for my self
+        matplt.savefig(path_my_file + addition + '.png', dpi = dpi)
     else:
-        plt.title(addition) # titled figure for my self
-        plt.savefig(path_my_file + addition + '.png', dpi = dpi)
+        matplt.title(addition) # titled figure for my self
+        matplt.savefig(path_my_file + addition + '.png', dpi = dpi)
 
 def Analyt_sol(c, A1, A2):
     x = sympy.symbols('x[0]') # r coordinate
@@ -96,8 +97,6 @@ area = [r1, r2, z1, z2] # format is: [r1, r2, z1, z2]
 rect_low = Point(area[0], area[2]) #define rectangle size: lower point
 rect_high = Point(area[1], area[3]) #define rectangle size: upper point
 
-del r1, r2, z1, z2
-
 plot_mesh = 0 #choose whether to plot mesh or not
 save_NoTitle = 0 #save figure that doesnt have title in it
 show_plot = 0 # show plot by the end of the program or not
@@ -126,6 +125,10 @@ L = f_expr*r*v*dx
 #%% Compute solution
 u = Function(V)
 solve(a == L, u, bc)
+
+fu.Twod_plot(u, r0, z1, z2, path)
+fu.Twod_plot(u, z0, r1, r2, path)
+
 fig = plot(u) # its fenics' plot not python's
 pylab.colorbar(fig)
 #%% Save output
@@ -134,4 +137,4 @@ vtkfile = File('poisson/solution.pvd') # Save solution to file in VTK format
 vtkfile << u
 #%% 'plt.show()' holds plot while the programm is still running
 if show_plot == 1:
-    plt.show()
+    matplt.show()

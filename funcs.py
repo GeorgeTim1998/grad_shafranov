@@ -17,8 +17,9 @@ def Form_f_text(A1, A2):
 
     return f_text
 
-def Twod_plot_(psi, x0, y1, y2): 
-    # y1, y2 - min and max points in an interval of interest, x0 - point along which 2d graph is plotted
+def Twod_plot(psi, x0, y1, y2, path): 
+    # y1, y2 - min and max points in an interval of interest, 
+    # x0 - point along which 2d graph is plotted
     tol, point_num = 0.001, 100 + 1  # avoid hitting points outside the domain
     
     y = numpy.linspace(y1 + tol, y2 - tol, point_num)
@@ -32,5 +33,11 @@ def Twod_plot_(psi, x0, y1, y2):
     matplt.ylabel('$psi$')
     # matplt.legend(['Deflection ($\\times 50$)', 'Load'], loc='upper left')
     
-    matplt.savefig('poisson_membrane/curves.png')
+    time_title = Time_name()
+    matplt.savefig('Figures/%s/%s.png' % (path, time_title))
     matplt.close() # close created plot
+    
+def Time_name():
+    ttime = datetime.datetime.now().strftime("%d%m%Y_%H%M%S")
+    time_title = str(ttime)  #get current time to make figure name unique
+    return time_title
