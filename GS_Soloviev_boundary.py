@@ -8,7 +8,7 @@ import datetime
 import numpy 
 import sympy
 from termcolor import colored
-import pylab as plt
+import pylab
 import funcs as fu
 #%% Functions
 def Save_figure(addition):
@@ -23,7 +23,7 @@ def Save_figure(addition):
     time_title = str(ttime)  #get current time to make figure name unique
 
     #create a path to save my figure to. For some reason now I cant save using relative path
-    path_my_file = '/home/george/Projects2/Projects/Figures/Analytical/' + time_title
+    path_my_file = '/home/george/Projects2/Projects/Figures/Bourder/' + time_title
 
     if addition == '_notitle':
         plt.savefig(path_my_file + addition + '.png', dpi = dpi) #no title figure for reports
@@ -86,10 +86,17 @@ def ErrorEstimate(u, u_D, mesh):
 
 print(colored("GS_Soloviev_new.py", 'green'))
 #%% paremeters definition
-mesh_r, mesh_z = 200, 200 # mesh for r-z space
-area = [0.2, 2.2, -1, 1] # format is: [r1, r2, z1, z2]
+r0, z0 = 100, 0 # starting point for calculations
+square = 1 # square size
+mesh_r, mesh_z = 200*square, 200*square # mesh for r-z space
+r1, z1 = r0 - 0.5*square, z0 - 0.5*square
+r2, z2 = r0 + 0.5*square, z0 + 0.5*square
+area = [r1, r2, z1, z2] # format is: [r1, r2, z1, z2]
+
 rect_low = Point(area[0], area[2]) #define rectangle size: lower point
 rect_high = Point(area[1], area[3]) #define rectangle size: upper point
+
+del r1, r2, z1, z2
 
 plot_mesh = 0 #choose whether to plot mesh or not
 save_NoTitle = 0 #save figure that doesnt have title in it
@@ -120,7 +127,7 @@ L = f_expr*r*v*dx
 u = Function(V)
 solve(a == L, u, bc)
 fig = plot(u) # its fenics' plot not python's
-plt.colorbar(fig)
+pylab.colorbar(fig)
 #%% Save output
 Save_figure('_title')
 vtkfile = File('poisson/solution.pvd') # Save solution to file in VTK format

@@ -47,7 +47,7 @@ u = Function(V) # for non linear equations 'u' must be defined via Function()
 psi = sympy.symbols('u') # flux function #think tomorrow how to define argument psi!
 x = sympy.symbols('x[0]') # r coordinate. used for easy writing of expressions
 
-p_psi = pow(psi, 2) #pressure function
+p_psi = pow(psi, 1) #pressure function
 F_psi = pow(psi, 1) # poloidal current function
 
 dp_psi = sympy.diff(p_psi, psi) #pressure and F deriviation

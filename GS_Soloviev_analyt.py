@@ -119,6 +119,7 @@ u_D = Expression(psi_text, degree = 4) # Define boundary condition
 psi = interpolate(u_D, V) #plot exact solution
 fig = plot(psi)
 plt.colorbar(fig)
+
 Save_figure('_Analit')
 
 def boundary(x, on_boundary):
