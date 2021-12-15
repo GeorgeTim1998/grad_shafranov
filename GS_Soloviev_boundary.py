@@ -11,31 +11,9 @@ from termcolor import colored
 import pylab
 import funcs as fu
 
-path = 'Border'
+print(colored("\tGS_Soloviev_new.py", 'green'))
+PATH = 'Border'
 #%% Functions
-def Save_figure(addition, path):
-    # move to funcs, add missing args, fix save path 
-    # Plot solution and mesh. Save plot
-    #nothing passed to function, because variables are global
-    if plot_mesh == 1:
-        plot(mesh)
-
-    mesh_title = str(mesh_r) + 'x' + str(mesh_z) + ' mesh'
-    
-    time_title = fu.Time_name()
-
-    #create a path to save my figure to. For some reason now I cant save using relative path
-    path_my_file = 'Figures/%s' + path + time_title
-
-    if addition == '_notitle':
-        matplt.savefig(path_my_file + addition + '.png', dpi = dpi) #no title figure for reports
-    elif addition == '_title':
-        matplt.title('Analyt Soloviev: ' + mesh_title + "\n" + f_expr._cppcode) # titled figure for my self
-        matplt.savefig(path_my_file + addition + '.png', dpi = dpi)
-    else:
-        matplt.title(addition) # titled figure for my self
-        matplt.savefig(path_my_file + addition + '.png', dpi = dpi)
-
 def Analyt_sol(c, A1, A2):
     x = sympy.symbols('x[0]') # r coordinate
     z = sympy.symbols('x[1]') # r coordinate
@@ -86,10 +64,9 @@ def ErrorEstimate(u, u_D, mesh):
     print(colored('error_L2  = ', 'red'), error_L2)
     print(colored('error_max = ', 'red'), error_max)
 
-print(colored("GS_Soloviev_new.py", 'green'))
 #%% paremeters definition
 r0, z0 = 100, 0 # starting point for calculations
-square = 1 # square size
+square = 4 # square size
 mesh_r, mesh_z = 200*square, 200*square # mesh for r-z space
 r1, z1 = r0 - 0.5*square, z0 - 0.5*square
 r2, z2 = r0 + 0.5*square, z0 + 0.5*square
@@ -101,7 +78,6 @@ rect_high = Point(area[1], area[3]) #define rectangle size: upper point
 plot_mesh = 0 #choose whether to plot mesh or not
 save_NoTitle = 0 #save figure that doesnt have title in it
 show_plot = 0 # show plot by the end of the program or not
-dpi = 200 # quality of a figure 
 
 A1, A2 = 0.14, 0.01 # values from Ilgisonis2016, 244
 f_text = fu.Form_f_text(A1, A2) # form right hand side that corresponds to analytical solution
@@ -127,13 +103,13 @@ L = f_expr*r*v*dx
 u = Function(V)
 solve(a == L, u, bc)
 
-#fu.Twod_plot(u, r0, z1, z2, path)
-#fu.Twod_plot(u, z0, r1, r2, path)
+fu.Twod_plot(u, r0, z1, z2, PATH)
+# fu.Twod_plot(u, z0, r1, r2, PATH) # for z0 its zero! coordinates are mixed! 
 
 fig = plot(u) # its fenics' plot not python's
 pylab.colorbar(fig)
 #%% Save output
-Save_figure('_title', path)
+fu.Save_figure(f_expr, mesh_r, mesh_z, '_title', PATH)
 vtkfile = File('poisson/solution.pvd') # Save solution to file in VTK format
 vtkfile << u
 #%% 'plt.show()' holds plot while the programm is still running
