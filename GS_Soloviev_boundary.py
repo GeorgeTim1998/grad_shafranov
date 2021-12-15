@@ -67,7 +67,7 @@ def ErrorEstimate(u, u_D, mesh):
 #%% paremeters definition
 r0, z0 = 100, 0 # starting point for calculations
 square = 1 # square size
-default_mesh = 400
+default_mesh = 10
 mesh_r, mesh_z = default_mesh*square, default_mesh*square # mesh for r-z space
 r1, z1 = r0 - 0.5*square, z0 - 0.5*square
 r2, z2 = r0 + 0.5*square, z0 + 0.5*square
@@ -105,7 +105,6 @@ u = Function(V)
 solve(a == L, u, bc)
 
 fu.Write2file_max_func_vs_mesh(default_mesh, mesh_r, mesh_z, fu.Twod_plot(u, r0, z1, z2, PATH))
-fu.Plot_max_func()
 # fu.Twod_plot(u, z0, r1, r2, PATH) # for z0 its zero! coordinates are mixed! 
 
 fig = plot(u) # its fenics' plot not python's

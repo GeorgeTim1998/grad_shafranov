@@ -77,4 +77,19 @@ def Write2file_max_func_vs_mesh(defaul_mesh, mesh_r, mesh_z, u_max):
 def Plot_max_func():
     with open("%s.txt" % TEXT_FILE_U_MAX, "r") as file:
         data = [[float(num) for num in line.split(',')] for line in file]
-    return data
+        
+    mesh = Column(data, 0) 
+    u_max = Column(data, 2)
+    
+    matplt.scatter(mesh, u_max, linewidth=2)  # magnify w
+    matplt.legend(["u_max vs mesh size"], loc='best')
+    matplt.grid(True)
+    matplt.xlabel('mesh square size')
+    matplt.ylabel('$u_{max}$')
+    
+    matplt.savefig('Figures/umaxvsmesh.png', dpi = DPI)
+    
+    matplt.close() # close created plot
+    
+def Column(matrix, col):
+    return [row[col] for row in matrix]
