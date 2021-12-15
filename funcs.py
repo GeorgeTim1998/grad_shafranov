@@ -9,6 +9,7 @@ from termcolor import colored
 import pylab
 
 DPI = 200
+TEXT_FILE_U_MAX = "Text_data/func_max"
 
 def Form_f_text(A1, A2):
     #A1 = 4*mo*p', A2 = FF'
@@ -28,7 +29,6 @@ def Twod_plot(psi, x0, y1, y2, path):
     
     points = [(x0, y_) for y_ in y]  # create 2D points
     psi_line = numpy.array([psi(point) for point in points])
-    
     matplt.plot(y, psi_line, 'k', linewidth=2)  # magnify w
     matplt.grid(True)
     matplt.xlabel('$r$')
@@ -40,6 +40,7 @@ def Twod_plot(psi, x0, y1, y2, path):
     matplt.close() # close created plot
     
     print(colored("\t2d plot saved!", 'green'))
+    return numpy.amax(psi_line)
     
 def Time_name():
     ttime = datetime.datetime.now().strftime("%d%m%Y_%H%M%S")
@@ -57,11 +58,23 @@ def Save_figure(f_expr, mesh_r, mesh_z, addition, PATH):
     path_my_file = 'Figures/%s/%s' % (PATH, time_title) # file path+unique time name
 
     if addition == '_notitle':
-        matplt.savefig("%s%s.png" %(path_my_file, addition), dpi = DPI) #no title figure for reports
+        matplt.savefig("%s%s.png" % (path_my_file, addition), dpi = DPI) #no title figure for reports
     elif addition == '_title':
         matplt.title('Analyt Soloviev: %s\n%s' % (mesh_title, f_expr._cppcode)) # titled figure for my self
-        matplt.savefig("%s%s.png" %(path_my_file, addition), dpi = DPI) #no title figure for reports
+        matplt.savefig("%s%s.png" % (path_my_file, addition), dpi = DPI) #no title figure for reports
     else:
         matplt.title(addition) # titled figure for my self
-        matplt.savefig("%s%s.png" %(path_my_file, addition), dpi = DPI) #no title figure for reports
+        matplt.savefig("%s%s.png" % (path_my_file, addition), dpi = DPI) #no title figure for reports
     print(colored("\tPlot saved!", 'green'))
+    
+def Write2file_max_func_vs_mesh(defaul_mesh, mesh_r, mesh_z, u_max):
+    file = open("%s.txt" % TEXT_FILE_U_MAX, "a") # append write to file mode
+    
+    text = "%s,%s,%s\n" % (mesh_r, mesh_z, u_max)
+    file.write(text)
+    file.close()
+    
+def Plot_max_func():
+    with open("%s.txt" % TEXT_FILE_U_MAX, "r") as file:
+        data = [[float(num) for num in line.split(',')] for line in file]
+    return data
