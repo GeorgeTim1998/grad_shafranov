@@ -7,6 +7,7 @@ import numpy
 import sympy
 from termcolor import colored
 import pylab
+import time
 
 DPI = 200
 TEXT_FILE_U_MAX = "Text_data/func_max"
@@ -67,14 +68,25 @@ def Save_figure(f_expr, mesh_r, mesh_z, addition, PATH):
         matplt.savefig("%s%s.png" % (path_my_file, addition), dpi = DPI) #no title figure for reports
     print(colored("\tPlot saved!", 'green'))
     
-def Write2file_max_func_vs_mesh(defaul_mesh, mesh_r, mesh_z, u_max):
+def Write2file_umax_vs_def_mesh(mesh_r, mesh_z, u_max):
     file = open("%s.txt" % TEXT_FILE_U_MAX, "a") # append write to file mode
     
     text = "%s,%s,%s\n" % (mesh_r, mesh_z, u_max)
     file.write(text)
     file.close()
+
+def Write2file_umax_vs_square_size(mesh_r, mesh_z, u_max):
+    file = open("%s_vs_square_mesh.txt" % TEXT_FILE_U_MAX, "a") # append write to file mode
     
-def Plot_max_func():
+    text = "%s,%s,%s\n" % (mesh_r, mesh_z, u_max)
+    file.write(text)
+    file.close()
+    
+    
+def Column(matrix, col):
+    return [row[col] for row in matrix]
+    
+def Plot_umax_vs_def_mesh(): # u max as a function of mesh parameters on the same solution area
     with open("%s.txt" % TEXT_FILE_U_MAX, "r") as file:
         data = [[float(num) for num in line.split(',')] for line in file]
         
@@ -82,6 +94,23 @@ def Plot_max_func():
     u_max = Column(data, 2)
     
     matplt.scatter(mesh, u_max, linewidth=2)  # magnify w
+    matplt.legend(["u_max vs default mesh size"], loc='best')
+    matplt.grid(True)
+    matplt.xlabel('mesh square size')
+    matplt.ylabel('$u_{max}$')
+    
+    matplt.savefig('Figures/umaxvsmesh.png', dpi = DPI)
+    
+    matplt.close() # close created plot
+
+def Plot_umax_vs_square_size(): # u max as a function of solution square size
+    with open("%s_vs_square_mesh.txt" % TEXT_FILE_U_MAX, "r") as file:
+        data = [[float(num) for num in line.split(',')] for line in file]
+        
+    mesh = Column(data, 0) 
+    u_max = Column(data, 2)
+    
+    matplt.scatter(mesh, u_max, linewidth=2)
     matplt.legend(["u_max vs mesh size"], loc='best')
     matplt.grid(True)
     matplt.xlabel('mesh square size')
@@ -91,5 +120,5 @@ def Plot_max_func():
     
     matplt.close() # close created plot
     
-def Column(matrix, col):
-    return [row[col] for row in matrix]
+def What_time_is_it(t0, message):
+    print(colored("\t\tTime elapsed = %f (%s)" % (time.time() - t0, message), 'blue'))

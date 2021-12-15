@@ -10,8 +10,10 @@ import sympy
 from termcolor import colored
 import pylab
 import funcs as fu
-
-print(colored("\tGS_Soloviev_new.py", 'green'))
+import time
+#%% Pre programm stuff
+t0 = time.time()
+print(colored("\tGS_Soloviev_new.py\n", 'green'))
 PATH = 'Border'
 #%% Functions
 def Analyt_sol(c, A1, A2):
@@ -66,8 +68,8 @@ def ErrorEstimate(u, u_D, mesh):
 
 #%% paremeters definition
 r0, z0 = 100, 0 # starting point for calculations
-square = 1 # square size
-default_mesh = 10
+square = 26 # square size
+default_mesh = 50
 mesh_r, mesh_z = default_mesh*square, default_mesh*square # mesh for r-z space
 r1, z1 = r0 - 0.5*square, z0 - 0.5*square
 r2, z2 = r0 + 0.5*square, z0 + 0.5*square
@@ -102,17 +104,20 @@ a = dot(grad(u)/r, grad(r_2*v))*dx
 L = f_expr*r*v*dx
 #%% Compute solution
 u = Function(V)
+fu.What_time_is_it(t0, 'Not solved')
 solve(a == L, u, bc)
+fu.What_time_is_it(t0, 'Solved')
 
-fu.Write2file_max_func_vs_mesh(default_mesh, mesh_r, mesh_z, fu.Twod_plot(u, r0, z1, z2, PATH))
-# fu.Twod_plot(u, z0, r1, r2, PATH) # for z0 its zero! coordinates are mixed! 
+# fu.Write2file_umax_vs_def_mesh(mesh_r, mesh_z, fu.Twod_plot(u, r0, z1, z2, PATH))
+fu.Write2file_umax_vs_square_size(mesh_r, mesh_z, fu.Twod_plot(u, r0, z1, z2, PATH))
+fu.What_time_is_it(t0, "(Cross section plotted through r0 = %s)" % r0)
 
 fig = plot(u) # its fenics' plot not python's
 pylab.colorbar(fig)
 #%% Save output
+fu.What_time_is_it(t0, '(Before 3d plot of \u03C8 is plotted)')
 fu.Save_figure(f_expr, mesh_r, mesh_z, '_title', PATH)
-vtkfile = File('poisson/solution.pvd') # Save solution to file in VTK format
-vtkfile << u
-#%% 'plt.show()' holds plot while the programm is still running
-if show_plot == 1:
-    matplt.show()
+# vtkfile = File('poisson/solution.pvd') # Save solution to file in VTK format
+# vtkfile << u
+
+fu.What_time_is_it(t0, '(Another job well done!)')
