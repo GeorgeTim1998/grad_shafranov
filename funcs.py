@@ -91,7 +91,7 @@ def Plot_umax_vs_def_mesh(): # u max as a function of mesh parameters on the sam
     matplt.xlabel('mesh square size')
     matplt.ylabel('$u_{max}$')
     
-    matplt.savefig('Figures/umaxvsmesh.png', dpi = DPI)
+    matplt.savefig('Figures/umax_vs_mesh.png', dpi = DPI)
     
     matplt.close() # close created plot
 
@@ -103,19 +103,18 @@ def Plot_umax_vs_square_size(): # u max as a function of solution square size
     u_max = Column(data, 2)
     
     matplt.scatter(mesh, u_max, linewidth=2)
-    matplt.legend(["u_max vs mesh size"], loc='best')
+    matplt.legend(["u_max vs solution square size"], loc='best')
     matplt.grid(True)
     matplt.xlabel('mesh square size')
     matplt.ylabel('$u_{max}$')
     
-    matplt.savefig('Figures/umaxvsmesh.png', dpi = DPI)
+    matplt.savefig('Figures/umax_vs_square_size.png', dpi = DPI)
     
     matplt.close() # close created plot
     
 def What_time_is_it(t0, message):
     print(colored("\t\tTime elapsed = %f (%s)" % (time.time() - t0, message), 'blue'))
     
-#%% Functions
 def Analyt_sol(c, A1, A2):
     x = sympy.symbols('x[0]') # r coordinate
     z = sympy.symbols('x[1]') # r coordinate
@@ -165,3 +164,5 @@ def ErrorEstimate(u, u_D, mesh):
     # Print errors
     print(colored('error_L2  = ', 'red'), error_L2)
     print(colored('error_max = ', 'red'), error_max)
+    
+    return error_L2, error_max
