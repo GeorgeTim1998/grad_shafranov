@@ -11,7 +11,7 @@ def Form_f_text(A1, A2):
     #deriviation are calculated using sympy library
     x = sympy.symbols('x[0]') # r coordinate
     f_text = sympy.printing.ccode(A1 * pow(x, 2) + A2)
-    print(colored("INVERCED right-hand equation side: \n", 'magenta') + f_text)
+    print(colored("Right-hand equation side (f): \n", 'magenta') + f_text)
 
     return f_text
 
@@ -34,7 +34,7 @@ def Twod_plot(psi, x0, y1, y2, path):
     matplt.savefig('Figures/%s/%s_%s.png' % (path, time_title, x0), dpi = DPI)
     matplt.close() # close created plot
     
-    print(colored("\t2d plot saved!", 'green'))
+    print(colored("2d plot saved!", 'green'))
     return numpy.amax(psi_line)
     
 def Time_name():
@@ -60,7 +60,7 @@ def Save_figure(f_expr, mesh_r, mesh_z, addition, PATH):
     else:
         matplt.title(addition) # titled figure for my self
         matplt.savefig("%s%s.png" % (path_my_file, addition), dpi = DPI) #no title figure for reports
-    print(colored("\tPlot saved!", 'green'))
+    print(colored("Plot saved!", 'green'))
     
 def Write2file_umax_vs_def_mesh(mesh_r, mesh_z, u_max):
     file = open("%s.txt" % TEXT_FILE_U_MAX, "a") # append write to file mode
@@ -115,7 +115,7 @@ def Plot_umax_vs_square_size(): # u max as a function of solution square size
     matplt.close() # close created plot
     
 def What_time_is_it(t0, message):
-    print(colored("\t\tTime elapsed = %f (%s)" % (time.time() - t0, message), 'blue'))
+    print(colored("\tTime elapsed = %f (%s)" % (time.time() - t0, message), 'blue'))
     
 def Analyt_sol(c, A1, A2):
     x = sympy.symbols('x[0]') # r coordinate
