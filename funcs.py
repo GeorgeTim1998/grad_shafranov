@@ -1,8 +1,10 @@
+from os import name
 from imports import *
 import time
 
 DPI = 200
 TEXT_FILE_U_MAX = "Text_data/func_max"
+M0 = 1.25e-6
 
 def Form_f_text(A1, A2):
     #A1 = 4*mo*p', A2 = FF'
@@ -78,7 +80,7 @@ def Write2file_umax_vs_square_size(mesh_r, mesh_z, u_max):
 def Column(matrix, col):
     return [row[col] for row in matrix]
     
-def Plot_umax_vs_def_mesh(): # u max as a function of mesh parameters on the same solution area
+def Plot_umax_vs_def_mesh(name): # u max as a function of mesh parameters on the same solution area
     with open("%s.txt" % TEXT_FILE_U_MAX, "r") as file:
         data = [[float(num) for num in line.split(',')] for line in file]
         
@@ -91,7 +93,7 @@ def Plot_umax_vs_def_mesh(): # u max as a function of mesh parameters on the sam
     matplt.xlabel('mesh square size')
     matplt.ylabel('$u_{max}$')
     
-    matplt.savefig('Figures/umax_vs_mesh.png', dpi = DPI)
+    matplt.savefig("Figures/umax_vs_mesh_%s.png" % name, dpi = DPI)
     
     matplt.close() # close created plot
 
@@ -108,7 +110,7 @@ def Plot_umax_vs_square_size(): # u max as a function of solution square size
     matplt.xlabel('mesh square size')
     matplt.ylabel('$u_{max}$')
     
-    matplt.savefig('Figures/umax_vs_square_size.png', dpi = DPI)
+    matplt.savefig("Figures/umax_vs_square_size_%s.png" % name, dpi = DPI)
     
     matplt.close() # close created plot
     
@@ -171,7 +173,7 @@ def CreatePointSource(r, I, disp):
     x = sympy.symbols('x[0]') # r coordinate
     z = sympy.symbols('x[1]') # r coordinate
 
-    pre_exp = -4*pi * I * x # in sympy write stuff that works
+    pre_exp = M0/pi/disp/disp * I * x # in sympy write stuff that works
     inner_exp = - (pow(x - r[0], 2) + pow(z - r[1], 2)) / pow(disp, 2) # in sympy write stuff that works
     pre_exp_text = sympy.printing.ccode(pre_exp) # transfer it to text
     inner_exp_text = sympy.printing.ccode(inner_exp) # transfer it to text

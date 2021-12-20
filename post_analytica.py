@@ -1,4 +1,6 @@
+from numpy import square
 import funcs as fu
-
-fu.Plot_umax_vs_def_mesh()
-fu.Plot_umax_vs_square_size()
+vs_def_mesh_name = ''
+vs_square_size_name = ''
+fu.Plot_umax_vs_def_mesh(vs_def_mesh_name)
+fu.Plot_umax_vs_square_size(vs_square_size_name)
