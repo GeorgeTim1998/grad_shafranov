@@ -60,7 +60,7 @@ def Save_figure(f_expr, mesh_r, mesh_z, addition, PATH):
     else:
         matplt.title(addition) # titled figure for my self
         matplt.savefig("%s%s.png" % (path_my_file, addition), dpi = DPI) #no title figure for reports
-    print(colored("Plot saved!", 'green'))
+    print(colored("3D Plot saved!", 'green'))
     
 def Write2file_umax_vs_def_mesh(mesh_r, mesh_z, u_max):
     file = open("%s.txt" % TEXT_FILE_U_MAX, "a") # append write to file mode

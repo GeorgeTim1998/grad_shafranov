@@ -6,7 +6,7 @@ print(colored("\n---------GS_Soloviev_new.py---------", 'green'))
 PATH = 'Border'
 #%% paremeters definition
 r0, z0 = 100, 0 # starting point for calculations
-square = 5.5 # square size
+square = 0.25 # square size
 default_mesh = 200
 mesh_r, mesh_z = int(default_mesh*square), int(default_mesh*square) # mesh for r-z space
 r1, z1 = r0 - 0.5*square, z0 - 0.5*square
