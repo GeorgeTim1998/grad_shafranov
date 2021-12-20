@@ -69,6 +69,7 @@ def CreatePointSource(r, I, disp):
     point_source_text = "%s*exp(%s)" % (pre_exp_text, inner_exp_text) # assemble function of the point source
     print(colored("Point source: ", 'magenta') + point_source_text)
     return point_source_text 
+
 def ArrayOfPointSources(pnt_src_data):
     #create an array of all point source text expressions 
     

@@ -34,12 +34,16 @@ bc = DirichletBC(V, u_D, boundary) #гран условие как в задач
 #%% Define variational problem
 u = TrialFunction(V)
 v = TestFunction(V)
+
 f_expr = Expression(f_text, degree = 2)
+point_sources = Expression(fu.ArrayOfPointSources(psd.PointSource()), degree = 2)
+# f_expr = f_expr + fu.My_sum(point_sources)
+
 r_2 = interpolate(Expression('x[0]*x[0]', degree = 2), V) # interpolation is needed so that 'a' could evaluate deriviations and such
 r = Expression('x[0]', degree = 1) # interpolation is needed so that 'a' could evaluate deriviations and such
 
 a = dot(grad(u)/r, grad(r_2*v))*dx
-L = f_expr*r*v*dx
+L = (sum(point_sources))*r*v*dx
 #%% Compute solution
 u = Function(V)
 solve(a == L, u, bc)

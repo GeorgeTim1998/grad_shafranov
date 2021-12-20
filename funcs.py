@@ -166,3 +166,32 @@ def ErrorEstimate(u, u_D, mesh):
     print(colored('error_max = ', 'red'), error_max)
     
     return error_L2, error_max
+
+def CreatePointSource(r, I, disp):
+    x = sympy.symbols('x[0]') # r coordinate
+    z = sympy.symbols('x[1]') # r coordinate
+
+    pre_exp = -4*pi * I * x # in sympy write stuff that works
+    inner_exp = - (pow(x - r[0], 2) + pow(z - r[1], 2)) / pow(disp, 2) # in sympy write stuff that works
+    pre_exp_text = sympy.printing.ccode(pre_exp) # transfer it to text
+    inner_exp_text = sympy.printing.ccode(inner_exp) # transfer it to text
+    
+    point_source_text = "%s*exp(%s)" % (pre_exp_text, inner_exp_text) # assemble function of the point source
+    print(colored("Point source: \n", 'magenta') + point_source_text)
+    return point_source_text 
+
+def ArrayOfPointSources(pnt_src_data):
+    #create an array of all point source text expressions 
+    
+    pnt_src_text = []
+    for i in range(len(pnt_src_data.r)):
+        pnt_src_text.append(CreatePointSource(pnt_src_data.r[i], pnt_src_data.i_disp[i][0], pnt_src_data.i_disp[i][1]))
+        
+    return pnt_src_text
+
+def My_sum(array):
+    summa = array[0]
+    for i in range(1, len(array)):
+        summa = summa + array[i]
+        
+    return summa
