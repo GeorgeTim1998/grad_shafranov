@@ -5,6 +5,7 @@ import time
 DPI = 200
 TEXT_FILE_U_MAX = "Text_data/func_max"
 M0 = 1.25e-6
+DEFAULT_MESH = 100
 
 def Form_f_text(A1, A2):
     #A1 = 4*mo*p', A2 = FF'
@@ -69,8 +70,8 @@ def Write2file_umax_vs_def_mesh(mesh_r, mesh_z, u_max):
     file.write(text)
     file.close()
 
-def Write2file_umax_vs_square_size(mesh_r, mesh_z, u_max):
-    file = open("%s_vs_square_mesh.txt" % TEXT_FILE_U_MAX, "a") # append write to file mode
+def Write2file_umax_vs_square_size(mesh_r, mesh_z, u_max, default_mesh_size):
+    file = open("%s_vs_square_mesh_%s.txt" % (TEXT_FILE_U_MAX, default_mesh_size), "a") # append write to file mode
     
     text = "%s,%s,%s\n" % (mesh_r, mesh_z, u_max)
     file.write(text)
@@ -97,8 +98,8 @@ def Plot_umax_vs_def_mesh(name): # u max as a function of mesh parameters on the
     
     matplt.close() # close created plot
 
-def Plot_umax_vs_square_size(): # u max as a function of solution square size
-    with open("%s_vs_square_mesh.txt" % TEXT_FILE_U_MAX, "r") as file:
+def Plot_umax_vs_square_size(name, default_mesh_size): # u max as a function of solution square size
+    with open("%s_vs_square_mesh_%s.txt" % (TEXT_FILE_U_MAX, default_mesh_size), "r") as file:
         data = [[float(num) for num in line.split(',')] for line in file]
         
     mesh = Column(data, 0) 
@@ -109,8 +110,9 @@ def Plot_umax_vs_square_size(): # u max as a function of solution square size
     matplt.grid(True)
     matplt.xlabel('mesh square size')
     matplt.ylabel('$u_{max}$')
+    matplt.title("Default mesh size: %d" % (default_mesh_size)) # titled figure for my self
     
-    matplt.savefig("Figures/umax_vs_square_size_%s.png" % name, dpi = DPI)
+    matplt.savefig("Figures/umax_vs_sq_sz_%s_%s.png" % (name, default_mesh_size), dpi = DPI)
     
     matplt.close() # close created plot
     

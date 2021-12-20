@@ -4,7 +4,7 @@ from termcolor import colored
 class PointSource:
     def __init__(self):
         # watch out for missing ',' in arrays
-        disp = 0.01
+        disp = 0.1
         self.r = [
             [100, 0],
         ] #array of vector point sources position 
