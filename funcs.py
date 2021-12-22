@@ -61,6 +61,7 @@ def Save_2D_data(square_size, data):
     print(colored("2D cross-section data saved to PATH: %s" % file_path, 'green'))
     
 def Plot_2D_data_together():
+    iteration = 0
     for i in SQUARE_SIZE_ARRAY[::2]:
         file_path = "%s_%s_%s.txt" % (TEXT_FILE_2D_PLOT, DEFAULT_MESH, i) # variable names are self explanatory
         with open(file_path, "r") as file:
@@ -69,10 +70,18 @@ def Plot_2D_data_together():
         x = Column(data, 0) 
         u_section = Column(data, 1)
         
+        if iteration == 0:
+            u0_section = u_section
+        else:
+            u_section = Level_arrays(u0_section, u_section)
+        
         matplt.plot(x, u_section, linewidth=1, label="%s" % i)
+        
+        iteration = iteration + 1
     
     matplt.xlabel('$r$')
     matplt.ylabel('$u_{section}$')
+    matplt.grid(True)
     matplt.legend()
 
     file_path = "%s/2D_plots_together_%s.png" % (TWOD_PLOT_SAVE_PATH, SQUARE_SIZE_ARRAY[0])
@@ -82,7 +91,19 @@ def Plot_2D_data_together():
     
     print(colored("2D plots saved together at PATH: %s" % file_path, 'green'))
 
+def Level_arrays(u0, u1):
+    # use only in point source boundary influence studies only!
+    diff = max(u0) - max(u1)
+    u1 = Add_const_to_array(u1, diff)
     
+    return u1
+    
+def Add_const_to_array(array, const):
+    for i in range(len(array)):
+        array [i] = array[i] + const
+        
+    return array
+
 def Time_name():
     ttime = datetime.datetime.now().strftime("%d%m%Y_%H%M%S")
     time_title = str(ttime)  #get current time to make figure name unique
