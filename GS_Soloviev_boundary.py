@@ -58,7 +58,7 @@ fu.What_time_is_it(t0, "Cross section plotted through r0 = %s" % r0)
 fig = plot(u) # its fenics' plot not python's
 pylab.colorbar(fig)
 
-fu.Save_figure(f_expr, mesh_r, mesh_z, '_title', PATH)
+fu.Save_figure(f_expr, mesh_r, mesh_z, '_title', PATH, 'Bourder: Point Sources')
 fu.What_time_is_it(t0, "3D plot of \u03C8(r, z) is plotted")
 # vtkfile = File('poisson/solution.pvd') # Save solution to file in VTK format
 # vtkfile << u

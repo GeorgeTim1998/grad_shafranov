@@ -37,7 +37,7 @@ def Twod_plot(psi, x0, y1, y2, path):
     matplt.savefig(file_path, dpi = DPI)
     matplt.close() # close created plot
     
-    print(colored("2d plot saved to PATH: %s" % file_path, 'green'))
+    print(colored("2D plot saved to PATH: %s" % file_path, 'green'))
     return numpy.amax(psi_line)
     
 def Time_name():
@@ -45,7 +45,7 @@ def Time_name():
     time_title = str(ttime)  #get current time to make figure name unique
     return time_title
 
-def Save_figure(f_expr, mesh_r, mesh_z, addition, PATH):
+def Save_figure(f_expr, mesh_r, mesh_z, addition, PATH, plot_title):
     # move to funcs, add missing args, fix save path 
     # Plot solution and mesh. Save plot
     #nothing passed to function, because variables are global
@@ -55,7 +55,7 @@ def Save_figure(f_expr, mesh_r, mesh_z, addition, PATH):
 
     path_my_file = 'Figures/%s/%s' % (PATH, time_title) # file path+unique time name
 
-    matplt.title('Analyt Soloviev: %s\n%s' % (mesh_title, f_expr._cppcode)) # titled figure for my self
+    matplt.title("%s - %s\n%s" % (plot_title, mesh_title, f_expr._cppcode)) # titled figure for my self
     
     file_path = "%s%s.png" % (path_my_file, addition)
     matplt.savefig(file_path, dpi = DPI) #no title figure for reports
