@@ -1,4 +1,5 @@
 from os import name
+from matplotlib.pyplot import legend
 
 from numpy import square
 from imports import *
@@ -7,12 +8,12 @@ import time
 DPI = 200 # quality of plots
 TEXT_FILE_U_MAX = "Text_data/func_max"
 TEXT_FILE_2D_PLOT = "Text_data/2Dplot"
-TWOD_PLOT_SAVE_PATH = 'Figures/Post_analyt/'
+TWOD_PLOT_SAVE_PATH = 'Figures/Post_analyt'
 M0 = 1.25e-6
 DEFAULT_MESH = 100
 
 SQ_MIN = 1
-SQ_MAX = 3
+SQ_MAX = 4
 SQUARE_SIZE_ARRAY = numpy.linspace(SQ_MIN, SQ_MAX, 1+int((SQ_MAX-SQ_MIN)/SQ_MIN))
 
 def Form_f_text(A1, A2):
@@ -67,11 +68,13 @@ def Plot_2D_data_together():
         
         x = Column(data, 0) 
         u_section = Column(data, 1)
-        matplt.plot(x, u_section, linewidth=1)
-        matplt.legend(["Square_size: %s" % i], loc='best')
         
+        matplt.plot(x, u_section, linewidth=1, label="%s" % i)
+    
     matplt.xlabel('$r$')
     matplt.ylabel('$u_{section}$')
+    matplt.legend()
+
     file_path = "%s/2D_plots_together_%s.png" % (TWOD_PLOT_SAVE_PATH, SQUARE_SIZE_ARRAY[0])
     matplt.savefig(file_path, dpi = DPI)
     
