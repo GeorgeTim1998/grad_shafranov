@@ -32,10 +32,12 @@ def Twod_plot(psi, x0, y1, y2, path):
     matplt.legend(["Point: %s, interval: [%s, %s]" % (x0, y1, y2), 'Load'], loc='best')
     
     time_title = Time_name()
-    matplt.savefig('Figures/%s/%s_%s.png' % (path, time_title, x0), dpi = DPI)
+    
+    file_path = 'Figures/%s/%s_%s.png' % (path, time_title, x0)
+    matplt.savefig(file_path, dpi = DPI)
     matplt.close() # close created plot
     
-    print(colored("2d plot saved!", 'green'))
+    print(colored("2d plot saved to PATH: %s" % file_path, 'green'))
     return numpy.amax(psi_line)
     
 def Time_name():
@@ -53,15 +55,13 @@ def Save_figure(f_expr, mesh_r, mesh_z, addition, PATH):
 
     path_my_file = 'Figures/%s/%s' % (PATH, time_title) # file path+unique time name
 
-    if addition == '_notitle':
-        matplt.savefig("%s%s.png" % (path_my_file, addition), dpi = DPI) #no title figure for reports
-    elif addition == '_title':
-        matplt.title('Analyt Soloviev: %s\n%s' % (mesh_title, f_expr._cppcode)) # titled figure for my self
-        matplt.savefig("%s%s.png" % (path_my_file, addition), dpi = DPI) #no title figure for reports
-    else:
-        matplt.title(addition) # titled figure for my self
-        matplt.savefig("%s%s.png" % (path_my_file, addition), dpi = DPI) #no title figure for reports
-    print(colored("3D Plot saved!", 'green'))
+    matplt.title('Analyt Soloviev: %s\n%s' % (mesh_title, f_expr._cppcode)) # titled figure for my self
+    
+    file_path = "%s%s.png" % (path_my_file, addition)
+    matplt.savefig(file_path, dpi = DPI) #no title figure for reports
+    matplt.close() # close created plot
+    
+    print(colored("3D Plot saved to PATH: %s" % file_path, 'green'))
     
 def Write2file_umax_vs_def_mesh(mesh_r, mesh_z, u_max):
     file = open("%s.txt" % TEXT_FILE_U_MAX, "a") # append write to file mode
