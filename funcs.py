@@ -1,4 +1,6 @@
 from os import name
+
+from numpy import square
 from imports import *
 import time
 
@@ -17,7 +19,7 @@ def Form_f_text(A1, A2):
 
     return f_text
 
-def Twod_plot(psi, x0, y1, y2, path): 
+def Twod_plot(psi, x0, y1, y2, path, square_size): 
     # y1, y2 - min and max points in an interval of interest, 
     # x0 - point along which 2d graph is plotted
     # psi.set_allow_extrapolation(True)
@@ -26,6 +28,9 @@ def Twod_plot(psi, x0, y1, y2, path):
     
     points = [(x0, y_) for y_ in y]  # create 2D points
     psi_line = numpy.array([psi(point) for point in points])
+    
+    Save_2D_data(square_size, numpy.array([y, psi_line]).transpose())
+    
     matplt.plot(y, psi_line, 'k', linewidth=2)  # magnify w
     matplt.grid(True)
     matplt.xlabel('$r$')
@@ -40,7 +45,15 @@ def Twod_plot(psi, x0, y1, y2, path):
     
     print(colored("2D plot saved to PATH: %s" % file_path, 'green'))
     return numpy.amax(psi_line)
+   
+def Save_2D_data(square_size, data):
+    file_path = "%s_%s_%s.txt" % (TEXT_FILE_2D_PLOT, DEFAULT_MESH, square_size) # variable names are self explanatory
+    with open(file_path,'wb') as file:
+        for line in data:
+            numpy.savetxt(file, line)
     
+    print(colored("2D section data saved to PATH: %s" % file_path, 'green'))
+
 def Time_name():
     ttime = datetime.datetime.now().strftime("%d%m%Y_%H%M%S")
     time_title = str(ttime)  #get current time to make figure name unique
@@ -81,6 +94,7 @@ def Write2file_umax_vs_square_size(mesh_r, mesh_z, u_max, default_mesh_size):
     text = "%s,%s,%s\n" % (mesh_r, mesh_z, u_max)
     file.write(text)
     file.close()
+    
     print(colored("Data saved to PATH: %s" % file_path, 'green'))
     
     
