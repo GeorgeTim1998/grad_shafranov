@@ -7,8 +7,13 @@ import time
 DPI = 200 # quality of plots
 TEXT_FILE_U_MAX = "Text_data/func_max"
 TEXT_FILE_2D_PLOT = "Text_data/2Dplot"
+TWOD_PLOT_SAVE_PATH = 'Figures/Post_analyt/'
 M0 = 1.25e-6
 DEFAULT_MESH = 100
+
+SQ_MIN = 1
+SQ_MAX = 3
+SQUARE_SIZE_ARRAY = numpy.linspace(SQ_MIN, SQ_MAX, 1+int((SQ_MAX-SQ_MIN)/SQ_MIN))
 
 def Form_f_text(A1, A2):
     #A1 = mo*p', A2 = FF'
@@ -53,7 +58,28 @@ def Save_2D_data(square_size, data):
             file.write("%s,%s\n" % (line[0], line[1]))
     
     print(colored("2D cross-section data saved to PATH: %s" % file_path, 'green'))
+    
+def Plot_2D_data_together():
+    for i in SQUARE_SIZE_ARRAY[::2]:
+        file_path = "%s_%s_%s.txt" % (TEXT_FILE_2D_PLOT, DEFAULT_MESH, i) # variable names are self explanatory
+        with open(file_path, "r") as file:
+            data = [[float(num) for num in line.split(',')] for line in file]
+        
+        x = Column(data, 0) 
+        u_section = Column(data, 1)
+        matplt.plot(x, u_section, linewidth=1)
+        matplt.legend(["Square_size: %s" % i], loc='best')
+        
+    matplt.xlabel('$r$')
+    matplt.ylabel('$u_{section}$')
+    file_path = "%s/2D_plots_together_%s.png" % (TWOD_PLOT_SAVE_PATH, SQUARE_SIZE_ARRAY[0])
+    matplt.savefig(file_path, dpi = DPI)
+    
+    matplt.close() # close created plot
+    
+    print(colored("2D plots saved together at PATH: %s" % file_path, 'green'))
 
+    
 def Time_name():
     ttime = datetime.datetime.now().strftime("%d%m%Y_%H%M%S")
     time_title = str(ttime)  #get current time to make figure name unique

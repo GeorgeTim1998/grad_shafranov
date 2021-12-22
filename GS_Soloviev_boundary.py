@@ -6,7 +6,8 @@ t0 = time.time()
 print(colored("\n---------GS_Soloviev_new.py---------", 'green'))
 PATH = 'Border'
 #%% Programm body
-for square in numpy.linspace(0.5, 13, 1+int((13-0.5)/0.5)):
+for square in fu.SQUARE_SIZE_ARRAY:
+    print(colored("\nNew iteration\n", 'cyan'))
     r0, z0 = 100, 0 # starting point for calculations
     # square = 2 # square size
 
