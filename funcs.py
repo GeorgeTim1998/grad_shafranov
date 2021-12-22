@@ -48,11 +48,11 @@ def Twod_plot(psi, x0, y1, y2, path, square_size):
    
 def Save_2D_data(square_size, data):
     file_path = "%s_%s_%s.txt" % (TEXT_FILE_2D_PLOT, DEFAULT_MESH, square_size) # variable names are self explanatory
-    with open(file_path,'wb') as file:
+    with open(file_path,'w') as file:
         for line in data:
-            numpy.savetxt(file, line)
+            file.write("%s,%s\n" % (line[0], line[1]))
     
-    print(colored("2D section data saved to PATH: %s" % file_path, 'green'))
+    print(colored("2D cross-section data saved to PATH: %s" % file_path, 'green'))
 
 def Time_name():
     ttime = datetime.datetime.now().strftime("%d%m%Y_%H%M%S")
