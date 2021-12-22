@@ -2,14 +2,15 @@ from os import name
 from imports import *
 import time
 
-DPI = 200
+DPI = 200 # quality of plots
 TEXT_FILE_U_MAX = "Text_data/func_max"
+TEXT_FILE_2D_PLOT = "Text_data/2Dplot"
 M0 = 1.25e-6
 DEFAULT_MESH = 100
 
 def Form_f_text(A1, A2):
-    #A1 = 4*mo*p', A2 = FF'
-    #deriviation are calculated using sympy library
+    #A1 = mo*p', A2 = FF'
+    #deriviation are calculated using 'sympy' library
     x = sympy.symbols('x[0]') # r coordinate
     f_text = sympy.printing.ccode(A1 * pow(x, 2) + A2)
     print(colored("Right-hand equation side (f): \n", 'magenta') + f_text)
@@ -64,18 +65,23 @@ def Save_figure(f_expr, mesh_r, mesh_z, addition, PATH, plot_title):
     print(colored("3D Plot saved to PATH: %s" % file_path, 'green'))
     
 def Write2file_umax_vs_def_mesh(mesh_r, mesh_z, u_max):
-    file = open("%s.txt" % TEXT_FILE_U_MAX, "a") # append write to file mode
+    file_path = "%s.txt" % TEXT_FILE_U_MAX
+    file = open(file_path, "a") # append write to file mode
     
     text = "%s,%s,%s\n" % (mesh_r, mesh_z, u_max)
     file.write(text)
     file.close()
+    
+    print(colored("Data saved to PATH: %s" % file_path, 'green'))
 
 def Write2file_umax_vs_square_size(mesh_r, mesh_z, u_max, default_mesh_size):
-    file = open("%s_vs_square_mesh_%s.txt" % (TEXT_FILE_U_MAX, default_mesh_size), "a") # append write to file mode
+    file_path = "%s_vs_square_mesh_%s.txt" % (TEXT_FILE_U_MAX, default_mesh_size)
+    file = open(file_path, "a") # append write to file mode
     
     text = "%s,%s,%s\n" % (mesh_r, mesh_z, u_max)
     file.write(text)
     file.close()
+    print(colored("Data saved to PATH: %s" % file_path, 'green'))
     
     
 def Column(matrix, col):

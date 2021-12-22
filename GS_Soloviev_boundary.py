@@ -5,7 +5,7 @@ import time
 t0 = time.time()
 print(colored("\n---------GS_Soloviev_new.py---------", 'green'))
 PATH = 'Border'
-#%% main {}
+#%% Programm body
 # for square in numpy.linspace(0.5, 13, 1+int((13-0.5)/0.5)):
 r0, z0 = 100, 0 # starting point for calculations
 square = 2 # square size
@@ -45,7 +45,7 @@ r = Expression('x[0]', degree = 1) # interpolation is needed so that 'a' could e
 a = dot(grad(u)/r, grad(r_2*v))*dx
 L = (sum(point_sources))*r*v*dx
 
-print(colored("Default mesh = %f\nSquare size = %f" % (default_mesh, square), 'blue'))
+print(colored("Default mesh = %f\nSquare size = %f" % (default_mesh, square), 'green'))
 
 u = Function(V)
 solve(a == L, u, bc)
