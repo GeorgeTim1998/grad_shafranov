@@ -51,6 +51,15 @@ def Twod_plot(psi, x0, y1, y2, path, square_size):
     
     print(colored("2D plot saved to PATH: %s" % file_path, 'green'))
     return numpy.amax(psi_line)
+
+def Cross_section_x0(x0, y1, y2, psi, tol, point_num):
+    # its here for future
+    y = numpy.linspace(y1 + tol, y2 - tol, point_num)
+    
+    points = [(x0, y_) for y_ in y]  # create 2D points
+    psi_line = numpy.array([psi(point) for point in points])
+    
+    return points, psi_line
    
 def Save_2D_data(square_size, data):
     file_path = "%s_%s_%s.txt" % (TEXT_FILE_2D_PLOT, DEFAULT_MESH, square_size) # variable names are self explanatory
