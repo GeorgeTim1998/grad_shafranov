@@ -13,7 +13,7 @@ M0 = 1.25e-6
 DEFAULT_MESH = 100
 
 SQ_MIN = 1
-SQ_MAX = 4
+SQ_MAX = 10
 SQUARE_SIZE_ARRAY = numpy.linspace(SQ_MIN, SQ_MAX, 1+int((SQ_MAX-SQ_MIN)/SQ_MIN))
 
 def Form_f_text(A1, A2):
@@ -85,7 +85,7 @@ def Plot_2D_data_together():
     matplt.legend()
 
     file_path = "%s/2D_plots_together_%s.png" % (TWOD_PLOT_SAVE_PATH, SQUARE_SIZE_ARRAY[0])
-    matplt.savefig(file_path, dpi = DPI)
+    matplt.savefig(file_path, dpi = 2*DPI)
     
     matplt.close() # close created plot
     
