@@ -1,4 +1,4 @@
-from funcs import DEFAULT_MESH
+from funcs import DEFAULT_MESH, Contour_plot
 from imports import *
 import time
 #%% Pre-programm stuff
@@ -58,6 +58,8 @@ for square in fu.SQUARE_SIZE_ARRAY:
 
     fig = plot(u) # its fenics' plot not python's
     pylab.colorbar(fig)
+    
+    # fig = Contour_plot(u)
 
     fu.Save_figure(f_expr, mesh_r, mesh_z, '_title', PATH, 'Bourder: Point Sources')
     fu.What_time_is_it(t0, "3D plot of \u03C8(r, z) is plotted")

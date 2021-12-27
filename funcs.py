@@ -13,7 +13,7 @@ M0 = 1.25e-6
 DEFAULT_MESH = 100
 
 SQ_MIN = 1
-SQ_MAX = 10
+SQ_MAX = 2
 SQUARE_SIZE_ARRAY = numpy.linspace(SQ_MIN, SQ_MAX, 1+int((SQ_MAX-SQ_MIN)/SQ_MIN))
 
 def Form_f_text(A1, A2):
@@ -272,3 +272,11 @@ def My_sum(array):
         summa = summa + array[i]
         
     return summa
+
+def Contour_plot(u):
+    fig = matplt.figure()
+    ax = fig.gca()
+    # cs = ax.contour(cv[X], cv[Y], u)
+    # matplt.clabel(cs)
+    # matplt.axis('equal')
+    matplt.title('Contour plot of solution')
