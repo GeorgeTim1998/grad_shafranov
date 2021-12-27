@@ -94,16 +94,10 @@ def Plot_2D_data_together():
 def Level_arrays(u0, u1):
     # use only in point source boundary influence studies only!
     diff = max(u0) - max(u1)
-    u1 = Add_const_to_array(u1, diff)
+    u1 = numpy.array(u1) + diff*numpy.ones(len(u1))
     
     return u1
     
-def Add_const_to_array(array, const):
-    for i in range(len(array)):
-        array [i] = array[i] + const
-        
-    return array
-
 def Time_name():
     ttime = datetime.datetime.now().strftime("%d%m%Y_%H%M%S")
     time_title = str(ttime)  #get current time to make figure name unique
