@@ -71,6 +71,8 @@ def Save_2D_data(square_size, data):
     
 def Plot_2D_data_together():
     iteration = 0
+    delta_arr = numpy.array([])
+    
     for i in SQUARE_SIZE_ARRAY[::2]:
     # for i in SQUARE_SIZE_ARRAY:
         file_path = "%s_%s_%s.txt" % (TEXT_FILE_2D_PLOT, DEFAULT_MESH, i) # variable names are self explanatory
@@ -81,9 +83,12 @@ def Plot_2D_data_together():
         u_section = Column(data, 1)
         
         if iteration == 0:
-            u0_section = u_section
+            u0_section = numpy.array(u_section)
         else:
             u_section = Level_arrays(u0_section, u_section)
+            
+            [x_cut, u_cut] = Cut_from_2D_data(x, u_section, int(i))
+            delta_arr = numpy.vstack((delta_arr, [x_cut, 100*(u_cut-u0_section)/u0_section])) # error calculated in % form. arrays are stacked!
         
         matplt.plot(x, u_section, linewidth=1, label="%s" % i)
         
@@ -282,6 +287,10 @@ def My_sum(array):
 #     matplt.axis('equal')
 #     matplt.title('Contour plot of solution')
 
-def Cut_from_2D_data():
+def Cut_from_2D_data(x, u, square_size):
+    i1 = int(DEFAULT_MESH/2) * (square_size - 1)
+    i2 = i1 + 1 + DEFAULT_MESH
+    x_cut = x[i1: i2]
+    u_cut = u[i1: i2]
     
-    pass
+    return numpy.array(x_cut), numpy.array(u_cut)
