@@ -45,7 +45,7 @@ for square in fu.SQUARE_SIZE_ARRAY:
     a = dot(grad(u)/r, grad(r_2*v))*dx
     L = (sum(point_sources))*r*v*dx
 
-    print(colored("Default mesh = %f\nSquare size = %f" % (default_mesh, square), 'green'))
+    print(colored("Default mesh = %d\nSquare size = %d" % (default_mesh, square), 'green'))
 
     u = Function(V)
     solve(a == L, u, bc)
