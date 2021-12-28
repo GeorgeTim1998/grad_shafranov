@@ -3,6 +3,7 @@ import time
 #%% Pre-programm stuff
 t0 = time.time()
 print(colored("\n---------GS_Soloviev_new.py---------", 'green'))
+print(colored("Date_Time is: %s" % fu.Time_name(), 'cyan'))
 PATH = 'Border'
 #%% Programm body
 for square in fu.SQUARE_SIZE_ARRAY:
