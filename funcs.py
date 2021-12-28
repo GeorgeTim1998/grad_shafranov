@@ -41,7 +41,7 @@ def Twod_plot(psi, x0, y1, y2, path, square_size):
     matplt.grid(True)
     matplt.xlabel('$r$')
     matplt.ylabel('$psi$')
-    matplt.legend(["Point: %s, interval: [%s, %s]" % (x0, y1, y2), 'Load'], loc='best')
+    matplt.legend(["Point in r0: %s, square_size: %s" % (x0, square_size), 'Load'], loc='best')
     
     time_title = Time_name()
     
@@ -79,18 +79,18 @@ def Plot_2D_data_together():
         with open(file_path, "r") as file:
             data = [[float(num) for num in line.split(',')] for line in file]
         
-        x = Column(data, 0) 
-        u_section = Column(data, 1)
+        x = numpy.array(Column(data, 0))
+        u_section = numpy.array(Column(data, 1))
         
         if iteration == 0:
-            u0_section = numpy.array(u_section)
+            u0_section = u_section
         else:
             u_section = Level_arrays(u0_section, u_section)
             
-            [x_cut, u_cut] = Cut_from_2D_data(x, u_section, int(i))
-            delta_arr = numpy.vstack((delta_arr, [x_cut, 100*(u_cut-u0_section)/u0_section])) # error calculated in % form. arrays are stacked!
+            # [x_cut, u_cut] = Cut_from_2D_data(x, u_section, int(i))
+            # delta_arr = numpy.vstack((delta_arr, [x_cut, 100*(u_cut-u0_section)/u0_section])) # error calculated in % form. arrays are stacked!
         
-        matplt.plot(x, u_section, linewidth=1, label="%s" % i)
+        matplt.plot(x, u_section, linewidth=1, label="Square size = %s" % int(i))
         
         iteration = iteration + 1
     
@@ -99,7 +99,7 @@ def Plot_2D_data_together():
     matplt.grid(True)
     matplt.legend()
 
-    file_path = "%s/2D_plots_together_%s.png" % (TWOD_PLOT_SAVE_PATH, SQUARE_SIZE_ARRAY[0])
+    file_path = "%s/2D_plots_together_%s.png" % (TWOD_PLOT_SAVE_PATH, int(SQUARE_SIZE_ARRAY[0]))
     matplt.savefig(file_path, dpi = 2*DPI)
     
     matplt.close() # close created plot
@@ -272,12 +272,12 @@ def ArrayOfPointSources(pnt_src_data):
         
     return pnt_src_text
 
-def My_sum(array):
-    summa = array[0]
-    for i in range(1, len(array)):
-        summa = summa + array[i]
+# def My_sum(array):
+#     summa = array[0]
+#     for i in range(1, len(array)):
+#         summa = summa + array[i]
         
-    return summa
+#     return summa
 
 # def Contour_plot(u):
 #     fig = matplt.figure()
@@ -287,10 +287,11 @@ def My_sum(array):
 #     matplt.axis('equal')
 #     matplt.title('Contour plot of solution')
 
-def Cut_from_2D_data(x, u, square_size):
-    i1 = int(DEFAULT_MESH/2) * (square_size - 1)
-    i2 = i1 + 1 + DEFAULT_MESH
-    x_cut = x[i1: i2]
-    u_cut = u[i1: i2]
+# def Cut_from_2D_data(x, u, square_size):
+#     i1 = int(DEFAULT_MESH/2) * (square_size - 1)
+#     i2 = i1 + 1 + DEFAULT_MESH
+#     x_cut = x[i1: i2]
+#     u_cut = u[i1: i2]
     
-    return numpy.array(x_cut), numpy.array(u_cut)
+#     return numpy.array(x_cut), numpy.array(u_cut) 
+## it was supposed to be used for cutting 1x1 square from nxn square but I came up with better solution
