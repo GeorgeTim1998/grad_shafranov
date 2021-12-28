@@ -273,10 +273,10 @@ def My_sum(array):
         
     return summa
 
-def Contour_plot(u):
-    fig = matplt.figure()
-    ax = fig.gca()
-    # cs = ax.contour(cv[X], cv[Y], u)
-    # matplt.clabel(cs)
-    # matplt.axis('equal')
-    matplt.title('Contour plot of solution')
+# def Contour_plot(u):
+#     fig = matplt.figure()
+#     ax = fig.gca()
+#     cs = ax.contour(boxfield.FEniCSBoxField(u, (nx, ny)))
+#     matplt.clabel(cs)
+#     matplt.axis('equal')
+#     matplt.title('Contour plot of solution')
