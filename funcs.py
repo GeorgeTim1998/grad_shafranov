@@ -13,7 +13,7 @@ M0 = 1.25e-6
 DEFAULT_MESH = 100
 
 SQ_MIN = 1
-SQ_MAX = 2
+SQ_MAX = 9
 SQUARE_SIZE_ARRAY = numpy.linspace(SQ_MIN, SQ_MAX, 1+int((SQ_MAX-SQ_MIN)/SQ_MIN))
 
 def Form_f_text(A1, A2):
@@ -29,7 +29,7 @@ def Twod_plot(psi, x0, y1, y2, path, square_size):
     # y1, y2 - min and max points in an interval of interest, 
     # x0 - point along which 2d graph is plotted
     # psi.set_allow_extrapolation(True)
-    tol, point_num = 0.001, 100 + 1  # avoid hitting points outside the domain
+    tol, point_num = 0.001, int(100*square_size) + 1  # avoid hitting points outside the domain
     y = numpy.linspace(y1 + tol, y2 - tol, point_num)
     
     points = [(x0, y_) for y_ in y]  # create 2D points
@@ -72,6 +72,7 @@ def Save_2D_data(square_size, data):
 def Plot_2D_data_together():
     iteration = 0
     for i in SQUARE_SIZE_ARRAY[::2]:
+    # for i in SQUARE_SIZE_ARRAY:
         file_path = "%s_%s_%s.txt" % (TEXT_FILE_2D_PLOT, DEFAULT_MESH, i) # variable names are self explanatory
         with open(file_path, "r") as file:
             data = [[float(num) for num in line.split(',')] for line in file]
@@ -280,3 +281,7 @@ def My_sum(array):
 #     matplt.clabel(cs)
 #     matplt.axis('equal')
 #     matplt.title('Contour plot of solution')
+
+def Cut_from_2D_data():
+    
+    pass
