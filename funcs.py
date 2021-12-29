@@ -29,7 +29,7 @@ def Twod_plot(psi, x0, y1, y2, path, square_size):
     # y1, y2 - min and max points in an interval of interest, 
     # x0 - point along which 2d graph is plotted
     # psi.set_allow_extrapolation(True)
-    tol, point_num = 0.001, int(100*square_size) + 1  # avoid hitting points outside the domain
+    tol, point_num = 0.001, DEFAULT_MESH + 1  # avoid hitting points outside the domain
     y = numpy.linspace(y1 + tol, y2 - tol, point_num)
     
     points = [(x0, y_) for y_ in y]  # create 2D points
@@ -69,30 +69,34 @@ def Save_2D_data(square_size, data):
     
     print(colored("2D cross-section data saved to PATH: %s" % file_path, 'green'))
     
-def Plot_2D_data_together():
+def Plot_2D_data_together(): #father
     iteration = 0
-    delta_arr = numpy.array([])
     
     for i in SQUARE_SIZE_ARRAY[::2]:
     # for i in SQUARE_SIZE_ARRAY:
         file_path = "%s_%s_%s.txt" % (TEXT_FILE_2D_PLOT, DEFAULT_MESH, i) # variable names are self explanatory
-        with open(file_path, "r") as file:
+        with open(file_path, "r") as file: # change to Read_from_file func
             data = [[float(num) for num in line.split(',')] for line in file]
         
         x = numpy.array(Column(data, 0))
         u_section = numpy.array(Column(data, 1))
         
+        
         if iteration == 0:
             u0_section = u_section
+            delta_arr = []
+            i_array = []
         else:
             u_section = Level_arrays(u0_section, u_section)
             
-            # [x_cut, u_cut] = Cut_from_2D_data(x, u_section, int(i))
-            # delta_arr = numpy.vstack((delta_arr, [x_cut, 100*(u_cut-u0_section)/u0_section])) # error calculated in % form. arrays are stacked!
+            delta_arr.append((100*(u_section-u0_section)/u0_section).tolist())
+            i_array.append(i)
+        
         
         matplt.plot(x, u_section, linewidth=1, label="Square size = %s" % int(i))
         
         iteration = iteration + 1
+    
     
     matplt.xlabel('$r$')
     matplt.ylabel('$u_{section}$')
@@ -101,10 +105,24 @@ def Plot_2D_data_together():
 
     file_path = "%s/2D_plots_together_%s.png" % (TWOD_PLOT_SAVE_PATH, int(SQUARE_SIZE_ARRAY[0]))
     matplt.savefig(file_path, dpi = 2*DPI)
+    matplt.close() # close created plot
+    print(colored("2D plots saved together at PATH: %s" % file_path, 'green'))
     
+    # now build errors # maybe change it for the better next time!
+    iteration = 0
+    for i in i_array: 
+        matplt.plot(x, delta_arr[iteration], linewidth=1, label="Square size = %s" % int(i))
+        iteration = iteration + 1
+    matplt.xlabel('$r$')
+    matplt.ylabel("$\u0394, %$")
+    matplt.grid(True)
+    matplt.legend()
+    
+    file_path = "%s/2D_plots_together_error_%s.png" % (TWOD_PLOT_SAVE_PATH, int(SQUARE_SIZE_ARRAY[0]))
+    matplt.savefig(file_path, dpi = 2*DPI)
     matplt.close() # close created plot
     
-    print(colored("2D plots saved together at PATH: %s" % file_path, 'green'))
+    print(colored("2D plots of error saved together at PATH: %s" % file_path, 'green'))
 
 def Level_arrays(u0, u1):
     # use only in point source boundary influence studies only!
@@ -272,13 +290,6 @@ def ArrayOfPointSources(pnt_src_data):
         
     return pnt_src_text
 
-# def My_sum(array):
-#     summa = array[0]
-#     for i in range(1, len(array)):
-#         summa = summa + array[i]
-        
-#     return summa
-
 # def Contour_plot(u):
 #     fig = matplt.figure()
 #     ax = fig.gca()
@@ -294,4 +305,5 @@ def ArrayOfPointSources(pnt_src_data):
 #     u_cut = u[i1: i2]
     
 #     return numpy.array(x_cut), numpy.array(u_cut) 
+
 ## it was supposed to be used for cutting 1x1 square from nxn square but I came up with better solution
