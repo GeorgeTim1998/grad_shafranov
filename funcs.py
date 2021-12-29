@@ -110,11 +110,12 @@ def Plot_2D_data_together(): #father
     
     # now build errors # maybe change it for the better next time!
     iteration = 0
+    n = 100
     for i in i_array: 
-        matplt.plot(x, delta_arr[iteration], linewidth=1, label="Square size = %s" % int(i))
+        matplt.plot(x[n:len(x)-n], delta_arr[iteration][n:len(x)-n], linewidth=0.5, label="Square size = %s" % int(i))
         iteration = iteration + 1
     matplt.xlabel('$r$')
-    matplt.ylabel("$\u0394, %$")
+    matplt.ylabel("$\u0394, percent $")
     matplt.grid(True)
     matplt.legend()
     
