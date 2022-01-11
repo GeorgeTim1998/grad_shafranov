@@ -13,7 +13,7 @@ M0 = 1.25e-6
 DEFAULT_MESH = 100
 
 SQ_MIN = 1
-SQ_MAX = 9
+SQ_MAX = 2
 SQUARE_SIZE_ARRAY = numpy.linspace(SQ_MIN, SQ_MAX, 1+int((SQ_MAX-SQ_MIN)/SQ_MIN))
 
 def Form_f_text(A1, A2):
@@ -110,7 +110,7 @@ def Plot_2D_data_together(): #father
     
     # now build errors # maybe change it for the better next time!
     iteration = 0
-    n = 100
+    n = 0
     for i in i_array: 
         matplt.plot(x[n:len(x)-n], delta_arr[iteration][n:len(x)-n], linewidth=0.5, label="Square size = %s" % int(i))
         iteration = iteration + 1
@@ -153,7 +153,7 @@ def Save_figure(f_expr, mesh_r, mesh_z, addition, PATH, plot_title):
     matplt.savefig(file_path, dpi = DPI) #no title figure for reports
     matplt.close() # close created plot
     
-    print(colored("3D Plot saved to PATH: %s" % file_path, 'green'))
+    print(colored("3D countour plot saved to PATH: %s" % file_path, 'green'))
     
 def Write2file_umax_vs_def_mesh(mesh_r, mesh_z, u_max):
     file_path = "%s.txt" % TEXT_FILE_U_MAX
@@ -290,6 +290,25 @@ def ArrayOfPointSources(pnt_src_data):
         pnt_src_text.append(CreatePointSource(pnt_src_data.r[i], pnt_src_data.i_disp[i][0], pnt_src_data.i_disp[i][1]))
         
     return pnt_src_text
+
+def Contour_plot(r, z, u, path, f_expr, mesh):
+    tol, point_num = 0.001, DEFAULT_MESH + 1  # avoid hitting points outside the domain
+    r = numpy.linspace(r[0] + tol, r[1] - tol, point_num)
+    z = numpy.linspace(z[0] + tol, z[1] - tol, point_num)
+    
+    u_contour = numpy.zeros([len(z), len(r)])
+    
+    for i in range(point_num):
+        for j in range(point_num):
+            u_contour[i, j] = u(r[i], z[j])
+            
+    matplt.contour(r, z, u_contour)
+    matplt.xlabel("$r$")
+    matplt.ylabel("$z$")
+    matplt.colorbar()
+    
+    Save_figure(f_expr, mesh[0], mesh[1], 'cont_title', path, 'Bourder: Point Sources')
+            
 
 # def Contour_plot(u):
 #     fig = matplt.figure()
