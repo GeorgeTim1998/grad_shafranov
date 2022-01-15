@@ -327,3 +327,4 @@ def Contour_plot(r, z, u, path, f_expr, mesh):
 #     return numpy.array(x_cut), numpy.array(u_cut) 
 
 ## it was supposed to be used for cutting 1x1 square from nxn square but I came up with better solution
+

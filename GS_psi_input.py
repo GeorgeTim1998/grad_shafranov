@@ -54,10 +54,19 @@ dp_psi = sympy.diff(p_psi, psi) #pressure and F deriviation
 dF_psi = sympy.diff(F_psi, psi) #compiler breaks when 
 
 f_text = 4 * pi * pow(x, 2) * dp_psi + F_psi*dF_psi #right hand expression
-#f_text = 4 * pi * pow(x, 2) * psi + 1 #right hand expression
+
+p_equat_text = 4 * pi * pow(x, 2) * dp_psi
+F_equat_text = F_psi * dF_psi
+
 f_text = sympy.printing.ccode(f_text)
+p_equat_text = sympy.printing.ccode(p_equat_text)
+F_equat_text = sympy.printing.ccode(F_equat_text)
+
+
 print(colored("Right-hand side: ", 'magenta') + f_text)
 f_expr = Expression(f_text, u = u, degree = 2)
+p_equat = Expression(p_equat_text, degree = 2)
+F_equat = Expression(F_equat_text, u = u, degree = 2)
 #%% Create problem
 #  mesh, u and V defined above
 
@@ -71,23 +80,27 @@ bc = DirichletBC(V, u_D, boundary) #гран условие как в задач
 
 # Define variational problem
 v = TestFunction(V)
-w = interpolate(Expression('x[0]*x[0]', degree = 2), V) # comment in {}
+r_2 = interpolate(Expression('x[0]*x[0]', degree = 2), V) # interpolation is needed so that 'a' could evaluate deriviations and such
+r = Expression('x[0]', degree = 1) # interpolation is needed so that 'a' could evaluate deriviations and such
 
-a = dot( grad(u)/w, grad(w*v) )*dx
-L = f_expr*v*dx
-
+a = dot( grad(u)/r, grad(r_2*v) )*dx - F_equat*dx
+# L = f_expr*v*dx
+L = (p_equat)*v*dx
+# F = a - L
+# a, L = lhs(F), rhs(F)
 # Compute solution
-solve(a - L == 0, u, bc)
+solve(a == L, u, bc)
+# solve(a - L == 0, u, bc)
 #%% create a path to save my figure to. For some reason now I cant save using relative path
 mesh_title = str(mesh_r) + 'x' + str(mesh_z) + ' mesh'
 ttime = datetime.datetime.now().strftime("%d%m%Y_%H%M%S")
 time_title = str(ttime)  #get current time to make figure name unique
 
-plot(u, tol = 1e-6 ) # its fenics' plot not python's
+plot(u) # its fenics' plot not python's
 Save_figure('_title', f_expr)
 
 # Save solution to file in VTK format
-vtkfile = File('poisson/solution.pvd')
-vtkfile << u
+# vtkfile = File('poisson/solution.pvd')
+# vtkfile << u
 #%% hold plot to show. Programm is still running
 #plt.show()
