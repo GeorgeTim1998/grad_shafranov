@@ -33,17 +33,14 @@ r = Expression('x[0]', degree = 1) # interpolation is needed so that 'a' could e
 a = dot(grad(u)/r, grad(r_2*v))*dx
 L = (sum(point_sources))*r*v*dx
 
-print(colored("Default mesh = %d\nSquare size = %d" % (default_mesh, square), 'green'))
+print(colored("Default mesh = %d\n" % (mesh_size), 'green'))
 
 u = Function(V)
 solve(a == L, u, bc)
 fu.What_time_is_it(t0, 'Variational problem solved')
 # %% 
 # fu.Write2file_umax_vs_def_mesh(mesh_r, mesh_z, fu.Twod_plot(u, r0, z1, z2, PATH))
-fu.Write2file_umax_vs_square_size(mesh_r, mesh_z, fu.Twod_plot(u, r0, z0-0.5, z0+0.5, PATH, square), fu.DEFAULT_MESH)
-fu.What_time_is_it(t0, "Cross section plotted through r0 = %s" % r0)
 
-fu.Contour_plot([r1, r2], [z1,  z2], u, PATH, f_expr, [mesh_r, mesh_z])
 fu.What_time_is_it(t0, "3D plot of \u03C8(r, z) is plotted")
 # vtkfile = File('poisson/solution.pvd') # Save solution to file in VTK format
 # vtkfile << u
