@@ -67,10 +67,10 @@ if plot_mesh == 1:
 #create a path to save my figure to. For some reason now I cant save using relative path
 path_my_file = '/home/george/Projects2/Projects/Figures/' + time_title
 
-if save_NoTitle != 0:
-    plt.savefig(path_my_file + '_notitle.png', dpi = dpi) #no title figure for reports
-plt.title('Soloviev: ' + mesh_title + "\n" + f._cppcode) # titled figure for my self
-plt.savefig(path_my_file + '_title.png', dpi = dpi)
+# if save_NoTitle != 0:
+#     plt.savefig(path_my_file + '_notitle.png', dpi = dpi) #no title figure for reports
+# plt.title('Soloviev: ' + mesh_title + "\n" + f._cppcode) # titled figure for my self
+# plt.savefig(path_my_file + '_title.png', dpi = dpi)
 
 # Save solution to file in VTK format
 vtkfile = File('poisson/solution.pvd')
