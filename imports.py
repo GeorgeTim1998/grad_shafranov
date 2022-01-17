@@ -9,6 +9,7 @@ from termcolor import colored
 import pylab
 import funcs as fu
 import point_source_data as psd
+import math
 # import boxfield
 
 # если что-то сломается, то перекопируй отсюда
