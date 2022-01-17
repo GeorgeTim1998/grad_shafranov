@@ -1,7 +1,4 @@
 from os import name
-from matplotlib.pyplot import legend
-
-from numpy import square
 from imports import *
 import time
 
