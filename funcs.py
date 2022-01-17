@@ -16,6 +16,10 @@ SQ_MIN = 1
 SQ_MAX = 2
 SQUARE_SIZE_ARRAY = numpy.linspace(SQ_MIN, SQ_MAX, 1+int((SQ_MAX-SQ_MIN)/SQ_MIN))
 
+EPS = 25/13
+ALPHA = 0.4
+KAPPA = 2
+
 def Form_f_text(A1, A2):
     #A1 = mo*p', A2 = FF'
     #deriviation are calculated using 'sympy' library
@@ -309,22 +313,17 @@ def Contour_plot(r, z, u, path, f_expr, mesh):
     
     Save_figure(f_expr, mesh[0], mesh[1], 'cont_title', path, 'Bourder: Point Sources')
             
+def Mesh_to_xml():
+    file = File('Mesh/file.xml')
 
-# def Contour_plot(u):
-#     fig = matplt.figure()
-#     ax = fig.gca()
-#     cs = ax.contour(boxfield.FEniCSBoxField(u, (nx, ny)))
-#     matplt.clabel(cs)
-#     matplt.axis('equal')
-#     matplt.title('Contour plot of solution')
-
-# def Cut_from_2D_data(x, u, square_size):
-#     i1 = int(DEFAULT_MESH/2) * (square_size - 1)
-#     i2 = i1 + 1 + DEFAULT_MESH
-#     x_cut = x[i1: i2]
-#     u_cut = u[i1: i2]
+def D_config(smoothness):
+    tol = 0.0001
+    t = numpy.linspace(tol, math.pi - tol, smoothness)
+    x = numpy.ones(smoothness) + EPS*numpy.cos(t + ALPHA*numpy.sin(t))
+    z = EPS*KAPPA*numpy.sin(t)
     
-#     return numpy.array(x_cut), numpy.array(u_cut) 
-
-## it was supposed to be used for cutting 1x1 square from nxn square but I came up with better solution
-
+    x = numpy.append(x, numpy.flip(x)) # move it along x axis!
+    z = numpy.append(z, numpy.flip(-z))
+    matplt.plot(x, z)
+    matplt.grid()
+    matplt.show()
