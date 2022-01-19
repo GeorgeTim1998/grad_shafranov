@@ -302,13 +302,13 @@ def Array_Expression(text_array):
 def Contour_plot(r_area, z_area, u, path, f_expr, mesh, plot_title):
     tol, point_num = 0.001, DEFAULT_MESH + 1  # avoid hitting points outside the domain
     r = numpy.linspace(r_area[0] + tol, r_area[1] - tol, point_num)
-    z = numpy.linspace(z_area[0] + tol, z_area[1] - tol, point_num)
+    z = numpy.linspace(z_area[0] + tol, z_area[1] - tol, int(point_num*mesh[1]/mesh[0]))
     
     u_contour = numpy.zeros([len(z), len(r)])
     
-    for i in range(point_num):
-        for j in range(point_num):
-            u_contour[i, j] = u(r[i], z[j])
+    for i in range(len(r)):
+        for j in range(len(z)):
+            u_contour[j, i] = u(r[i], z[j])
             
     matplt.contour(r, z, u_contour)
     matplt.xlim(r_area[0], r_area[1])
