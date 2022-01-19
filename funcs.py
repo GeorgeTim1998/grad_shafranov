@@ -292,10 +292,10 @@ def ArrayOfPointSources(pnt_src_data):
         
     return pnt_src_text
 
-def Contour_plot(r, z, u, path, f_expr, mesh, plot_title):
+def Contour_plot(r_area, z_area, u, path, f_expr, mesh, plot_title):
     tol, point_num = 0.001, DEFAULT_MESH + 1  # avoid hitting points outside the domain
-    r = numpy.linspace(r[0] + tol, r[1] - tol, point_num)
-    z = numpy.linspace(z[0] + tol, z[1] - tol, point_num)
+    r = numpy.linspace(r_area[0] + tol, r_area[1] - tol, point_num)
+    z = numpy.linspace(z_area[0] + tol, z_area[1] - tol, point_num)
     
     u_contour = numpy.zeros([len(z), len(r)])
     
@@ -304,8 +304,12 @@ def Contour_plot(r, z, u, path, f_expr, mesh, plot_title):
             u_contour[i, j] = u(r[i], z[j])
             
     matplt.contour(r, z, u_contour)
+    matplt.xlim(r_area[0], r_area[1])
+    matplt.ylim(z_area[0], z_area[1])
+    
     matplt.xlabel("$r$")
     matplt.ylabel("$z$")
+    matplt.grid()
     matplt.colorbar()
     
     Save_figure(f_expr, mesh[0], mesh[1], 'cont_title', path, plot_title)
