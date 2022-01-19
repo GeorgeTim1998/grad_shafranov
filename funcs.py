@@ -292,7 +292,7 @@ def ArrayOfPointSources(pnt_src_data):
         
     return pnt_src_text
 
-def Contour_plot(r, z, u, path, f_expr, mesh):
+def Contour_plot(r, z, u, path, f_expr, mesh, plot_title):
     tol, point_num = 0.001, DEFAULT_MESH + 1  # avoid hitting points outside the domain
     r = numpy.linspace(r[0] + tol, r[1] - tol, point_num)
     z = numpy.linspace(z[0] + tol, z[1] - tol, point_num)
@@ -308,7 +308,7 @@ def Contour_plot(r, z, u, path, f_expr, mesh):
     matplt.ylabel("$z$")
     matplt.colorbar()
     
-    Save_figure(f_expr, mesh[0], mesh[1], 'cont_title', path, 'Bourder: Point Sources')
+    Save_figure(f_expr, mesh[0], mesh[1], 'cont_title', path, plot_title)
             
 def Mesh_to_xml():
     file = File('Mesh/file.xml')
