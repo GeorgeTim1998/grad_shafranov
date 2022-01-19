@@ -292,6 +292,13 @@ def ArrayOfPointSources(pnt_src_data):
         
     return pnt_src_text
 
+def Array_Expression(text_array):
+    expression_array = [None]*len(text_array)
+    for i in range(len(text_array)):
+        expression_array[i] = Expression(text_array[i], degree = 2)
+    
+    return expression_array
+
 def Contour_plot(r_area, z_area, u, path, f_expr, mesh, plot_title):
     tol, point_num = 0.001, DEFAULT_MESH + 1  # avoid hitting points outside the domain
     r = numpy.linspace(r_area[0] + tol, r_area[1] - tol, point_num)
