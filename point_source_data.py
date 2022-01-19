@@ -16,14 +16,14 @@ class PointSource:
             [0.53, -0.185]
         ] #array of vector point sources position 
         self.i_disp = [
-            [1500, disp],
-            [1500, disp],
-            [1500, disp],
-            [1500, disp],
-            [1500, disp],
-            [1500, disp],
-            [1500, disp],
-            [1500, disp]
+            [2400, disp],
+            [2400, disp],
+            [2400, disp],
+            [2400, disp],
+            [2400, disp],
+            [2400, disp],
+            [2400, disp],
+            [2400, disp]
         ] #array of [current of the point source, characteristic decay distance]
         
         poor_input = (numpy.shape(self.r) != numpy.shape(self.i_disp)) # check if you input all
