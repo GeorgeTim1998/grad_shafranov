@@ -1,4 +1,6 @@
 from os import name
+
+from numpy import mat
 from imports import *
 import time
 
@@ -42,8 +44,8 @@ def Twod_plot(psi, x0, y1, y2, path, square_size):
     
     matplt.plot(y, psi_line, 'k', linewidth=2)  # magnify w
     matplt.grid(True)
-    matplt.xlabel('$r$')
-    matplt.ylabel('$psi$')
+    matplt.xlabel('r')
+    matplt.ylabel('psi')
     matplt.legend(["Point in r0: %s, square_size: %s" % (x0, square_size), 'Load'], loc='best')
     
     time_title = Time_name()
@@ -101,8 +103,8 @@ def Plot_2D_data_together(): #father
         iteration = iteration + 1
     
     
-    matplt.xlabel('$r$')
-    matplt.ylabel('$u_{section}$')
+    matplt.xlabel('r')
+    matplt.ylabel('u_{section}')
     matplt.grid(True)
     matplt.legend()
 
@@ -117,8 +119,8 @@ def Plot_2D_data_together(): #father
     for i in i_array: 
         matplt.plot(x[n:len(x)-n], delta_arr[iteration][n:len(x)-n], linewidth=0.5, label="Square size = %s" % int(i))
         iteration = iteration + 1
-    matplt.xlabel('$r$')
-    matplt.ylabel("$\u0394, percent $")
+    matplt.xlabel('r')
+    matplt.ylabel("\u0394, percent ")
     matplt.grid(True)
     matplt.legend()
     
@@ -193,7 +195,7 @@ def Plot_umax_vs_def_mesh(name): # u max as a function of mesh parameters on the
     matplt.legend(["u_max vs default mesh size"], loc='best')
     matplt.grid(True)
     matplt.xlabel('mesh square size')
-    matplt.ylabel('$u_{max}$')
+    matplt.ylabel('u_{max}')
     
     matplt.savefig("Figures/umax_vs_mesh_%s.png" % name, dpi = DPI)
     
@@ -210,7 +212,7 @@ def Plot_umax_vs_square_size(name, default_mesh_size): # u max as a function of 
     matplt.legend(["u_max vs solution square size"], loc='best')
     matplt.grid(True)
     matplt.xlabel('mesh square size')
-    matplt.ylabel('$u_{max}$')
+    matplt.ylabel('u_{max}')
     matplt.title("Default mesh size: %d" % (default_mesh_size)) # titled figure for my self
     
     matplt.savefig("Figures/umax_vs_sq_sz_%s_%s.png" % (name, default_mesh_size), dpi = DPI)
@@ -316,8 +318,8 @@ def Contour_plot(r_area, z_area, u, path, f_expr, mesh, plot_title):
     matplt.xlim(r_area[0], r_area[1])
     matplt.ylim(z_area[0], z_area[1])
     
-    matplt.xlabel("$r$")
-    matplt.ylabel("$z$")
+    matplt.xlabel("r")
+    matplt.ylabel("z")
     matplt.grid()
     matplt.colorbar()
     
@@ -336,4 +338,5 @@ def D_config(smoothness):
     z = numpy.append(z, numpy.flip(-z))
     matplt.plot(x, z)
     matplt.grid()
+    matplt.xlabel('r')
     matplt.show()
