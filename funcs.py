@@ -118,7 +118,7 @@ def Plot_2D_data_together(): #father
     iteration = 0
     n = 0
     for i in i_array: 
-        matplt.plot(x[n:len(x)-n], delta_arr[iteration][n:len(x)-n], linewidth=0.5, label="Square size = %s" % int(i))
+        matplt.plot(x[n:len(x)-n], delta_arr[iteration][n:len(x)-n], linewidth=0.5, label="Размер квадрата = %s" % int(i))
         iteration = iteration + 1
     matplt.xlabel('r')
     matplt.ylabel("\u0394, %")
