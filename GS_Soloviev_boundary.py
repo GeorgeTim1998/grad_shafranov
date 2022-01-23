@@ -38,14 +38,14 @@ for square in fu.SQUARE_SIZE_ARRAY:
     u = TrialFunction(V)
     v = TestFunction(V)
 
-    f_expr = Expression(f_text, degree = 2)
-    point_sources = fu.Array_Expression(fu.ArrayOfPointSources(psd.PointSource()))
+    point_sources = fu.CreatePointSource([r0, z0], 1, 0.1)
+    f_expr = Expression(point_sources, degree = 2)
 
     r_2 = interpolate(Expression('x[0]*x[0]', degree = 2), V) # interpolation is needed so that 'a' could evaluate deriviations and such
     r = Expression('x[0]', degree = 1) # interpolation is needed so that 'a' could evaluate deriviations and such
 
     a = dot(grad(u)/r, grad(r_2*v))*dx
-    L = sum(point_sources)*r*v*dx
+    L = f_expr*r*v*dx
 
     print(colored("Default mesh = %d\nSquare size = %d" % (default_mesh, square), 'green'))
 
