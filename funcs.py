@@ -342,7 +342,7 @@ def D_config(smoothness):
     matplt.show()
     
 def Write2file_errors(mesh_r, mesh_z, err_L2, err_max):
-    file_path = "%s_%s.txt" % (TEXT_FILE_ERROR, mesh_r)
+    file_path = "%svs%s.txt" % (TEXT_FILE_ERROR, 'mesh')
     file = open(file_path, "a") # append write to file mode
     
     text = "%s,%s,%s\n" % (mesh_r, err_max, err_L2)
