@@ -38,9 +38,9 @@ r = Expression('x[0]', degree = 1) # interpolation is needed so that 'a' could e
 
 print(colored("Default mesh = %d\n" % (default_mesh), 'green'))
 
-a = dot(grad(u)/r, grad(r_2*v))*dx - f_expr*dx
+a = dot(grad(u)/r, grad(r_2*v))*dx - f_expr*r*v*dx
 L = sum(point_sources)*r*v*dx
-solve(a == L, u, bc)
+solve(a - L== 0, u, bc)
 
 fu.Contour_plot([r1, r2], [z1,  z2], u, PATH, '', [mesh_r, mesh_z], '')
 fu.What_time_is_it(t0, "3D plot of \u03C8(r, z) is plotted")
