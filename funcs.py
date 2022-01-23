@@ -17,6 +17,8 @@ EPS = 25/13
 ALPHA = 0.4
 KAPPA = 2
 
+matplt.rcParams["font.family"] = "Times New Roman"
+
 def Form_f_text(A1, A2):
     #A1 = mo*p', A2 = FF'
     #deriviation are calculated using 'sympy' library
