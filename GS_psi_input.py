@@ -44,11 +44,8 @@ F_equat_text = sympy.printing.ccode(F_equat_text)
 
 print(colored("Right-hand side: ", 'magenta') + f_text)
 f_expr = Expression(f_text, u = u, degree = 2)
-# p_equat = Expression(p_equat_text, degree = 2)
 p_equat = Expression(p_equat_text, u = u, degree = 2)
 F_equat = Expression(F_equat_text, u = u, degree = 2)
-#%% Create problem
-#  mesh, u and V defined above
 
 # Define boundary condition
 u_D = Expression('0', degree=0) #psi flux is zero if you go far away
