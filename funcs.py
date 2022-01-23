@@ -315,7 +315,7 @@ def Contour_plot(r_area, z_area, u, path, f_expr, mesh, plot_title):
         for j in range(len(z)):
             u_contour[j, i] = u(r[i], z[j])
             
-    matplt.contour(r, z, u_contour)
+    matplt.contour(r, z, u_contour, 20)
     matplt.xlim(r_area[0], r_area[1])
     matplt.ylim(z_area[0], z_area[1])
     
