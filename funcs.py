@@ -45,8 +45,8 @@ def Twod_plot(psi, x0, y1, y2, path, square_size):
     matplt.plot(y, psi_line, 'k', linewidth=2)  # magnify w
     matplt.grid(True)
     matplt.xlabel('r')
-    matplt.ylabel('psi')
-    matplt.legend(["Point in r0: %s, square_size: %s" % (x0, square_size), 'Load'], loc='best')
+    matplt.ylabel('\u03C8')
+    matplt.legend(["Сечение r0: %s, размер квадрата: %s" % (x0, square_size), 'Load'], loc='best')
     
     time_title = Time_name()
     
@@ -98,13 +98,13 @@ def Plot_2D_data_together(): #father
             i_array.append(i)
         
         
-        matplt.plot(x, u_section, linewidth=1, label="Square size = %s" % int(i))
+        matplt.plot(x, u_section, linewidth=1, label="Размер квадрата = %s" % int(i))
         
         iteration = iteration + 1
     
     
     matplt.xlabel('r')
-    matplt.ylabel('u_{section}')
+    matplt.ylabel('\u03C8}')
     matplt.grid(True)
     matplt.legend()
 
@@ -120,7 +120,7 @@ def Plot_2D_data_together(): #father
         matplt.plot(x[n:len(x)-n], delta_arr[iteration][n:len(x)-n], linewidth=0.5, label="Square size = %s" % int(i))
         iteration = iteration + 1
     matplt.xlabel('r')
-    matplt.ylabel("\u0394, percent ")
+    matplt.ylabel("\u0394, %")
     matplt.grid(True)
     matplt.legend()
     
@@ -152,7 +152,7 @@ def Save_figure(f_expr, mesh_r, mesh_z, addition, PATH, plot_title):
 
     path_my_file = 'Figures/%s/%s' % (PATH, time_title) # file path+unique time name
 
-    matplt.title("%s - %s\n%s" % (plot_title, mesh_title, f_expr._cppcode)) # titled figure for my self
+    # matplt.title("%s - %s\n%s" % (plot_title, mesh_title, f_expr._cppcode)) # titled figure for my self
     
     file_path = "%s%s.png" % (path_my_file, addition)
     matplt.savefig(file_path, dpi = DPI) #no title figure for reports
@@ -192,10 +192,10 @@ def Plot_umax_vs_def_mesh(name): # u max as a function of mesh parameters on the
     u_max = Column(data, 2)
     
     matplt.scatter(mesh, u_max, linewidth=2)  # magnify w
-    matplt.legend(["u_max vs default mesh size"], loc='best')
+    # matplt.legend(["u_max vs default mesh size"], loc='best')
     matplt.grid(True)
-    matplt.xlabel('mesh square size')
-    matplt.ylabel('u_{max}')
+    matplt.xlabel('Размер сетки')
+    matplt.ylabel('\u03C8')
     
     matplt.savefig("Figures/umax_vs_mesh_%s.png" % name, dpi = DPI)
     
@@ -209,11 +209,11 @@ def Plot_umax_vs_square_size(name, default_mesh_size): # u max as a function of 
     u_max = Column(data, 2)
     
     matplt.scatter(mesh, u_max, linewidth=2)
-    matplt.legend(["u_max vs solution square size"], loc='best')
+    # matplt.legend(["u_max vs solution square size"], loc='best')
     matplt.grid(True)
-    matplt.xlabel('mesh square size')
-    matplt.ylabel('u_{max}')
-    matplt.title("Default mesh size: %d" % (default_mesh_size)) # titled figure for my self
+    matplt.xlabel("Размер области \u03A9")
+    matplt.ylabel('\u03C8')
+    # matplt.title("Default mesh size: %d" % (default_mesh_size)) # titled figure for my self
     
     matplt.savefig("Figures/umax_vs_sq_sz_%s_%s.png" % (name, default_mesh_size), dpi = DPI)
     
@@ -338,5 +338,4 @@ def D_config(smoothness):
     z = numpy.append(z, numpy.flip(-z))
     matplt.plot(x, z)
     matplt.grid()
-    matplt.xlabel('r')
     matplt.show()
