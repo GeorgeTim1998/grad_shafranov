@@ -369,3 +369,30 @@ def Plot_error_vs_mesh(name): # u max as a function of mesh parameters on the sa
     print(colored("2D plot saved to PATH: %s" % file_path, 'green'))
     
     matplt.close() # close created plot
+    
+def Hand_input():
+    psi = sympy.symbols('u') # flux function #think tomorrow how to define argument psi!
+    x = sympy.symbols('x[0]') # r coordinate. used for easy writing of expressions
+
+    # p_psi = pow(psi, 1) #pressure function
+    p_psi = pow(psi, 2) #pressure function
+    # p_psi = 1 - pow(psi, 2) #pressure function
+
+
+    # F_psi = pow(psi, 1) # poloidal current function
+    # F_psi = pow(psi, 2) # poloidal current function
+    F_psi = 1 - pow(psi, 2) # poloidal current function
+
+    dp_psi = sympy.diff(p_psi, psi) #pressure and F deriviation
+    dF_psi = sympy.diff(F_psi, psi) #compiler breaks when 
+
+    f_text = 4 * pi * pow(x, 2) * dp_psi + F_psi*dF_psi #right hand expression
+
+    p_equat_text = 4 * pi * pow(x, 2) * dp_psi
+    F_equat_text = F_psi * dF_psi
+
+    f_text = sympy.printing.ccode(f_text)
+    p_equat_text = sympy.printing.ccode(p_equat_text)
+    F_equat_text = sympy.printing.ccode(F_equat_text)
+    
+    return f_text
