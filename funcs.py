@@ -6,6 +6,7 @@ import time
 
 DPI = 200 # quality of plots
 TEXT_FILE_U_MAX = "Text_data/func_max"
+TEXT_FILE_ERROR = "Text_data/error"
 TEXT_FILE_2D_PLOT = "Text_data/2Dplot"
 TWOD_PLOT_SAVE_PATH = 'Figures/Post_analyt'
 M0 = 1.25e-6
@@ -339,3 +340,13 @@ def D_config(smoothness):
     matplt.plot(x, z)
     matplt.grid()
     matplt.show()
+    
+def Write2file_errors(mesh_r, mesh_z, err_L2, err_max):
+    file_path = "%s_%s.txt" % (TEXT_FILE_ERROR, mesh_r)
+    file = open(file_path, "a") # append write to file mode
+    
+    text = "%s,%s,%s\n" % (mesh_r, err_max, err_L2)
+    file.write(text)
+    file.close()
+    
+    print(colored("Data saved to PATH: %s" % file_path, 'green'))
