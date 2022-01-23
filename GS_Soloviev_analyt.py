@@ -2,6 +2,7 @@
 from __future__ import print_function
 from math import degrees
 from fenics import *
+import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import figure, gcf, isinteractive, title
 import datetime
@@ -9,6 +10,9 @@ import numpy
 import sympy
 from termcolor import colored
 import pylab as plt
+import funcs as fu
+
+PATH = 'Analytical'
 #%% Functions
 def Form_f_text(A1, A2):
     #A1 = 4*pi*p', A2 = FF'
@@ -117,11 +121,7 @@ V = FunctionSpace(mesh, 'P', 1) # standard triangular mesh
 u_D = Expression(psi_text, degree = 4) # Define boundary condition
 
 psi = interpolate(u_D, V) #plot exact solution
-fig = plot(psi)
-plt.colorbar(fig)
-
-Save_figure('_Analit')
-
+fu.Contour_plot([area[0], area[1]], [area[2], area[3]], psi, PATH, '', [mesh_r, mesh_z], '')
 def boundary(x, on_boundary):
     return on_boundary
 
@@ -138,18 +138,7 @@ L = f_expr*r*v*dx
 #%% Compute solution
 u = Function(V)
 solve(a == L, u, bc)
-plot(u) # its fenics' plot not python's
-
 #%% Compute errors
 ErrorEstimate(u, u_D, mesh)
 #%% Save output
-Save_figure('_title')
-vtkfile = File('poisson/solution.pvd') # Save solution to file in VTK format
-vtkfile << u
-# vtkfile_analyt = File('poisson/solution_analyt.pvd') # Save solution to file in VTK format
-# vtkfile_analyt << u_D
-#%% 'plt.show()' holds plot while the programm is still running
-if show_plot == 1:
-    plt.show()
-
-#isinteractive()
+fu.Contour_plot([area[0], area[1]], [area[2], area[3]], u, PATH, f_expr, [mesh_r, mesh_z], '')
