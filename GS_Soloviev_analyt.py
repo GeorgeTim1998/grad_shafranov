@@ -95,50 +95,58 @@ def ErrorEstimate(u, u_D, mesh):
     # Print errors
     print(colored('error_L2  = ', 'red'), error_L2)
     print(colored('error_max = ', 'red'), error_max)
+    
+    return error_L2, error_max
 
 print(colored("GS_Soloviev_analyt.py", 'green'))
 #%% paremeters definition
-mesh_r, mesh_z = 300, 300 # mesh for r-z space
-area = [0.2, 2.2, -1, 1] # format is: [r1, r2, z1, z2]
-rect_low = Point(area[0], area[2]) #define rectangle size: lower point
-rect_high = Point(area[1], area[3]) #define rectangle size: upper point
+mesh_min = 100
+mesh_max = 1000
+MESH_ARRAY = numpy.linspace(mesh_min, mesh_max, 1+int((mesh_max-mesh_min)/mesh_min))
 
-plot_mesh = 0 #choose whether to plot mesh or not
-save_NoTitle = 0 #save figure that doesnt have title in it
-show_plot = 0 # show plot by the end of the program or not
-dpi = 200 # quality of a figure 
+for a in MESH_ARRAY:
+    mesh_r, mesh_z = int(a), int(a) # mesh for r-z space
+    area = [0.2, 2.2, -1, 1] # format is: [r1, r2, z1, z2]
+    rect_low = Point(area[0], area[2]) #define rectangle size: lower point
+    rect_high = Point(area[1], area[3]) #define rectangle size: upper point
+
+    plot_mesh = 0 #choose whether to plot mesh or not
+    save_NoTitle = 0 #save figure that doesnt have title in it
+    show_plot = 0 # show plot by the end of the program or not
+    dpi = 200 # quality of a figure 
 
 
-A1, A2 = 0.14, -0.01 # values from Ilgisonis2016, 244
-c = [1, -0.22, -0.01, -0.08] # values from Ilgisonis2016, 244
+    A1, A2 = 0.14, -0.01 # values from Ilgisonis2016, 244
+    c = [1, -0.22, -0.01, -0.08] # values from Ilgisonis2016, 244
 
-f_text = Form_f_text(-8 * A1, -2 * A2) # form right hand side that corresponds to analytical solution
-psi_text = Analyt_sol(c, A1, A2) # см. научка.txt. Там есть вывод, как и куда надо подставлять
-# print(psi_text)
-#%% Create mesh and define function space
-mesh = RectangleMesh(rect_low, rect_high, mesh_r, mesh_z) # points define domain size rect_low x rect_high
-V = FunctionSpace(mesh, 'P', 1) # standard triangular mesh
-u_D = Expression(psi_text, degree = 4) # Define boundary condition
+    f_text = Form_f_text(-8 * A1, -2 * A2) # form right hand side that corresponds to analytical solution
+    psi_text = Analyt_sol(c, A1, A2) # см. научка.txt. Там есть вывод, как и куда надо подставлять
+    # print(psi_text)
+    #%% Create mesh and define function space
+    mesh = RectangleMesh(rect_low, rect_high, mesh_r, mesh_z) # points define domain size rect_low x rect_high
+    V = FunctionSpace(mesh, 'P', 1) # standard triangular mesh
+    u_D = Expression(psi_text, degree = 4) # Define boundary condition
 
-psi = interpolate(u_D, V) #plot exact solution
-fu.Contour_plot([area[0], area[1]], [area[2], area[3]], psi, PATH, '', [mesh_r, mesh_z], '')
-def boundary(x, on_boundary):
-    return on_boundary
+    psi = interpolate(u_D, V) #plot exact solution
+    fu.Contour_plot([area[0], area[1]], [area[2], area[3]], psi, PATH, '', [mesh_r, mesh_z], '')
+    def boundary(x, on_boundary):
+        return on_boundary
 
-bc = DirichletBC(V, u_D, boundary) #гран условие как в задаче дирихле
-#%% Define variational problem
-u = TrialFunction(V)
-v = TestFunction(V)
-f_expr = Expression(f_text, degree = 2)
-r_2 = interpolate(Expression('x[0]*x[0]', degree = 2), V) # interpolation is needed so that 'a' could evaluate deriviations and such
-r = Expression('x[0]', degree = 1) # interpolation is needed so that 'a' could evaluate deriviations and such
+    bc = DirichletBC(V, u_D, boundary) #гран условие как в задаче дирихле
+    #%% Define variational problem
+    u = TrialFunction(V)
+    v = TestFunction(V)
+    f_expr = Expression(f_text, degree = 2)
+    r_2 = interpolate(Expression('x[0]*x[0]', degree = 2), V) # interpolation is needed so that 'a' could evaluate deriviations and such
+    r = Expression('x[0]', degree = 1) # interpolation is needed so that 'a' could evaluate deriviations and such
 
-a = dot(grad(u)/r, grad(r_2*v))*dx
-L = f_expr*r*v*dx
-#%% Compute solution
-u = Function(V)
-solve(a == L, u, bc)
-#%% Compute errors
-ErrorEstimate(u, u_D, mesh)
-#%% Save output
-fu.Contour_plot([area[0], area[1]], [area[2], area[3]], u, PATH, f_expr, [mesh_r, mesh_z], '')
+    a = dot(grad(u)/r, grad(r_2*v))*dx
+    L = f_expr*r*v*dx
+    #%% Compute solution
+    u = Function(V)
+    solve(a == L, u, bc)
+    #%% Compute errors
+    [err_L2, err_max] = ErrorEstimate(u, u_D, mesh)
+    fu.Write2file_errors(mesh_r, mesh_z, err_L2, err_max)
+    #%% Save output
+    fu.Contour_plot([area[0], area[1]], [area[2], area[3]], u, PATH, '', [mesh_r, mesh_z], '')
