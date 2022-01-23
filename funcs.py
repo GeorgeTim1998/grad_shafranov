@@ -116,7 +116,7 @@ def Plot_2D_data_together(): #father
     
     # now build errors # maybe change it for the better next time!
     iteration = 0
-    n = 0
+    n = 20
     for i in i_array: 
         matplt.plot(x[n:len(x)-n], delta_arr[iteration][n:len(x)-n], linewidth=0.5, label="Размер квадрата = %s" % int(i))
         iteration = iteration + 1
