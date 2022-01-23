@@ -13,7 +13,7 @@ M0 = 1.25e-6
 DEFAULT_MESH = 100
 
 SQ_MIN = 1
-SQ_MAX = 2
+SQ_MAX = 9
 SQUARE_SIZE_ARRAY = numpy.linspace(SQ_MIN, SQ_MAX, 1+int((SQ_MAX-SQ_MIN)/SQ_MIN))
 
 EPS = 25/13
@@ -105,7 +105,7 @@ def Plot_2D_data_together(): #father
     
     
     matplt.xlabel('r')
-    matplt.ylabel('\u03C8}')
+    matplt.ylabel('\u03C8')
     matplt.grid(True)
     matplt.legend()
 
@@ -359,11 +359,12 @@ def Plot_error_vs_mesh(name): # u max as a function of mesh parameters on the sa
     err_max = Column(data, 1)
     err_L2 = Column(data, 2)
     
-    matplt.scatter(mesh, err_max, linewidth=2)  # magnify w
+    matplt.semilogy(mesh, err_max, 'o', linewidth=2)  # magnify w
     # matplt.legend(["u_max vs default mesh size"], loc='best')
     matplt.grid(True)
     matplt.xlabel('Размер сетки')
     matplt.ylabel('Максимальная ошибка')
+
     file_path = 'Figures/Post_analyt/analt_errorvsmesh.png'
     matplt.savefig(file_path, dpi = DPI)
     print(colored("2D plot saved to PATH: %s" % file_path, 'green'))
