@@ -321,7 +321,6 @@ def Contour_plot(r_area, z_area, u, path, f_expr, mesh, plot_title):
     
     matplt.xlabel("r")
     matplt.ylabel("z")
-    matplt.grid()
     matplt.colorbar()
     
     Save_figure(f_expr, mesh[0], mesh[1], 'cont_title', path, plot_title)
