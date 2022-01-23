@@ -8,8 +8,11 @@ import datetime
 import sympy
 import funcs as fu
 from termcolor import colored
+import time
 
 PATH = 'Psi_input'
+t0 = time.time()
+fu.What_time_is_it(t0, 'Start')
 #%% Functions
 # # def Save_figure(addition, f_expr):
 #     # Plot solution and mesh. Save plot
@@ -33,7 +36,7 @@ PATH = 'Psi_input'
 #         plt.savefig("%s%s.png" %(path_my_file, addition), dpi = dpi) #no title figure for reports
 #%% paremeters, mesh, V, u definition
 mesh_r, mesh_z = fu.DEFAULT_MESH, fu.DEFAULT_MESH # mesh for r-z space
-area = [0, 1, -1, 1] # format is: [r1, r2, z1, z2]
+area = [0.4, 1, -1, 1] # format is: [r1, r2, z1, z2]
 rect_low = Point(area[0], area[2]) #define rectangle size: lower point
 rect_high = Point(area[1], area[3]) #define rectangle size: upper point
 
@@ -47,8 +50,14 @@ u = Function(V) # for non linear equations 'u' must be defined via Function()
 psi = sympy.symbols('u') # flux function #think tomorrow how to define argument psi!
 x = sympy.symbols('x[0]') # r coordinate. used for easy writing of expressions
 
-p_psi = pow(psi, 1) #pressure function
-F_psi = pow(psi, 1) # poloidal current function
+# p_psi = pow(psi, 1) #pressure function
+p_psi = pow(psi, 2) #pressure function
+# p_psi = 1 - pow(psi, 2) #pressure function
+
+
+# F_psi = pow(psi, 1) # poloidal current function
+# F_psi = pow(psi, 2) # poloidal current function
+F_psi = 1 - pow(psi, 2) # poloidal current function
 
 dp_psi = sympy.diff(p_psi, psi) #pressure and F deriviation
 dF_psi = sympy.diff(F_psi, psi) #compiler breaks when 
@@ -65,7 +74,8 @@ F_equat_text = sympy.printing.ccode(F_equat_text)
 
 print(colored("Right-hand side: ", 'magenta') + f_text)
 f_expr = Expression(f_text, u = u, degree = 2)
-p_equat = Expression(p_equat_text, degree = 2)
+# p_equat = Expression(p_equat_text, degree = 2)
+p_equat = Expression(p_equat_text, u = u, degree = 2)
 F_equat = Expression(F_equat_text, u = u, degree = 2)
 #%% Create problem
 #  mesh, u and V defined above
@@ -90,10 +100,8 @@ L = (f_expr)*v*dx
 # solve(a == L, u, bc)
 solve(a - L == 0, u, bc)
 #%% create a path to save my figure to. For some reason now I cant save using relative path
-mesh_title = str(mesh_r) + 'x' + str(mesh_z) + ' mesh'
-ttime = datetime.datetime.now().strftime("%d%m%Y_%H%M%S")
-time_title = str(ttime)  #get current time to make figure name unique
 
+fu.What_time_is_it(t0, 'Plotting...')
 fu.Contour_plot([area[0], area[1]], [area[2], area[3]], u, PATH, '', [mesh_r, mesh_z], '')
 # Save solution to file in VTK format
 # vtkfile = File('poisson/solution.pvd')
