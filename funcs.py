@@ -350,3 +350,22 @@ def Write2file_errors(mesh_r, mesh_z, err_L2, err_max):
     file.close()
     
     print(colored("Data saved to PATH: %s" % file_path, 'green'))
+    
+def Plot_error_vs_mesh(name): # u max as a function of mesh parameters on the same solution area
+    with open("%svsmesh.txt" % TEXT_FILE_ERROR, "r") as file:
+        data = [[float(num) for num in line.split(',')] for line in file]
+        
+    mesh = Column(data, 0) 
+    err_max = Column(data, 1)
+    err_L2 = Column(data, 2)
+    
+    matplt.scatter(mesh, err_max, linewidth=2)  # magnify w
+    # matplt.legend(["u_max vs default mesh size"], loc='best')
+    matplt.grid(True)
+    matplt.xlabel('Размер сетки')
+    matplt.ylabel('Максимальная ошибка')
+    file_path = 'Figures/Post_analyt/analt_errorvsmesh.png'
+    matplt.savefig(file_path, dpi = DPI)
+    print(colored("2D plot saved to PATH: %s" % file_path, 'green'))
+    
+    matplt.close() # close created plot
