@@ -2,7 +2,7 @@ from imports import *
 import time
 #%% Pre-programm stuff
 t0 = time.time()
-print(colored("\n---------GS_Soloviev_new.py---------", 'green'))
+print(colored("\n---------GS_MEPhIST.py---------", 'green'))
 print(colored("Date_Time is: %s" % fu.Time_name(), 'cyan'))
 PATH = 'MEPhIST'
 plot_title = 'MEPhIST'
@@ -19,12 +19,13 @@ mesh = RectangleMesh(rect_low, rect_high, mesh_r, mesh_z) # points define domain
 V = FunctionSpace(mesh, 'P', 1) # standard triangular mesh
 u_D = Expression('0', degree = 1) # Define boundary condition
 
-def boundary(x, on_boundary):
-    return on_boundary
+def Dirichlet_boundary(x, on_boundary):
+    tol = 1e-14
+    return on_boundary and (abs(x[1] - z1) < tol or abs(x[1] - z2) < tol or abs(x[0] - r2) < tol)
 
 fu.What_time_is_it(t0, 'Variational problem solved')
 
-bc = DirichletBC(V, u_D, boundary) #гран условие как в задаче дирихле
+bc = DirichletBC(V, u_D, Dirichlet_boundary) #гран условие как в задаче дирихле
 
 u = Function(V) # u must be defined as function before expression def
 v = TestFunction(V)
