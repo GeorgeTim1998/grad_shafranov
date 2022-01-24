@@ -388,4 +388,6 @@ def Hand_input():
     p_equat_text = sympy.printing.ccode(p_equat_text)
     F_equat_text = sympy.printing.ccode(F_equat_text)
     
+    print(colored("Right hand part: \n", 'magenta') + f_text)
+        
     return f_text
