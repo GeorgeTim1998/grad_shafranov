@@ -1,4 +1,5 @@
 from os import name
+from matplotlib.pyplot import contour
 
 from numpy import mat
 from imports import *
@@ -306,7 +307,7 @@ def Array_Expression(text_array):
     
     return expression_array
 
-def Contour_plot(r_area, z_area, u, path, f_expr, mesh, plot_title):
+def Contour_plot(r_area, z_area, u, path, f_expr, mesh, plot_title, contour_amount):
     tol, point_num = 0.001, DEFAULT_MESH + 1  # avoid hitting points outside the domain
     r = numpy.linspace(r_area[0] + tol, r_area[1] - tol, point_num)
     z = numpy.linspace(z_area[0] + tol, z_area[1] - tol, int(point_num*mesh[1]/mesh[0]))
@@ -317,7 +318,7 @@ def Contour_plot(r_area, z_area, u, path, f_expr, mesh, plot_title):
         for j in range(len(z)):
             u_contour[j, i] = u(r[i], z[j])
             
-    matplt.contour(r, z, u_contour, 20)
+    matplt.contour(r, z, u_contour, contour_amount)
     matplt.xlim(r_area[0], r_area[1])
     matplt.ylim(z_area[0], z_area[1])
     

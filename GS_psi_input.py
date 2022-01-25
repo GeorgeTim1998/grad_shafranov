@@ -65,4 +65,4 @@ L = (f_expr)*v*dx
 solve(a - L == 0, u, bc)
 
 fu.What_time_is_it(t0, 'Plotting...')
-fu.Contour_plot([area[0], area[1]], [area[2], area[3]], u, PATH, '', [mesh_r, mesh_z], '')
+fu.Contour_plot([area[0], area[1]], [area[2], area[3]], u, PATH, '', [mesh_r, mesh_z], '', 20)

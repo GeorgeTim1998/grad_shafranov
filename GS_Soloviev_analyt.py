@@ -13,6 +13,7 @@ import pylab as plt
 import funcs as fu
 
 PATH = 'Analytical'
+CONTOUR_AMOUNT = 25
 #%% Functions
 def Form_f_text(A1, A2):
     #A1 = 4*pi*p', A2 = FF'
@@ -101,7 +102,7 @@ def ErrorEstimate(u, u_D, mesh):
 print(colored("GS_Soloviev_analyt.py", 'green'))
 #%% paremeters definition
 mesh_min = 100
-mesh_max = 1000
+mesh_max = 200
 MESH_ARRAY = numpy.linspace(mesh_min, mesh_max, 1+int((mesh_max-mesh_min)/mesh_min))
 
 for a in MESH_ARRAY:
@@ -128,7 +129,7 @@ for a in MESH_ARRAY:
     u_D = Expression(psi_text, degree = 4) # Define boundary condition
 
     psi = interpolate(u_D, V) #plot exact solution
-    fu.Contour_plot([area[0], area[1]], [area[2], area[3]], psi, PATH, '', [mesh_r, mesh_z], '')
+    fu.Contour_plot([area[0], area[1]], [area[2], area[3]], psi, PATH, '', [mesh_r, mesh_z], '', CONTOUR_AMOUNT)
     def boundary(x, on_boundary):
         return on_boundary
 
@@ -149,4 +150,4 @@ for a in MESH_ARRAY:
     [err_L2, err_max] = ErrorEstimate(u, u_D, mesh)
     fu.Write2file_errors(mesh_r, mesh_z, err_L2, err_max)
     #%% Save output
-    fu.Contour_plot([area[0], area[1]], [area[2], area[3]], u, PATH, '', [mesh_r, mesh_z], '')
+    fu.Contour_plot([area[0], area[1]], [area[2], area[3]], u, PATH, '', [mesh_r, mesh_z], '', CONTOUR_AMOUNT)
