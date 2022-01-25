@@ -4,7 +4,7 @@ from termcolor import colored
 class PointSource:
     def __init__(self):
         # watch out for missing ',' in arrays
-        disp = 0.1
+        disp = 0.01
         self.r = [
             [0.1, 0.34],
             [0.1, -0.34],
