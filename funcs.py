@@ -10,7 +10,7 @@ TEXT_FILE_ERROR = "Text_data/error"
 TEXT_FILE_2D_PLOT = "Text_data/2Dplot"
 TWOD_PLOT_SAVE_PATH = 'Figures/Post_analyt'
 M0 = 1.25e-6
-DEFAULT_MESH = 100
+DEFAULT_MESH = 500
 
 SQ_MIN = 1
 SQ_MAX = 9
@@ -371,6 +371,9 @@ def Plot_error_vs_mesh(name): # u max as a function of mesh parameters on the sa
     matplt.close() # close created plot
     
 def Hand_input():
+    p0 = 1
+    F0 = 1
+    
     psi = sympy.symbols('u') # flux function #think tomorrow how to define argument psi!
     x = sympy.symbols('x[0]') # r coordinate. used for easy writing of expressions
 
@@ -380,7 +383,7 @@ def Hand_input():
     dp_psi = sympy.diff(p_psi, psi) #pressure and F deriviation
     dF_psi = sympy.diff(F_psi, psi) #compiler breaks when 
 
-    f_text = M0 * pow(x, 2) * dp_psi + F_psi*dF_psi #right hand expression
+    f_text = M0 * pow(x, 2) * p0 * dp_psi + F0*F0 * F_psi*dF_psi #right hand expression
     f_text = sympy.printing.ccode(f_text)
 
     p_equat_text = M0 * pow(x, 2) * dp_psi
