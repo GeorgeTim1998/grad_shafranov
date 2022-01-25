@@ -20,7 +20,9 @@ EPS = 25/13
 ALPHA = 0.4
 KAPPA = 2
 
-matplt.rcParams["font.family"] = "Times New Roman"
+FONT = {'family' : "Times New Roman",
+        'size' : 18}
+matplt.rc('font', **FONT)
 
 def Form_f_text(A1, A2):
     #A1 = mo*p', A2 = FF'
@@ -365,7 +367,7 @@ def Plot_error_vs_mesh(name): # u max as a function of mesh parameters on the sa
     matplt.ylabel('Максимальная ошибка')
 
     file_path = 'Figures/Post_analyt/analt_errorvsmesh.png'
-    matplt.savefig(file_path, dpi = DPI)
+    matplt.savefig(file_path, dpi = DPI, bbox_inches="tight")
     print(colored("2D plot saved to PATH: %s" % file_path, 'green'))
     
     matplt.close() # close created plot
