@@ -54,7 +54,7 @@ def Twod_plot(psi, x0, y1, y2, path, square_size):
     time_title = Time_name()
     
     file_path = 'Figures/%s/%s_%s.png' % (path, time_title, x0)
-    matplt.savefig(file_path, dpi = DPI)
+    matplt.savefig(file_path, dpi = DPI, bbox_inches="tight")
     matplt.close() # close created plot
     
     print(colored("2D plot saved to PATH: %s" % file_path, 'green'))
@@ -112,7 +112,7 @@ def Plot_2D_data_together(): #father
     matplt.legend()
 
     file_path = "%s/2D_plots_together_%s.png" % (TWOD_PLOT_SAVE_PATH, int(SQUARE_SIZE_ARRAY[0]))
-    matplt.savefig(file_path, dpi = 2*DPI)
+    matplt.savefig(file_path, dpi = 2*DPI, bbox_inches="tight")
     matplt.close() # close created plot
     print(colored("2D plots saved together at PATH: %s" % file_path, 'green'))
     
@@ -128,7 +128,7 @@ def Plot_2D_data_together(): #father
     matplt.legend()
     
     file_path = "%s/2D_plots_together_error_%s.png" % (TWOD_PLOT_SAVE_PATH, int(SQUARE_SIZE_ARRAY[0]))
-    matplt.savefig(file_path, dpi = 2*DPI)
+    matplt.savefig(file_path, dpi = 2*DPI, bbox_inches="tight")
     matplt.close() # close created plot
     
     print(colored("2D plots of error saved together at PATH: %s" % file_path, 'green'))
@@ -158,7 +158,7 @@ def Save_figure(f_expr, mesh_r, mesh_z, addition, PATH, plot_title):
     # matplt.title("%s - %s\n%s" % (plot_title, mesh_title, f_expr._cppcode)) # titled figure for my self
     
     file_path = "%s%s.png" % (path_my_file, addition)
-    matplt.savefig(file_path, dpi = DPI) #no title figure for reports
+    matplt.savefig(file_path, dpi = DPI, bbox_inches="tight") #no title figure for reports
     matplt.close() # close created plot
     
     print(colored("3D countour plot saved to PATH: %s" % file_path, 'green'))
@@ -200,7 +200,7 @@ def Plot_umax_vs_def_mesh(name): # u max as a function of mesh parameters on the
     matplt.xlabel('Размер сетки')
     matplt.ylabel('\u03C8')
     
-    matplt.savefig("Figures/umax_vs_mesh_%s.png" % name, dpi = DPI)
+    matplt.savefig("Figures/umax_vs_mesh_%s.png" % name, dpi = DPI, bbox_inches="tight")
     
     matplt.close() # close created plot
 
@@ -218,7 +218,7 @@ def Plot_umax_vs_square_size(name, default_mesh_size): # u max as a function of 
     matplt.ylabel('\u03C8')
     # matplt.title("Default mesh size: %d" % (default_mesh_size)) # titled figure for my self
     
-    matplt.savefig("Figures/umax_vs_sq_sz_%s_%s.png" % (name, default_mesh_size), dpi = DPI)
+    matplt.savefig("Figures/umax_vs_sq_sz_%s_%s.png" % (name, default_mesh_size), dpi = DPI, bbox_inches="tight")
     
     matplt.close() # close created plot
     
