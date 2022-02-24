@@ -8,7 +8,10 @@ PATH = 'MEPhIST'
 plot_title = 'MEPhIST'
 #%% Programm body
 default_mesh = fu.DEFAULT_MESH
-r1, z1 = 0, -0.4 # see Krat's unpublishet article
+abs_tol = 1e-10 # default = 1e-10
+rel_tol = 1e-9 # default = 1e-9
+eps = 0.005 # when zero maybe inf (1/r)
+r1, z1 = 0 + eps, -0.4 # see Krat's unpublishet article
 r2, z2 = 0.6, 0.4
 area = [r1, r2, z1, z2] # format is: [r1, r2, z1, z2]
 mesh_r, mesh_z = default_mesh, abs(int(default_mesh * (z2-z1)/(r2-r1)))
@@ -53,9 +56,17 @@ print(colored("Default mesh = %d\n" % (default_mesh), 'green'))
 a = dot(grad(u)/r, grad(r_2*v))*dx - f_expr*r*v*dx
 L = sum(point_sources)*r*v*dx
 # u = Function(V)
-solve(a == 0, u, bc)
+
+solve(a == 0, u, bc, solver_parameters={"newton_solver": {"relative_tolerance": rel_tol, "absolute_tolerance": abs_tol}})
+# solve(a == 0, u, bc, solver_parameters={"relative_tolerance": rel_tol, "absolute_tolerance": abs_tol})
 
 print(colored("Calculations, however bad, finished", 'green'))
 
 fu.Contour_plot([r1, r2], [z1,  z2], u, PATH, '', [mesh_r, mesh_z], '', 20)
 fu.What_time_is_it(t0, "3D plot of \u03C8(r, z) is plotted")
+
+# problem = NonlinearVariationalProblem(a == 0, u, bc)
+# solver = NonlinearVariationalSolver(problem)
+# solver_parameters={"relative_tolerance": rel_tol, "absolute_tolerance": abs_tol}
+# solver.parameters.update(solver_parameters)
+# solver.solve()
