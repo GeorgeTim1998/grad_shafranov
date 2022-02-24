@@ -8,8 +8,8 @@ PATH = 'MEPhIST'
 plot_title = 'MEPhIST'
 #%% Programm body
 default_mesh = fu.DEFAULT_MESH
-abs_tol = 1e-5 # default = 1e-10
-rel_tol = 1e-5 # default = 1e-9
+abs_tol = 1e-10 # default = 1e-10
+rel_tol = 1e-9 # default = 1e-9
 eps = 0.005 # when zero maybe inf (1/r)
 r1, z1 = 0 + eps, -0.4 # see Krat's unpublishet article
 r2, z2 = 0.6, 0.4
@@ -59,12 +59,12 @@ a = dot(grad(u)/r, grad(r_2*v))*dx - f_expr*r*v*dx
 # a = dot(grad(u)/r, grad(r_2*v))*dx
 # L = f_expr*r*v*dx
 
-# L = sum(point_sources)*r*v*dx
+# L = sum(point_sources)*r*v*dx 
 
 # u = Function(V)
 #%% solve
-solve(a == 0, u, bc, "linear_variational_solver")
-# solve(a == 0, u, bc, solver_parameters={"newton_solver": {"relative_tolerance": rel_tol, "absolute_tolerance": abs_tol}})
+# solve(a == 0, u, bc, "lu")
+solve(a == 0, u, bc, solver_parameters={"newton_solver": {"relative_tolerance": rel_tol, "absolute_tolerance": abs_tol}})
 # solve(a == 0, u, bc)
 # solve(a - L == 0, u, bc)
 
