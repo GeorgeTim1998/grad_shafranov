@@ -30,3 +30,8 @@
 
 $ import fenics as f
 $ f.info(f.NonlinearVariationalSolver.default_parameters(), True)
+
+У других солвером аналогично можно смотреть параметры!!!
+Также можно кастомизировать и другие параметры для конкретного солвера (там широкий спектр параметров для каждого)
+
+Jac     = derivative(T, w, dup) (пойдет?)
