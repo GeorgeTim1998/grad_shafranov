@@ -53,7 +53,9 @@ print(colored("Default mesh = %d\n" % (default_mesh), 'green'))
 a = dot(grad(u)/r, grad(r_2*v))*dx - f_expr*r*v*dx
 L = sum(point_sources)*r*v*dx
 # u = Function(V)
-solve(a- L == 0, u, bc)
+solve(a == 0, u, bc)
+
+print(colored("Calculations, however bad, finished", 'green'))
 
 fu.Contour_plot([r1, r2], [z1,  z2], u, PATH, '', [mesh_r, mesh_z], '', 20)
 fu.What_time_is_it(t0, "3D plot of \u03C8(r, z) is plotted")
