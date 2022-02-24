@@ -25,3 +25,8 @@
 # f_text = sympy.simplify(f_text) #make expression simpler then it is
 # x2 = 2*pi*pow(x, 3)+x*10+1/(x+1) #examples!
 # !!!calculate deriviation using sympy
+
+# Check additional solver parameters
+
+$ import fenics as f
+$ f.info(f.NonlinearVariationalSolver.default_parameters(), True)
