@@ -27,9 +27,10 @@
 # !!!calculate deriviation using sympy
 
 # Check additional solver parameters
-
-$ import fenics as f
-$ f.info(f.NonlinearVariationalSolver.default_parameters(), True)
+$ in console
+import fenics as f
+f.info(f.NonlinearVariationalSolver.default_parameters(), True)
+f.info(f.LinearVariationalSolver.default_parameters(), True)
 
 У других солвером аналогично можно смотреть параметры!!!
 Также можно кастомизировать и другие параметры для конкретного солвера (там широкий спектр параметров для каждого)
