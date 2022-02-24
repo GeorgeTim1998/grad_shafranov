@@ -8,6 +8,7 @@ class MEPhIST:
         self.e = self.R0/self.a # Аспектное соотношение
         
         self.B0 = 1 # Тороидальное поле на оси
+        self.F0_2 = pow(self.R0 * self.B0, 2) # Тороидальное поле на оси
         self.I = 160e3 # Ток плазмы
         
         self.p_axis = 12.5e3 # Давление плазмы на оси
