@@ -12,7 +12,7 @@ TEXT_FILE_ERROR = "Text_data/error"
 TEXT_FILE_2D_PLOT = "Text_data/2Dplot"
 TWOD_PLOT_SAVE_PATH = 'Figures/Post_analyt'
 M0 = 1.25e-6
-DEFAULT_MESH = 1400
+DEFAULT_MESH = 100
 
 SQ_MIN = 1
 SQ_MAX = 9
@@ -319,9 +319,9 @@ def Contour_plot(r_area, z_area, u, path, f_expr, mesh, plot_title, contour_amou
         for j in range(len(z)):
             u_contour[j, i] = u(r[i], z[j])
     
-    if numpy.any(u):
-        print(colored('Psi is zero everywhere!', 'red'))
-        return 0
+    # if numpy.any(u):
+    #     print(colored('Psi is zero everywhere!', 'red'))
+    #     return 0
             
     matplt.contour(r, z, u_contour, contour_amount)
     matplt.xlim(r_area[0], r_area[1])
@@ -390,7 +390,7 @@ def Hand_input():
     dp_psi = sympy.diff(p_psi, psi) #pressure and F deriviation
     dF_psi_2 = sympy.diff(F_psi_2, psi) #compiler breaks when 
 
-    f_text = M0 * pow(x, 2) * M.p_axis * dp_psi + 0.5 * M.F0_2 * dF_psi_2 #right hand expression
+    f_text = (M0 * pow(x, 2) * M.p_axis * dp_psi + 0.5 * M.F0_2 * dF_psi_2) #right hand expression
     f_text = sympy.printing.ccode(f_text)
 
     p_equat_text = M0 * pow(x, 2) * dp_psi
