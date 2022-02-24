@@ -1,6 +1,7 @@
 from os import name
 from matplotlib.pyplot import contour
 
+import MEPHIST_data as MEPH
 from numpy import mat
 from imports import *
 import time
@@ -11,7 +12,7 @@ TEXT_FILE_ERROR = "Text_data/error"
 TEXT_FILE_2D_PLOT = "Text_data/2Dplot"
 TWOD_PLOT_SAVE_PATH = 'Figures/Post_analyt'
 M0 = 1.25e-6
-DEFAULT_MESH = 500
+DEFAULT_MESH = 100
 
 SQ_MIN = 1
 SQ_MAX = 9
@@ -374,26 +375,27 @@ def Plot_error_vs_mesh(name): # u max as a function of mesh parameters on the sa
     matplt.close() # close created plot
     
 def Hand_input():
-    p0 = 1
-    F0 = 1
+    M = MEPH.MEPhIST()
     
     psi = sympy.symbols('u') # flux function #think tomorrow how to define argument psi!
     x = sympy.symbols('x[0]') # r coordinate. used for easy writing of expressions
 
-    p_psi = pow(psi, 2) #pressure function
-    F_psi = 1 - pow(psi, 2) # poloidal current function
+    p_psi = pow(psi/M.psi_axis, 2) #pressure function
+    F_psi_2 = 1 - pow(psi/M.psi_axis, 2) # poloidal current function
 
     dp_psi = sympy.diff(p_psi, psi) #pressure and F deriviation
-    dF_psi = sympy.diff(F_psi, psi) #compiler breaks when 
+    dF_psi_2 = sympy.diff(F_psi_2, psi) #compiler breaks when 
 
-    f_text = M0 * pow(x, 2) * p0 * dp_psi + F0*F0 * F_psi*dF_psi #right hand expression
+    f_text = M0 * pow(x, 2) * M.p_axis * dp_psi + 0.5 * M.F0_2 * dF_psi_2 #right hand expression
     f_text = sympy.printing.ccode(f_text)
 
     p_equat_text = M0 * pow(x, 2) * dp_psi
-    F_equat_text = F_psi * dF_psi
+    F_2_equat_text = dF_psi_2
     p_equat_text = sympy.printing.ccode(p_equat_text)
-    F_equat_text = sympy.printing.ccode(F_equat_text)
+    F_2_equat_text = sympy.printing.ccode(F_2_equat_text)
     
+    print(colored("MEPhIST data:", 'magenta')) 
+    print(M.__dict__)
     print(colored("Right hand part: \n", 'magenta') + f_text)
         
     return f_text
