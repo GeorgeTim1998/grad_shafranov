@@ -319,19 +319,21 @@ def Contour_plot(r_area, z_area, u, path, f_expr, mesh, plot_title, contour_amou
         for j in range(len(z)):
             u_contour[j, i] = u(r[i], z[j])
     
-    # if numpy.any(u):
-    #     print(colored('Psi is zero everywhere!', 'red'))
-    #     return 0
-            
-    matplt.contour(r, z, u_contour, contour_amount)
-    matplt.xlim(r_area[0], r_area[1])
-    matplt.ylim(z_area[0], z_area[1])
-    
-    matplt.xlabel("r")
-    matplt.ylabel("z")
-    matplt.colorbar()
-    
-    Save_figure(f_expr, mesh[0], mesh[1], 'cont_title', path, plot_title)
+    max_tol = 1e-6
+    if 0 <= u_contour.max() and u_contour.max() < max_tol:
+        print(colored('Psi is zero everywhere! u_max = %s' % u_contour.max(), 'red'))
+        return 0
+    else:
+        matplt.contour(r, z, u_contour, contour_amount)
+        matplt.xlim(r_area[0], r_area[1])
+        matplt.ylim(z_area[0], z_area[1])
+        
+        matplt.xlabel("r")
+        matplt.ylabel("z")
+        matplt.colorbar()
+        
+        Save_figure(f_expr, mesh[0], mesh[1], 'cont_title', path, plot_title)
+        return 0
             
 def Mesh_to_xml():
     file = File('Mesh/file.xml')
