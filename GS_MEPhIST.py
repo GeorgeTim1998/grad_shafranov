@@ -63,7 +63,7 @@ a = dot(grad(u)/r, grad(r_2*v))*dx - f_expr*r*v*dx
 
 # u = Function(V)
 #%% solve
-# solve(a == 0, u, bc, "lu")
+# solve(a == 0, u, bc)
 solve(a == 0, u, bc, solver_parameters={"newton_solver": {"relative_tolerance": rel_tol, "absolute_tolerance": abs_tol}})
 # solve(a == 0, u, bc)
 # solve(a - L == 0, u, bc)
