@@ -37,3 +37,8 @@ f.list_linear_solver_methods()
 Также можно кастомизировать и другие параметры для конкретного солвера (там широкий спектр параметров для каждого)
 
 Jac     = derivative(T, w, dup) (пойдет?)
+
+# посмотреть содержимое пакета package content
+dir(package_name)
+$ for i in dir(numpy):
+$ print(i) 
