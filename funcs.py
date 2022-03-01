@@ -386,19 +386,23 @@ def Hand_input():
     psi = sympy.symbols('u') # flux function #think tomorrow how to define argument psi!
     x = sympy.symbols('x[0]') # r coordinate. used for easy writing of expressions
 
+    # p_psi = sympy.exp( pow(psi/M.psi_axis, 2) ) #pressure function
+    # F_psi_2 = sympy.exp( 1 - pow(psi/M.psi_axis, 2) ) # poloidal current function
     p_psi = pow(psi/M.psi_axis, 2) #pressure function
     F_psi_2 = 1 - pow(psi/M.psi_axis, 2) # poloidal current function
 
     dp_psi = sympy.diff(p_psi, psi) #pressure and F deriviation
     dF_psi_2 = sympy.diff(F_psi_2, psi) #compiler breaks when 
 
-    f_text = (M0 * pow(x, 2) * M.p_axis * dp_psi + 0.5 * M.F0_2 * dF_psi_2) #right hand expression
+    f_text = (M0 * x * x * M.p_axis * dp_psi + 0.5 * M.F0_2 * dF_psi_2) #right hand expression
     f_text = sympy.printing.ccode(f_text)
+    f_text = f_text.replace('exp', 'std::exp') # reason being faulty fenics namespace
+    f_text = f_text.replace('pow', 'std::pow') # reason being faulty fenics namespace
 
-    p_equat_text = M0 * pow(x, 2) * dp_psi
-    F_2_equat_text = dF_psi_2
-    p_equat_text = sympy.printing.ccode(p_equat_text)
-    F_2_equat_text = sympy.printing.ccode(F_2_equat_text)
+    # p_equat_text = M0 * pow(x, 2) * dp_psi
+    # F_2_equat_text = dF_psi_2
+    # p_equat_text = sympy.printing.ccode(p_equat_text)
+    # F_2_equat_text = sympy.printing.ccode(F_2_equat_text)
     
     print(colored("MEPhIST data:", 'magenta')) 
     print(M.__dict__)
