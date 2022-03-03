@@ -159,7 +159,7 @@ def Save_figure(f_expr, mesh_r, mesh_z, addition, PATH, plot_title):
 
     # matplt.title("%s - %s\n%s" % (plot_title, mesh_title, f_expr._cppcode)) # titled figure for my self
     
-    file_path = "%s%s.png" % (path_my_file, addition)
+    file_path = "%s.png" % path_my_file
     matplt.savefig(file_path, dpi = DPI, bbox_inches="tight") #no title figure for reports
     matplt.close() # close created plot
     
@@ -319,7 +319,7 @@ def Contour_plot(r_area, z_area, u, path, f_expr, mesh, plot_title, contour_amou
         for j in range(len(z)):
             u_contour[j, i] = u(r[i], z[j])
     
-    max_tol = 1e-6
+    max_tol = 1e-9
     if 0 <= u_contour.max() and u_contour.max() < max_tol:
         print(colored('Psi is zero everywhere! u_max = %s' % u_contour.max(), 'red'))
         return 0
@@ -332,7 +332,7 @@ def Contour_plot(r_area, z_area, u, path, f_expr, mesh, plot_title, contour_amou
         matplt.ylabel("z")
         matplt.colorbar()
         
-        Save_figure(f_expr, mesh[0], mesh[1], 'cont_title', path, plot_title)
+        Save_figure(f_expr, mesh[0], mesh[1], '', path, plot_title)
         return 0
             
 def Mesh_to_xml():
@@ -380,7 +380,7 @@ def Plot_error_vs_mesh(name): # u max as a function of mesh parameters on the sa
     
     matplt.close() # close created plot
     
-def Hand_input():
+def Hand_input(p_pow, F_pow):
     M = MEPH.MEPhIST()
     
     psi = sympy.symbols('u') # flux function #think tomorrow how to define argument psi!
@@ -388,14 +388,14 @@ def Hand_input():
 
     # p_psi = sympy.exp( pow(psi/M.psi_axis, 2) ) #pressure function
     # F_psi_2 = sympy.exp( 1 - pow(psi/M.psi_axis, 2) ) # poloidal current function
-    p_psi = pow(psi/M.psi_axis, 1) #pressure function
-    F_psi_2 = 1 - pow(psi/M.psi_axis, 2) # poloidal current function
+    p_psi = pow(psi/M.psi_axis, int(p_pow)) #pressure function
+    F_psi_2 = 1 - pow(psi/M.psi_axis, int(F_pow)) # poloidal current function
 
     dp_psi = sympy.diff(p_psi, psi) #pressure and F deriviation
     dF_psi_2 = sympy.diff(F_psi_2, psi) #compiler breaks when 
 
-    # f_text = (M0 * pow(x, 2) * M.p_axis * dp_psi + 0.5 * M.F0_2 * dF_psi_2) #right hand expression
-    f_text = (0.5 * M.F0_2 * dF_psi_2) #right hand expression
+    f_text = (M0 * pow(x, 2) * M.p_axis * dp_psi + 0.5 * M.F0_2 * dF_psi_2) #right hand expression
+    # f_text = (0.5 * M.F0_2 * dF_psi_2) #right hand expression
     
     f_text = sympy.printing.ccode(f_text)
     f_text = f_text.replace('exp', 'std::exp') # reason being faulty fenics namespace
