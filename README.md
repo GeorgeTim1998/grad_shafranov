@@ -42,3 +42,12 @@ Jac     = derivative(T, w, dup) (пойдет?)
 dir(package_name)
 $ for i in dir(numpy):
 $ print(i) 
+
+
+# Junk from my file
+
+# problem = NonlinearVariationalProblem(a == 0, u, bc)
+# solver = NonlinearVariationalSolver(problem)
+# solver_parameters={"relative_tolerance": rel_tol, "absolute_tolerance": abs_tol}
+# solver.parameters.update(solver_parameters)
+# solver.solve()
