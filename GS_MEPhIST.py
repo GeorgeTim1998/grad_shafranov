@@ -44,17 +44,29 @@ bc = DirichletBC(V, u_D, Dirichlet_boundary) #гран условие как в 
 u = Function(V) # u must be defined as function before expression def
 v = TestFunction(V)
 
-f_text = fu.Hand_input()
-f_expr = Expression(f_text, u = u, degree = 2)
-point_sources = fu.Array_Expression(fu.ArrayOfPointSources(psd.PointSource()))
-
 r_2 = interpolate(Expression('x[0]*x[0]', degree = 2), V) # interpolation is needed so that 'a' could evaluate deriviations and such
 r = Expression('x[0]', degree = 1) # interpolation is needed so that 'a' could evaluate deriviations and such
+point_sources = fu.Array_Expression(fu.ArrayOfPointSources(psd.PointSource()))
 
 print(colored("Default mesh = %d\n" % (default_mesh), 'green'))
-# u = TrialFunction(V)
 
+#%% new solve
+f_text = fu.Hand_input(1, 2)
+f_expr = Expression(f_text, u = u, degree = 2)
 a = dot(grad(u)/r, grad(r_2*v))*dx - f_expr*r*v*dx
+solve(a == 0, u, bc, solver_parameters={"newton_solver": {"relative_tolerance": rel_tol, "absolute_tolerance": abs_tol}})
+print(colored("Solve for p_pow = 1, F_pow = 2", 'green'))
+
+fu.Contour_plot([r1, r2], [z1,  z2], u, PATH, '', [mesh_r, mesh_z], '', 20)
+fu.What_time_is_it(t0, "3D plot of \u03C8(r, z) is plotted")
+
+f_text = fu.Hand_input(2, 2)
+f_expr = Expression(f_text, u = u, degree = 2)
+a = dot(grad(u)/r, grad(r_2*v))*dx - f_expr*r*v*dx
+solve(a == 0, u, bc, solver_parameters={"newton_solver": {"relative_tolerance": rel_tol, "absolute_tolerance": abs_tol}})
+print(colored("Solve for p_pow = 2, F_pow = 2", 'green'))
+
+# u = TrialFunction(V)
 
 # a = dot(grad(u)/r, grad(r_2*v))*dx
 # L = f_expr*r*v*dx
@@ -64,7 +76,6 @@ a = dot(grad(u)/r, grad(r_2*v))*dx - f_expr*r*v*dx
 # u = Function(V)
 #%% solve
 # solve(a == 0, u, bc)
-solve(a == 0, u, bc, solver_parameters={"newton_solver": {"relative_tolerance": rel_tol, "absolute_tolerance": abs_tol}})
 # solve(a == 0, u, bc)
 # solve(a - L == 0, u, bc)
 
@@ -72,9 +83,3 @@ print(colored("Calculations, however bad, finished", 'green'))
 
 fu.Contour_plot([r1, r2], [z1,  z2], u, PATH, '', [mesh_r, mesh_z], '', 20)
 fu.What_time_is_it(t0, "3D plot of \u03C8(r, z) is plotted")
-
-# problem = NonlinearVariationalProblem(a == 0, u, bc)
-# solver = NonlinearVariationalSolver(problem)
-# solver_parameters={"relative_tolerance": rel_tol, "absolute_tolerance": abs_tol}
-# solver.parameters.update(solver_parameters)
-# solver.solve()
