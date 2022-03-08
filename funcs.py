@@ -157,7 +157,7 @@ def Save_figure(f_expr, mesh_r, mesh_z, addition, PATH, plot_title):
 
     path_my_file = 'Figures/%s/%s' % (PATH, time_title) # file path+unique time name
 
-    # matplt.title("%s - %s\n%s" % (plot_title, mesh_title, f_expr._cppcode)) # titled figure for my self
+    matplt.title("u_D = %s" % (plot_title)) # titled figure for my self
     
     file_path = "%s.png" % path_my_file
     matplt.savefig(file_path, dpi = DPI, bbox_inches="tight") #no title figure for reports
@@ -334,6 +334,7 @@ def Contour_plot(r_area, z_area, u, path, f_expr, mesh, plot_title, contour_amou
         
         print(colored('u_max = %s' % u_contour.max(), 'green'))
         print(colored('u_min = %s' % u_contour.min(), 'green'))
+        print(colored('u_max - u_min = %s' % ( u_contour.max() - u_contour.min() ), 'green'))
         
         Save_figure(f_expr, mesh[0], mesh[1], '', path, plot_title)
         return 0
