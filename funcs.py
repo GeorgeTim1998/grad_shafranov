@@ -411,3 +411,10 @@ def Hand_input(p_pow, F_pow):
     print(colored("Right hand part: \n", 'magenta') + f_text)
         
     return f_text
+
+import random 
+def Initial_guess_for_u(u, const):
+    for i in range(len(u.vector())):
+        u.vector()[i] = random.random()
+        
+    return u

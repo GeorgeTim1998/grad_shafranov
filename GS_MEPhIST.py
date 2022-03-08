@@ -50,22 +50,24 @@ point_sources = fu.Array_Expression(fu.ArrayOfPointSources(psd.PointSource()))
 
 print(colored("Default mesh = %d\n" % (default_mesh), 'green'))
 
-#%% new solve
-p_pow = 1
-F_pow = 2
-f_text = fu.Hand_input(p_pow, F_pow)
+#%% SOLVING PROBLEM#1
+# p_pow = 1
+# F_pow = 2
+# f_text = fu.Hand_input(p_pow, F_pow)
 
-f_expr = Expression(f_text, u = u, degree = 2)
-a = dot(grad(u)/r, grad(r_2*v))*dx - f_expr*r*v*dx
-solve(a == 0, u, bc, solver_parameters={"newton_solver": {"relative_tolerance": rel_tol, "absolute_tolerance": abs_tol}})
-fu.What_time_is_it(t0, "Solve for p_pow = %s, F_pow = %s" % (p_pow, F_pow))
+# f_expr = Expression(f_text, u = u, degree = 2)
+# a = dot(grad(u)/r, grad(r_2*v))*dx - f_expr*r*v*dx
+# solve(a == 0, u, bc, solver_parameters={"newton_solver": {"relative_tolerance": rel_tol, "absolute_tolerance": abs_tol}})
+# fu.What_time_is_it(t0, "Solve for p_pow = %s, F_pow = %s" % (p_pow, F_pow))
+# fu.Contour_plot([r1, r2], [z1,  z2], u, PATH, '', [mesh_r, mesh_z], '', 20)
 
 # fu.Contour_plot([r1, r2], [z1,  z2], u, PATH, '', [mesh_r, mesh_z], '', 20)
 # fu.What_time_is_it(t0, "3D plot of \u03C8(r, z) is plotted")
-
+#%% SOLVING PROBLEM#2
 p_pow = 2
 F_pow = 2
 f_text = fu.Hand_input(p_pow, F_pow)
+u = fu.Initial_guess_for_u(u, 10)
 
 f_expr = Expression(f_text, u = u, degree = 2)
 a = dot(grad(u)/r, grad(r_2*v))*dx - f_expr*r*v*dx
