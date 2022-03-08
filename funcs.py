@@ -332,6 +332,8 @@ def Contour_plot(r_area, z_area, u, path, f_expr, mesh, plot_title, contour_amou
         matplt.ylabel("z")
         matplt.colorbar()
         
+        print(colored('u_max = %s' % u_contour.max(), 'green'))
+        
         Save_figure(f_expr, mesh[0], mesh[1], '', path, plot_title)
         return 0
             
