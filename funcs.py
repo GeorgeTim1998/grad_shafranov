@@ -409,12 +409,13 @@ def Hand_input(p_pow, F_pow):
     print(colored("MEPhIST data:", 'magenta')) 
     print(M.__dict__)
     print(colored("Right hand part: \n", 'magenta') + f_text)
+    print("\n")
         
     return f_text
 
 import random 
 def Initial_guess_for_u(u, const):
     for i in range(len(u.vector())):
-        u.vector()[i] = random.random()
+        u.vector()[i] = float(10)
         
     return u
