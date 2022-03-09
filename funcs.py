@@ -11,7 +11,7 @@ M0 = 1.25e-6
 DEFAULT_MESH = 100
 
 EPS = 1e-2 # when zero maybe inf (1/r)
-R1, Z1 = 0 + EPS, -0.4 # see Krat's unpublishet article
+R1, Z1 = 0, -0.4 # see Krat's unpublishet article
 R2, Z2 = 0.6, 0.4
 #%% Plot stuff
 DPI = 200 # quality of plots
@@ -385,6 +385,13 @@ def Plot_error_vs_mesh(name): # u max as a function of mesh parameters on the sa
     print(colored("2D plot saved to PATH: %s" % file_path, 'green'))
     
     matplt.close() # close created plot
+    
+def To_float(arr):
+    arr_str = []
+    for i in arr:
+        arr_str.append(str(i))
+        
+    return arr_str
     
 def Hand_input(p_pow, F_pow):
     M = MEPH.MEPhIST()
