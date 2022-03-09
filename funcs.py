@@ -5,27 +5,29 @@ import MEPHIST_data as MEPH
 from numpy import mat
 from imports import *
 import time
+#%% Some consts
+M0 = 1.25e-6
 
+DEFAULT_MESH = 100
+
+EPS = 0.005 # when zero maybe inf (1/r)
+R1, Z1 = 0 + EPS, -0.4 # see Krat's unpublishet article
+R2, Z2 = 0.6, 0.4
+#%% Plot stuff
 DPI = 200 # quality of plots
 TEXT_FILE_U_MAX = "Text_data/func_max"
 TEXT_FILE_ERROR = "Text_data/error"
 TEXT_FILE_2D_PLOT = "Text_data/2Dplot"
 TWOD_PLOT_SAVE_PATH = 'Figures/Post_analyt'
-M0 = 1.25e-6
-DEFAULT_MESH = 100
-
+#%% Square influence  stuff
 SQ_MIN = 1
 SQ_MAX = 9
 SQUARE_SIZE_ARRAY = numpy.linspace(SQ_MIN, SQ_MAX, 1+int((SQ_MAX-SQ_MIN)/SQ_MIN))
-
-EPS = 25/13
-ALPHA = 0.4
-KAPPA = 2
-
+#%% Fonts for plots
 FONT = {'family' : "Times New Roman",
         'size' : 18}
 matplt.rc('font', **FONT)
-
+#%% Funcs
 def Form_f_text(A1, A2):
     #A1 = mo*p', A2 = FF'
     #deriviation are calculated using 'sympy' library
@@ -342,17 +344,17 @@ def Contour_plot(r_area, z_area, u, path, f_expr, mesh, plot_title, contour_amou
 def Mesh_to_xml():
     file = File('Mesh/file.xml')
 
-def D_config(smoothness):
-    tol = 0.0001
-    t = numpy.linspace(tol, math.pi - tol, smoothness)
-    x = numpy.ones(smoothness) + EPS*numpy.cos(t + ALPHA*numpy.sin(t))
-    z = EPS*KAPPA*numpy.sin(t)
+# def D_config(smoothness):
+#     tol = 0.0001
+#     t = numpy.linspace(tol, math.pi - tol, smoothness)
+#     x = numpy.ones(smoothness) + EPS*numpy.cos(t + ALPHA*numpy.sin(t))
+#     z = EPS*KAPPA*numpy.sin(t)
     
-    x = numpy.append(x, numpy.flip(x)) # move it along x axis!
-    z = numpy.append(z, numpy.flip(-z))
-    matplt.plot(x, z)
-    matplt.grid()
-    matplt.show()
+#     x = numpy.append(x, numpy.flip(x)) # move it along x axis!
+#     z = numpy.append(z, numpy.flip(-z))
+#     matplt.plot(x, z)
+#     matplt.grid()
+#     matplt.show()
     
 def Write2file_errors(mesh_r, mesh_z, err_L2, err_max):
     file_path = "%svs%s.txt" % (TEXT_FILE_ERROR, 'mesh')
@@ -423,3 +425,10 @@ def Initial_guess_for_u(u, const):
         u.vector()[i] = float(10)
         
     return u
+
+def Neumann_boundary(x, on_boundary):
+    tol = 1e-10
+    return on_boundary and (abs(x[1] - Z1) < tol or abs(x[1] - Z2) < tol or abs(x[0] - R2) < tol)
+
+def Dirichlet_boundary(x, on_boundary):
+    return on_boundary
