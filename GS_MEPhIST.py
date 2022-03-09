@@ -7,8 +7,8 @@ print(colored("Date_Time is: %s" % fu.Time_name(), 'cyan'))
 PATH = 'MEPhIST'
 #%% Geometry
 default_mesh = fu.DEFAULT_MESH
-abs_tol, rel_tol = 1e-10, 1e-9 # default = 1e-10, 1e-9
-maximum_iterations = 50
+abs_tol, rel_tol = 1e-10, 5e-6 # default = 1e-10, 1e-9
+maximum_iterations = 100
 
 eps = fu.EPS # when zero maybe inf (1/r)
 r1, z1 = fu.R1 + eps, fu.Z1 # see Krat's unpublishet article
@@ -32,7 +32,6 @@ r_2 = interpolate(Expression('x[0]*x[0]', degree = 2), V) # interpolation is nee
 r = Expression('x[0]', degree = 1) # interpolation is needed so that 'a' could evaluate deriviations and such
 point_sources = fu.Array_Expression(fu.ArrayOfPointSources(psd.PointSource()))
 
-fu.What_time_is_it(t0, 'Variational problem solved')
 print(colored("Default mesh = %d\n" % (default_mesh), 'green'))
 #%% SOLVING PROBLEM#1
 # p_pow = 1
@@ -54,6 +53,7 @@ F_pow = 2
 f_text = fu.Hand_input(p_pow, F_pow)
 u = fu.Initial_guess_for_u(u, 0)
 f_expr = Expression(f_text, u = u, degree = 2)
+fu.What_time_is_it(t0, 'Problem posted')
 #%% sources and point sources
 L = sum(point_sources)*r*v*dx 
 a = dot(grad(u)/r, grad(r_2*v))*dx - f_expr*r*v*dx - L 
@@ -68,7 +68,8 @@ solve(a == 0, u, bc, solver_parameters={"newton_solver": {"relative_tolerance": 
 # u = Function(V)
 # solve(a == L, u, bc)
 #%% Endproblem
-fu.What_time_is_it(t0, "Solve for p_pow = %s, F_pow = %s" % (p_pow, F_pow))
+fu.What_time_is_it(t0, 'Variational problem solved')
+print(colored("Solve for p_pow = %s, F_pow = %s" % (p_pow, F_pow)))
 print(colored("Calculations, however bad, finished", 'green'))
 
 plot_title = "%d, %d, Г = %.0e, %.1e" % (int(default_mesh), int(maximum_iterations), float(u_D_str), eps)
