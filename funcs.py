@@ -10,7 +10,7 @@ M0 = 1.25e-6
 
 DEFAULT_MESH = 100
 
-EPS = 0.005 # when zero maybe inf (1/r)
+EPS = 1e-2 # when zero maybe inf (1/r)
 R1, Z1 = 0 + EPS, -0.4 # see Krat's unpublishet article
 R2, Z2 = 0.6, 0.4
 #%% Plot stuff
@@ -159,7 +159,7 @@ def Save_figure(f_expr, mesh_r, mesh_z, addition, PATH, plot_title):
 
     path_my_file = 'Figures/%s/%s' % (PATH, time_title) # file path+unique time name
 
-    matplt.title("u_D = %s" % (plot_title)) # titled figure for my self
+    matplt.title(plot_title) # titled figure for my self
     
     file_path = "%s.png" % path_my_file
     matplt.savefig(file_path, dpi = DPI, bbox_inches="tight") #no title figure for reports
@@ -334,9 +334,9 @@ def Contour_plot(r_area, z_area, u, path, f_expr, mesh, plot_title, contour_amou
         matplt.ylabel("z")
         matplt.colorbar()
         
-        print(colored('u_max = %s' % u_contour.max(), 'green'))
-        print(colored('u_min = %s' % u_contour.min(), 'green'))
-        print(colored('u_max - u_min = %s' % ( u_contour.max() - u_contour.min() ), 'green'))
+        print(colored( 'u_max = ', 'green') + str(u_contour.max()) )
+        print(colored( 'u_min = ', 'green') + str(u_contour.min()) )
+        print(colored( 'u_max - u_min = ', 'green') + str(u_contour.max() - u_contour.min()) )
         
         Save_figure(f_expr, mesh[0], mesh[1], '', path, plot_title)
         return 0
@@ -419,7 +419,6 @@ def Hand_input(p_pow, F_pow):
         
     return f_text
 
-import random 
 def Initial_guess_for_u(u, const):
     for i in range(len(u.vector())):
         u.vector()[i] = float(10)
