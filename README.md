@@ -51,3 +51,12 @@ $ print(i)
 # solver_parameters={"relative_tolerance": rel_tol, "absolute_tolerance": abs_tol}
 # solver.parameters.update(solver_parameters)
 # solver.solve()
+
+More junk
+# class DirichletBoundary(SubDomain):
+#     def inside(self, x, on_boundary):
+#         tol = 1E-10   # tolerance for coordinate comparisons
+#         return on_boundary and \
+#                (abs(x[1] - z1) < tol or abs(x[1] - z2) < tol or abs(x[0] - r2) < tol)
+
+# u0_boundary = DirichletBoundary()
