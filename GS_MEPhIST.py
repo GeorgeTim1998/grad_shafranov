@@ -21,7 +21,7 @@ rect_high = Point(area[1], area[3]) #define rectangle size: upper point
 mesh = RectangleMesh(rect_low, rect_high, mesh_r, mesh_z) # points define domain size rect_low x rect_high
 V = FunctionSpace(mesh, 'P', 1) # standard triangular mesh
 #%% Boundary conditions and function space V
-u_D_str = '1e-3'
+u_D_str = '1e-5'
 u_D = Expression(u_D_str, degree = 1) # Define boundary condition
 bc = DirichletBC(V, u_D, fu.Neumann_boundary) #гран условие как в задаче дирихле
 
@@ -55,12 +55,12 @@ u = fu.Initial_guess_for_u(u, 0)
 f_expr = Expression(f_text, u = u, degree = 2)
 fu.What_time_is_it(t0, 'Problem posted')
 #%% sources and point sources
-L = sum(point_sources)*r*v*dx 
-a = dot(grad(u)/r, grad(r_2*v))*dx - f_expr*r*v*dx - L 
-solve(a == 0, u, bc, solver_parameters={"newton_solver": {"relative_tolerance": rel_tol, "absolute_tolerance": abs_tol, "maximum_iterations": maximum_iterations}})
+# L = sum(point_sources)*r*v*dx 
+# a = dot(grad(u)/r, grad(r_2*v))*dx - f_expr*r*v*dx - L 
+# solve(a == 0, u, bc, solver_parameters={"newton_solver": {"relative_tolerance": rel_tol, "absolute_tolerance": abs_tol, "maximum_iterations": maximum_iterations}})
 #%% only sources
-# a = dot(grad(u)/r, grad(r_2*v))*dx - f_expr*r*v*dx
-# solve(a == 0, u, bc, solver_parameters={"newton_solver": {"relative_tolerance": rel_tol, "absolute_tolerance": abs_tol}})
+a = dot(grad(u)/r, grad(r_2*v))*dx - f_expr*r*v*dx
+solve(a == 0, u, bc, solver_parameters={"newton_solver": {"relative_tolerance": rel_tol, "absolute_tolerance": abs_tol, "maximum_iterations": maximum_iterations}})
 #%% only point sources
 # L = sum(point_sources)*r*v*dx 
 # u = TrialFunction(V)
