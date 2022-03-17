@@ -290,7 +290,7 @@ def CreatePointSource(r, I, disp):
     pre_exp_text = sympy.printing.ccode(pre_exp) # transfer it to text
     inner_exp_text = sympy.printing.ccode(inner_exp) # transfer it to text
     
-    point_source_text = "%s*exp(%s)" % (pre_exp_text, inner_exp_text) # assemble function of the point source
+    point_source_text = "%s*std::exp(%s)" % (pre_exp_text, inner_exp_text) # assemble function of the point source
     print(colored("Point source: \n", 'magenta') + point_source_text)
     return point_source_text 
 
