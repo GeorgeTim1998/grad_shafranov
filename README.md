@@ -61,7 +61,7 @@ More junk
 
 # u0_boundary = DirichletBoundary()
 
-SQ_MIN = 2e-3
-SQ_MAX = 5e-3
+A1 = 2e-3
+A2 = 5e-3
 step = 1e-3
-SQUARE_SIZE_ARRAY = numpy.linspace(SQ_MIN, SQ_MAX, 1+int((SQ_MAX-SQ_MIN)/step))
+array = numpy.linspace(A1, A2, 1+int((A2-A1)/step))
