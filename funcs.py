@@ -5,6 +5,7 @@ import MEPHIST_data as MEPH
 from numpy import mat
 from imports import *
 import time
+import math
 #%% Some consts
 M0 = 1.25e-6
 
@@ -285,7 +286,7 @@ def CreatePointSource(r, I, disp):
     x = sympy.symbols('x[0]') # r coordinate
     z = sympy.symbols('x[1]') # r coordinate
 
-    pre_exp = M0/pi/disp/disp * I * x # in sympy write stuff that works
+    pre_exp = 2 * M0/pi/math.pow(disp, 2)/math.erfc(-r[0]/disp) * I * x # in sympy write stuff that works
     inner_exp = - (pow(x - r[0], 2) + pow(z - r[1], 2)) / pow(disp, 2) # in sympy write stuff that works
     pre_exp_text = sympy.printing.ccode(pre_exp) # transfer it to text
     inner_exp_text = sympy.printing.ccode(inner_exp) # transfer it to text
@@ -321,11 +322,11 @@ def Contour_plot(r_area, z_area, u, path, f_expr, mesh, plot_title, contour_amou
         for j in range(len(z)):
             u_contour[j, i] = u(r[i], z[j])
     
-    max_tol = 1e-9
-    if 0 <= u_contour.max() and u_contour.max() < max_tol:
-        print(colored('Psi is zero everywhere! u_max = %s' % u_contour.max(), 'red'))
+    if u_contour.max() == u_contour.min():
+        print(colored('Psi is the save everywhere!', 'red'))
         return 0
     else:
+        # levels = numpy.linspace(-0.0001, 0)
         matplt.contour(r, z, u_contour, contour_amount)
         matplt.xlim(r_area[0], r_area[1])
         matplt.ylim(z_area[0], z_area[1])
@@ -334,12 +335,12 @@ def Contour_plot(r_area, z_area, u, path, f_expr, mesh, plot_title, contour_amou
         matplt.ylabel("z")
         matplt.colorbar()
         
-        print(colored( 'u_max = ', 'green') + str(u_contour.max()) )
-        print(colored( 'u_min = ', 'green') + str(u_contour.min()) )
-        print(colored( 'u_max - u_min = ', 'green') + str(u_contour.max() - u_contour.min()) )
-        
-        Save_figure(f_expr, mesh[0], mesh[1], '', path, plot_title)
-        return 0
+    print(colored( 'u_max = ', 'green') + str(u_contour.max()) )
+    print(colored( 'u_min = ', 'green') + str(u_contour.min()) )
+    print(colored( 'u_max - u_min = ', 'green') + str(u_contour.max() - u_contour.min()) )
+    
+    Save_figure(f_expr, mesh[0], mesh[1], '', path, plot_title)
+    return 0
             
 def Mesh_to_xml():
     file = File('Mesh/file.xml')
