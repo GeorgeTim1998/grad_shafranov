@@ -18,12 +18,12 @@ class PointSource:
         self.i_disp = [
             [-alpha * 0, disp],
             [-alpha * 0, disp],
-            [-alpha * 39.1, disp],
-            [-alpha * 39.1, disp],
-            [-alpha * 62.6, disp],
-            [-alpha * 62.6, disp],
-            [-alpha * 5.3, disp],
-            [-alpha * 5.3, disp]
+            [-alpha * 3910, disp],
+            [-alpha * 3910, disp],
+            [-alpha * 6260, disp],
+            [-alpha * 6260, disp],
+            [-alpha * 530, disp],
+            [-alpha * 530, disp]
         ] #array of [current of the point source, characteristic decay distance]
         
         poor_input = (numpy.shape(self.r) != numpy.shape(self.i_disp)) # check if you input all
