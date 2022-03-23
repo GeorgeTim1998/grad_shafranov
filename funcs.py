@@ -287,11 +287,12 @@ def CreatePointSource(r, I, disp):
     z = sympy.symbols('x[1]') # r coordinate
 
     pre_exp = 2 * M0/pi/math.pow(disp, 2)/math.erfc(-r[0]/disp) * I * x # in sympy write stuff that works
-    inner_exp = - (pow(x - r[0], 2) + pow(z - r[1], 2)) / pow(disp, 2) # in sympy write stuff that works
+    inner_exp = - (pow(x - r[0], 2) + pow(z - r[1], 2)) / math.pow(disp, 2) # in sympy write stuff that works
     pre_exp_text = sympy.printing.ccode(pre_exp) # transfer it to text
     inner_exp_text = sympy.printing.ccode(inner_exp) # transfer it to text
     
     point_source_text = "%s*std::exp(%s)" % (pre_exp_text, inner_exp_text) # assemble function of the point source
+    # point_source_text = point_source_text.replace('pow', 'std::pow') # reason being faulty fenics namespace
     print(colored("Point source: \n", 'magenta') + point_source_text)
     return point_source_text 
 
@@ -326,13 +327,13 @@ def Contour_plot(r_area, z_area, u, path, f_expr, mesh, plot_title, contour_amou
         print(colored('Psi is the save everywhere!', 'red'))
         return 0
     else:
-        # levels = numpy.linspace(-0.0001, 0)
-        matplt.contour(r, z, u_contour, contour_amount)
+        levels = numpy.linspace(-1.5e-5, 0.5e-5)
+        matplt.contour(r, z, u_contour, levels)
         matplt.xlim(r_area[0], r_area[1])
         matplt.ylim(z_area[0], z_area[1])
         
-        matplt.xlabel("r")
-        matplt.ylabel("z")
+        matplt.xlabel("r, м")
+        matplt.ylabel("z, м")
         matplt.colorbar()
         
     print(colored( 'u_max = ', 'green') + str(u_contour.max()) )
