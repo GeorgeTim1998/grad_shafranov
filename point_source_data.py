@@ -5,6 +5,7 @@ class PointSource:
     def __init__(self, alpha):
         # watch out for missing ',' in arrays
         disp = 0.01
+        self.alpha = alpha
         self.r = [
             [0.1, 0.34],
             [0.1, -0.34],
@@ -16,14 +17,14 @@ class PointSource:
             [0.53, -0.185]
         ] #array of vector point sources position 
         self.i_disp = [
-            [-alpha * 0, disp],
-            [-alpha * 0, disp],
-            [-alpha * 3910, disp],
-            [-alpha * 3910, disp],
-            [-alpha * 6260, disp],
-            [-alpha * 6260, disp],
-            [-alpha * 530, disp],
-            [-alpha * 530, disp]
+            [-0, disp],
+            [-0, disp],
+            [-3910, disp],
+            [-3910, disp],
+            [-6260, disp],
+            [-6260, disp],
+            [-530, disp],
+            [-530, disp]
         ] #array of [current of the point source, characteristic decay distance]
         
         poor_input = (numpy.shape(self.r) != numpy.shape(self.i_disp)) # check if you input all
