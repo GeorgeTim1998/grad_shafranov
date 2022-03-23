@@ -15,3 +15,4 @@ fenics_contents.py
 /Mesh/
 /MEPhIST/
 GS_MEPhIST_fenplot.py
+GS_MEPhIST.ipynb
