@@ -11,9 +11,9 @@ M0 = 1.25e-6
 
 DEFAULT_MESH = 100
 
-EPS = 1e-2 # when zero maybe inf (1/r)
+EPS = 0.05 # when zero maybe inf (1/r)
 R1, Z1 = 0, -0.4 # see Krat's unpublishet article
-R2, Z2 = 0.6, 0.4
+R2, Z2 = 0.55, 0.4
 #%% Plot stuff
 DPI = 200 # quality of plots
 TEXT_FILE_U_MAX = "Text_data/func_max"
@@ -300,7 +300,7 @@ def ArrayOfPointSources(pnt_src_data):
     
     pnt_src_text = []
     for i in range(len(pnt_src_data.r)):
-        pnt_src_text.append(CreatePointSource(pnt_src_data.r[i], pnt_src_data.i_disp[i][0], pnt_src_data.i_disp[i][1]))
+        pnt_src_text.append(CreatePointSource(pnt_src_data.r[i], pnt_src_data.i_disp[i][0], pnt_src_data.alpha * pnt_src_data.i_disp[i][1]))
         
     return pnt_src_text
 
@@ -439,3 +439,6 @@ def Neumann_boundary(x, on_boundary):
 
 def Dirichlet_boundary(x, on_boundary):
     return on_boundary
+
+def print_colored(text, color):
+    print(colored(text, color))
