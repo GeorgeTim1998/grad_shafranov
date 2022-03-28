@@ -33,11 +33,7 @@ mesh_r, mesh_z = default_mesh, abs(int(default_mesh * (z2-z1)/(r2-r1)))
 rect_low = Point(area[0], area[2]) #define rectangle size: lower point
 rect_high = Point(area[1], area[3]) #define rectangle size: upper point
 
-domain = mshr.Rectangle(rect_low, rect_high)
-domain.set_subdomain( 1, mshr.Circle(Point(0.3, 0), 0.1) ) # ???
-
-mesh = mshr.generate_mesh(domain, 32)
-# mesh = RectangleMesh(rect_low, rect_high, mesh_r, mesh_z) # points define domain size rect_low x rect_high
+mesh = RectangleMesh(rect_low, rect_high, mesh_r, mesh_z) # points define domain size rect_low x rect_high
 plot(mesh)
 matplt.show()
 
@@ -116,3 +112,4 @@ for alpha in alpha_array:
     fu.Contour_plot([r1, r2], [z1,  z2], u, PATH, '', [mesh_r, mesh_z], plot_title, 20)
     fu.What_time_is_it(t0, "\u03C8(r, z) is plotted")
     logger.info("'Done'"+"\n")
+    
