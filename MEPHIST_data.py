@@ -14,7 +14,3 @@ class MEPhIST:
         self.p_axis = 12.5e3 # Давление плазмы на оси
         
         self.psi_axis = pow(self.R0, 2)*self.B0 # Пси на оси
-
-        #import MEPHIST_data as M
-        #a = M.MEPhIST()
-        # a.__dict__
