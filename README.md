@@ -46,3 +46,5 @@ step = 1e-3
 array = numpy.linspace(A1, A2, 1+int((A2-A1)/step))  
   
 if M is a class then M.__dict__  
+# Move between cells  
+cntrl+alt+[/]  
