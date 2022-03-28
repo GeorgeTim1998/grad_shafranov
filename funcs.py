@@ -167,7 +167,7 @@ def Save_figure(f_expr, mesh_r, mesh_z, addition, PATH, plot_title):
     matplt.title(plot_title) # titled figure for my self
     
     file_path = "%s.png" % path_my_file
-    logger.info(file_path + "\n")
+    logger.info(file_path)
     matplt.savefig(file_path, dpi = DPI, bbox_inches="tight") #no title figure for reports
     matplt.close() # close created plot
     

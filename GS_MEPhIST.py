@@ -105,4 +105,4 @@ for alpha in alpha_array:
     plot_title = "\u03C3*%.2e, #%d" % (alpha, int(default_mesh))
     fu.Contour_plot([r1, r2], [z1,  z2], u, PATH, '', [mesh_r, mesh_z], plot_title, 20)
     fu.What_time_is_it(t0, "\u03C8(r, z) is plotted")
-    
+    logger.info("'Done'"+"\n")
