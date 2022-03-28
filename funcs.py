@@ -9,7 +9,7 @@ import math
 #%% Some consts
 M0 = 1.25e-6
 
-DEFAULT_MESH = 100
+DEFAULT_MESH = 500
 
 EPS = 0.05 # when zero maybe inf (1/r)
 R1, Z1 = 0, -0.4 # see Krat's unpublishet article
@@ -324,11 +324,11 @@ def Contour_plot(r_area, z_area, u, path, f_expr, mesh, plot_title, contour_amou
             u_contour[j, i] = u(r[i], z[j])
     
     if u_contour.max() == u_contour.min():
-        print(colored('Psi is the save everywhere!', 'red'))
+        print(colored("\u03B1 is the save everywhere!", 'red'))
         return 0
     else:
-        levels = numpy.linspace(-1.5e-5, 0.5e-5)
-        matplt.contour(r, z, u_contour, levels)
+        levels = numpy.linspace(-7e-5, 8e-5)
+        matplt.contour(r, z, u_contour, contour_amount)
         matplt.xlim(r_area[0], r_area[1])
         matplt.ylim(z_area[0], z_area[1])
         

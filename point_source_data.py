@@ -5,6 +5,7 @@ class PointSource:
     def __init__(self, alpha):
         # watch out for missing ',' in arrays
         disp = 0.01
+        i_alpha = 1e-1
         self.alpha = alpha
         self.r = [
             [0.1, 0.34],

@@ -3,8 +3,8 @@ from imports import *
 import time
 #%% Pre-programm stuff
 t0 = time.time()
-print(colored("\n---------GS_MEPhIST.py---------", 'green'))
-print(colored("Date_Time is: %s" % fu.Time_name(), 'cyan'))
+fu.print_colored("\n---------GS_MEPhIST.py---------", 'red')
+fu.print_colored("Date_Time is: %s" % fu.Time_name(), 'cyan')
 PATH = 'MEPhIST'
 #%% Geometry
 default_mesh = fu.DEFAULT_MESH
@@ -31,14 +31,14 @@ r = Expression('x[0]', degree = 1) # interpolation is needed so that 'a' could e
 #%% Boundary conditions and function space V
 u_D_str = '0'
 u_D = Expression(u_D_str, degree = 1) # Define boundary condition
-bc = DirichletBC(V, u_D, fu.Dirichlet_boundary) #гран условие как в задаче дирихле
+bc = DirichletBC(V, u_D, fu.Neumann_boundary) #гран условие как в задаче дирихле
 
-# A1 = 0.1
-# A2 = 1
-# step = 0.1
-# alpha_array = numpy.linspace(A1, A2, 1+int((A2-A1)/step))
+A1 = 1  
+A2 = 10
+step = 1
 
-alpha_array = [1]
+alpha_array = numpy.linspace(A1, A2, 1+int((A2-A1)/step))
+alpha_array = [A1]  
 
 for alpha in alpha_array:
     point_sources = fu.Array_Expression(fu.ArrayOfPointSources(psd.PointSource(alpha)))
@@ -79,11 +79,11 @@ for alpha in alpha_array:
     # u = Function(V)
     # solve(a == L, u, bc)
     #%% Endproblem
-    print("alpha = %e" % alpha)
     fu.What_time_is_it(t0, 'Variational problem solved')
+    fu.print_colored("\u03B1 = %e" % alpha, 'green')
     fu.print_colored("Solve for p_pow = %s, F_pow = %s" % (p_pow, F_pow), 'green')
     fu.print_colored("Calculations, however bad, finished", 'green')
 
-    plot_title = "%.2e, %d, %.1e" % (alpha, int(default_mesh), eps)
+    plot_title = "\u03C3*%.2e, #%d" % (alpha, int(default_mesh))
     fu.Contour_plot([r1, r2], [z1,  z2], u, PATH, '', [mesh_r, mesh_z], plot_title, 20)
-    fu.What_time_is_it(t0, "3D plot of \u03C8(r, z) is plotted")
+    fu.What_time_is_it(t0, "\u03C8(r, z) is plotted")
