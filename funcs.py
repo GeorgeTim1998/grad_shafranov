@@ -1,15 +1,19 @@
 from os import name
 from matplotlib.pyplot import contour
-
+from pyparsing import White
 import MEPHIST_data as MEPH
 from numpy import mat
 from imports import *
 import time
 import math
+import logger
 #%% Some consts
+DIRICHLET_BOUNDARY = 'DIRICHLET_BOUNDARY'
+NEUMANN_BOUNDARY = 'NEUMANN_BOUNDARY'
+
 M0 = 1.25e-6
 
-DEFAULT_MESH = 500
+DEFAULT_MESH = 100
 
 EPS = 0.05 # when zero maybe inf (1/r)
 R1, Z1 = 0, -0.4 # see Krat's unpublishet article
@@ -163,6 +167,7 @@ def Save_figure(f_expr, mesh_r, mesh_z, addition, PATH, plot_title):
     matplt.title(plot_title) # titled figure for my self
     
     file_path = "%s.png" % path_my_file
+    logger.info(file_path + "\n")
     matplt.savefig(file_path, dpi = DPI, bbox_inches="tight") #no title figure for reports
     matplt.close() # close created plot
     
@@ -292,12 +297,20 @@ def CreatePointSource(r, I, disp):
     inner_exp_text = sympy.printing.ccode(inner_exp) # transfer it to text
     
     point_source_text = "%s*std::exp(%s)" % (pre_exp_text, inner_exp_text) # assemble function of the point source
+    logger.log_n_output(point_source_text,'white')
     # point_source_text = point_source_text.replace('pow', 'std::pow') # reason being faulty fenics namespace
-    print(colored("Point source: \n", 'magenta') + point_source_text)
+    
     return point_source_text 
 
 def ArrayOfPointSources(pnt_src_data):
     #create an array of all point source text expressions 
+    
+    logger.info('Point sources params:')
+    logger.info('r')
+    logger.info(pnt_src_data.r)
+    logger.info('I & disp')
+    logger.info(pnt_src_data.i_disp)
+    logger.log_n_output("Point sources:", 'magenta')
     
     pnt_src_text = []
     for i in range(len(pnt_src_data.r)):
@@ -397,12 +410,12 @@ def To_float(arr):
     
 def Hand_input(p_pow, F_pow):
     M = MEPH.MEPhIST()
+    print_colored("MEPhIST data:", 'magenta')
+    logger.log_n_output(M.__dict__, 'white')
     
     psi = sympy.symbols('u') # flux function #think tomorrow how to define argument psi!
     x = sympy.symbols('x[0]') # r coordinate. used for easy writing of expressions
 
-    # p_psi = sympy.exp( pow(psi/M.psi_axis, 2) ) #pressure function
-    # F_psi_2 = sympy.exp( 1 - pow(psi/M.psi_axis, 2) ) # poloidal current function
     p_psi = pow(psi/M.psi_axis, int(p_pow)) #pressure function
     F_psi_2 = 1 - pow(psi/M.psi_axis, int(F_pow)) # poloidal current function
 
@@ -410,22 +423,14 @@ def Hand_input(p_pow, F_pow):
     dF_psi_2 = sympy.diff(F_psi_2, psi) #compiler breaks when 
 
     f_text = (M0 * pow(x, 2) * M.p_axis * dp_psi + 0.5 * M.F0_2 * dF_psi_2) #right hand expression
-    # f_text = (0.5 * M.F0_2 * dF_psi_2) #right hand expression
     
     f_text = sympy.printing.ccode(f_text)
     f_text = f_text.replace('exp', 'std::exp') # reason being faulty fenics namespace
     # f_text = f_text.replace('pow', 'std::pow') # reason being faulty fenics namespace
 
-    # p_equat_text = M0 * pow(x, 2) * dp_psi
-    # F_2_equat_text = dF_psi_2
-    # p_equat_text = sympy.printing.ccode(p_equat_text)
-    # F_2_equat_text = sympy.printing.ccode(F_2_equat_text)
-    
-    print(colored("MEPhIST data:", 'magenta')) 
-    print(M.__dict__)
-    print(colored("Right hand part: \n", 'magenta') + f_text)
-    print("\n")
-        
+    logger.log_n_output("Right hand part: ", 'magenta')
+    logger.log_n_output(f_text, 'white')
+
     return f_text
 
 def Initial_guess_for_u(u, const):
