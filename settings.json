@@ -1,15 +1,16 @@
 {
-    "editor.tokenColorCustomizations": {
-        "[Default Dark+]": {
-            "textMateRules": [
-                {
-                    "scope": "markup.heading.python.cell.splitter",
-                    "settings": {
-                        "fontStyle": "bold",
-                        "foreground": "#40b903"
-                    }
-                }
-            ]
-        }
-    }
+    // "editor.tokenColorCustomizations": {
+    //     "[Default Dark+]": {
+    //         "textMateRules": [
+    //             {
+    //                 "scope": "markup.heading.python.cell.splitter",
+    //                 "settings": {
+    //                     "fontStyle": "bold",
+    //                     "foreground": "#FF0000"
+    //                 }
+    //             }
+    //         ]
+    //     }
+    // },
+    "editor.lineHighlightBorder": "#FF0000"
 }
