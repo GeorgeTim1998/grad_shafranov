@@ -348,10 +348,11 @@ def Contour_plot(r_area, z_area, u, path, f_expr, mesh, plot_title, contour_amou
         matplt.xlabel("r, м")
         matplt.ylabel("z, м")
         matplt.colorbar()
+        matplt.gca().set_aspect("equal")
         
-    print(colored( 'u_max = ', 'green') + str(u_contour.max()) )
-    print(colored( 'u_min = ', 'green') + str(u_contour.min()) )
-    print(colored( 'u_max - u_min = ', 'green') + str(u_contour.max() - u_contour.min()) )
+    print( colored( 'u_max = ', 'green') + str(u_contour.max()) )
+    print( colored( 'u_min = ', 'green') + str(u_contour.min()) )
+    print( colored( 'u_max - u_min = ', 'green') + str(u_contour.max() - u_contour.min()) )
     
     Save_figure(f_expr, mesh[0], mesh[1], '', path, plot_title)
     return 0
