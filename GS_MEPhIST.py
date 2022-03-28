@@ -1,7 +1,11 @@
+#%% Imports
+from matplotlib import interactive
+from sympy import true
 from funcs import print_colored
 from imports import *
 import time
 import logger
+import mshr
 #%% Pre-programm stuff
 t0 = time.time()
 current_pyfile = '---------GS_MEPhIST.py---------'
@@ -18,22 +22,27 @@ logger.info('Newton Solver params: abs_tol = %e, rel_tol = %e, max_iter = %d' % 
 eps = fu.EPS # when zero maybe inf (1/r)
 r1, z1 = fu.R1 + eps, fu.Z1 # see Krat's unpublishet article
 r2, z2 = fu.R2, fu.Z2
-boundary = fu.NEUMANN_BOUNDARY
+area = [r1, r2, z1, z2] # format is: [r1, r2, z1, z2]
 
 logger.log_n_output('DEFAULT_MESH = %d' % default_mesh, 'green')
 logger.info('(R1 +) EPS = %f' % eps)
 logger.info('R1 = %f, Z1 = %f' % (r1, z1))
 logger.info('R2 = %f, Z2 = %f' % (r2, z2))
 
-area = [r1, r2, z1, z2] # format is: [r1, r2, z1, z2]
-
 mesh_r, mesh_z = default_mesh, abs(int(default_mesh * (z2-z1)/(r2-r1)))
 rect_low = Point(area[0], area[2]) #define rectangle size: lower point
 rect_high = Point(area[1], area[3]) #define rectangle size: upper point
 
-mesh = RectangleMesh(rect_low, rect_high, mesh_r, mesh_z) # points define domain size rect_low x rect_high
-V = FunctionSpace(mesh, 'P', 1) # standard triangular mesh
+domain = mshr.Rectangle(rect_low, rect_high)
+domain.set_subdomain( 1, mshr.Circle(Point(0.3, 0), 0.1) ) # ???
 
+mesh = mshr.generate_mesh(domain, 32)
+# mesh = RectangleMesh(rect_low, rect_high, mesh_r, mesh_z) # points define domain size rect_low x rect_high
+plot(mesh)
+matplt.show()
+
+V = FunctionSpace(mesh, 'P', 1) # standard triangular mesh
+#%% Define funcs and weights
 u = Function(V) # u must be defined as function before expression def
 v = TestFunction(V)
 
@@ -42,6 +51,7 @@ r = Expression('x[0]', degree = 1) # interpolation is needed so that 'a' could e
 #%% Boundary conditions and function space V
 u_D_str = '0'
 u_D = Expression(u_D_str, degree = 1) # Define boundary condition
+boundary = fu.NEUMANN_BOUNDARY
 logger.info('u_D = %s' % u_D_str)
 
 if boundary == fu.DIRICHLET_BOUNDARY:
@@ -50,8 +60,8 @@ if boundary == fu.DIRICHLET_BOUNDARY:
 else:
     bc = DirichletBC(V, u_D, fu.Neumann_boundary) #гран условие как в задаче дирихле
     logger.info(fu.NEUMANN_BOUNDARY)
-
-A1 = 1  
+#%% Problem solve
+A1 = 1 
 A2 = 10
 step = 1
 
