@@ -1,0 +1,15 @@
+{
+    "editor.tokenColorCustomizations": {
+        "[Default Dark+]": {
+            "textMateRules": [
+                {
+                    "scope": "markup.heading.python.cell.splitter",
+                    "settings": {
+                        "fontStyle": "bold",
+                        "foreground": "#40b903"
+                    }
+                }
+            ]
+        }
+    }
+}
