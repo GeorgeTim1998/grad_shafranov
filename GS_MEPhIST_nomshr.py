@@ -8,7 +8,7 @@ import logger
 import mshr
 #%% Pre-programm stuff
 t0 = time.time()
-current_pyfile = '---------GS_MEPhIST.py---------'
+current_pyfile = '---------GS_MEPhIST_nomshr.py---------'
 logger.log_n_output("%s" % current_pyfile, 'red')
 fu.print_colored("Date_Time is: %s" % fu.Time_name(), 'cyan')
 PATH = 'MEPhIST'
@@ -34,8 +34,6 @@ rect_low = Point(area[0], area[2]) #define rectangle size: lower point
 rect_high = Point(area[1], area[3]) #define rectangle size: upper point
 
 mesh = RectangleMesh(rect_low, rect_high, mesh_r, mesh_z) # points define domain size rect_low x rect_high
-plot(mesh)
-matplt.show()
 
 V = FunctionSpace(mesh, 'P', 1) # standard triangular mesh
 #%% Define funcs and weights
@@ -47,7 +45,7 @@ r = Expression('x[0]', degree = 1) # interpolation is needed so that 'a' could e
 #%% Boundary conditions and function space V
 u_D_str = '0'
 u_D = Expression(u_D_str, degree = 1) # Define boundary condition
-boundary = fu.NEUMANN_BOUNDARY
+boundary = fu.DIRICHLET_BOUNDARY
 logger.info('u_D = %s' % u_D_str)
 
 if boundary == fu.DIRICHLET_BOUNDARY:

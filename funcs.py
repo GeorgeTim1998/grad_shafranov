@@ -16,12 +16,12 @@ NEUMANN_BOUNDARY = 'NEUMANN_BOUNDARY'
 
 M0 = 1.25e-6
 
-DEFAULT_MESH = 50
-MESH_DENSITY = 3
+DEFAULT_MESH = 500
+MESH_DENSITY = 60
 
 EPS = 0.05 # when zero maybe inf (1/r)
-R1, Z1 = 0, -0.45 # see Krat's unpublishet article
-R2, Z2 = 0.60, 0.45
+R1, Z1 = 0, -0.4 # see Krat's unpublishet article
+R2, Z2 = 0.55, 0.4
 #%% Plot stuff
 DPI = 200 # quality of plots
 TEXT_FILE_U_MAX = "Text_data/func_max"
@@ -344,8 +344,8 @@ def Contour_plot(r_area, z_area, u, path, f_expr, mesh, plot_title, contour_amou
         print(colored("\u03B1 is the save everywhere!", 'red'))
         return 0
     else:
-        levels = numpy.linspace(-7e-5, 8e-5)
-        matplt.contour(r, z, u_contour, contour_amount)
+        levels = numpy.linspace(-6e-5, 18e-5)
+        matplt.contour(r, z, u_contour, levels)
         matplt.xlim(r_area[0], r_area[1])
         matplt.ylim(z_area[0], z_area[1])
         
