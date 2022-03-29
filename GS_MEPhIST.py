@@ -55,7 +55,7 @@ r = Expression('x[0]', degree = 1) # interpolation is needed so that 'a' could e
 #%% Boundary conditions and function space V
 u_D_str = '0'
 u_D = Expression(u_D_str, degree = 1) # Define boundary condition
-boundary = fu.NEUMANN_BOUNDARY
+boundary = fu.DIRICHLET_BOUNDARY
 logger.info('u_D = %s' % u_D_str)
 
 if boundary == fu.DIRICHLET_BOUNDARY:
