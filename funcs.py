@@ -1,4 +1,5 @@
 from os import name
+from turtle import circle
 from matplotlib.pyplot import contour
 from pyparsing import White
 import MEPHIST_data as MEPH
@@ -6,18 +7,21 @@ from numpy import mat
 from imports import *
 import time
 import math
+import point_source_data as psd
 import logger
+import mshr
 #%% Some consts
 DIRICHLET_BOUNDARY = 'DIRICHLET_BOUNDARY'
 NEUMANN_BOUNDARY = 'NEUMANN_BOUNDARY'
 
 M0 = 1.25e-6
 
-DEFAULT_MESH = 100
+DEFAULT_MESH = 50
+MESH_DENSITY = 3
 
 EPS = 0.05 # when zero maybe inf (1/r)
-R1, Z1 = 0, -0.4 # see Krat's unpublishet article
-R2, Z2 = 0.55, 0.4
+R1, Z1 = 0, -0.45 # see Krat's unpublishet article
+R2, Z2 = 0.60, 0.45
 #%% Plot stuff
 DPI = 200 # quality of plots
 TEXT_FILE_U_MAX = "Text_data/func_max"
@@ -30,7 +34,7 @@ SQ_MAX = 9
 SQUARE_SIZE_ARRAY = numpy.linspace(SQ_MIN, SQ_MAX, 1+int((SQ_MAX-SQ_MIN)/SQ_MIN))
 #%% Fonts for plots
 FONT = {'family' : "Times New Roman",
-        'size' : 18}
+        'size' : 9}
 matplt.rc('font', **FONT)
 #%% Funcs
 def Form_f_text(A1, A2):
@@ -449,3 +453,63 @@ def Dirichlet_boundary(x, on_boundary):
 
 def print_colored(text, color):
     print(colored(text, color))
+    
+def refine_mesh(mesh, domains_amount):
+    cell_markers = MeshFunction("bool", mesh, mesh.topology().dim(), False)
+    cell_markers.set_all(False)
+    for i in range(domains_amount):
+        submesh = SubMesh(mesh, i+1)
+        [cell_markers, global_mesh_index] = refine_subdomain(mesh, submesh, cell_markers) #domain numbering starts wwith 1
+    
+    mesh = refine(mesh, cell_markers)
+    logger.info("Mesh refined: %s" % str(global_mesh_index))
+    logger.info("After refinement. Number of cells: %d, Number of vertices: %d" % (mesh.num_cells(), mesh.num_vertices()))
+    
+    return mesh
+
+def refine_subdomain(mesh, submesh, cell_markers):
+    bound_box = mesh.bounding_box_tree()
+    global_mesh_index = []
+    
+    for cell in cells(submesh):
+        global_mesh_index.append( bound_box.compute_first_entity_collision(cell.midpoint()) )
+    
+    for cell in cells(mesh):
+        if cell.index() in global_mesh_index:
+            cell_markers[cell] = True
+    
+    return cell_markers, global_mesh_index
+
+def Create_Subdomain(r, disp, segments):
+    circle = mshr.Circle(Point(r[0], r[1]), disp*3, segments=segments)
+    logger.info("Created subdomain: %s, r=%e, segments=%d" % (str(r), disp*3, segments))
+    
+    return circle
+
+def Create_Subdomains(alpha, segments):
+    circle_list = []
+    ps_d = psd.PointSource(alpha)
+    
+    for i in range(len(ps_d.r)):
+        if abs( ps_d.i_disp[i][0] ) > 1e-6:
+            circle_list.append( Create_Subdomain(ps_d.r[i], ps_d.i_disp[i][1] * ps_d.alpha, segments) )
+    
+    return circle_list
+
+def Set_Subdomains(domain, alpha, segments):
+    circle_list = Create_Subdomains(alpha, segments)
+    for i in range(len(circle_list)):
+        domain.set_subdomain( i+1, circle_list[i] )
+        
+    return domain, len(circle_list)
+
+def plot_mesh(mesh, path):
+    plot(mesh)
+    
+    matplt.xlabel("r, м")
+    matplt.ylabel("z, м")
+    matplt.gca().set_aspect("equal")
+    
+    Save_figure( '', 100, 100, '', path, "" )
+    
+    return 0

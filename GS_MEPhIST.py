@@ -1,7 +1,4 @@
 #%% Imports
-from matplotlib import interactive
-from sympy import true
-from funcs import print_colored
 from imports import *
 import time
 import logger
@@ -32,14 +29,21 @@ logger.info('R2 = %f, Z2 = %f' % (r2, z2))
 mesh_r, mesh_z = default_mesh, abs(int(default_mesh * (z2-z1)/(r2-r1)))
 rect_low = Point(area[0], area[2]) #define rectangle size: lower point
 rect_high = Point(area[1], area[3]) #define rectangle size: upper point
+#%% Add subdomains and refine them
+segments = 10 # amount of points on circle boundary
+mesh_density = fu.MESH_DENSITY
+
+# mesh = RectangleMesh(rect_low, rect_high, mesh_r, mesh_z) # points define domain size rect_low x rect_high
+# logger.info("Before refinement. Number of cells: %d, Number of vertices: %d" % (mesh.num_cells(), mesh.num_vertices()))
 
 domain = mshr.Rectangle(rect_low, rect_high)
-domain.set_subdomain( 1, mshr.Circle(Point(0.3, 0), 0.1) ) # ???
+[domain, domains_amount] = fu.Set_Subdomains(domain, 1, segments)
+mesh = mshr.generate_mesh(domain, mesh_density)
+logger.info("Before refinement. Number of cells: %d, Number of vertices: %d" % (mesh.num_cells(), mesh.num_vertices()))
 
-mesh = mshr.generate_mesh(domain, 32)
-# mesh = RectangleMesh(rect_low, rect_high, mesh_r, mesh_z) # points define domain size rect_low x rect_high
-plot(mesh)
-matplt.show()
+mesh = fu.refine_mesh(mesh, domains_amount)
+
+fu.plot_mesh(mesh, PATH)
 
 V = FunctionSpace(mesh, 'P', 1) # standard triangular mesh
 #%% Define funcs and weights
