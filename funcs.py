@@ -14,10 +14,15 @@ import mshr
 DIRICHLET_BOUNDARY = 'DIRICHLET_BOUNDARY'
 NEUMANN_BOUNDARY = 'NEUMANN_BOUNDARY'
 
+SOLVE_PLASMA_POINT_SOURCES = 1
+SOLVE_PLASMA = 2
+SOLVE_POINT_SOURCES = 3
+SOLVE_PLASMA_POINT_SOURCES_EXPLICIT = 4
+
 M0 = 1.25e-6
 
-DEFAULT_MESH = 500
-MESH_DENSITY = 20
+DEFAULT_MESH = 500 # for mesher characterized by 2 params
+MESH_DENSITY = 20 # for mesher characterized by 1 param
 
 EPS = 0.05 # when zero maybe inf (1/r)
 R1, Z1 = 0, -0.4 # see Krat's unpublishet article
