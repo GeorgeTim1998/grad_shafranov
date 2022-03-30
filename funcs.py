@@ -346,7 +346,14 @@ def Contour_plot(r_area, z_area, u, path, f_expr, mesh, plot_title, contour_amou
             u_contour[j, i] = u(r[i], z[j])
     
     if u_contour.max() == u_contour.min():
-        print(colored("\u03B1 is the save everywhere!", 'red'))
+        print(colored("\u03C8 is the save everywhere!", 'red'))
+        print( colored( 'u_max = ', 'green') + str(u.vector()[:].max()) )
+        print( colored( 'u_min = ', 'green') + str(u.vector()[:].min()) )
+        print( colored( 'u_max - u_min = ', 'green') + str(u.vector()[:].max() - u.vector()[:].min()) )
+        
+        logger.info( "u_max = %s" % str(u.vector()[:].max()) )
+        logger.info( "u_min = %s" % str(u.vector()[:].min()) )
+        logger.info( "u_max - u_min = %s" % str(u.vector()[:].max() - u.vector()[:].min()) )
         return 0
     else:
         levels = numpy.linspace(-6e-5, 18e-5)
