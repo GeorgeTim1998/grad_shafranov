@@ -34,6 +34,7 @@ rect_low = Point(area[0], area[2]) #define rectangle size: lower point
 rect_high = Point(area[1], area[3]) #define rectangle size: upper point
 
 mesh = RectangleMesh(rect_low, rect_high, mesh_r, mesh_z) # points define domain size rect_low x rect_high
+logger.info("Number of cells: %d, Number of vertices: %d" % (mesh.num_cells(), mesh.num_vertices()))
 
 V = FunctionSpace(mesh, 'P', 1) # standard triangular mesh
 #%% Define funcs and weights
@@ -55,7 +56,9 @@ else:
     bc = DirichletBC(V, u_D, fu.Neumann_boundary) #гран условие как в задаче дирихле
     logger.info(fu.NEUMANN_BOUNDARY)
 #%% Problem solve
-todo = fu.SOLVE_PLASMA_POINT_SOURCES
+todo = fu.SOLVE_PLASMA_POINT_SOURCES_EXPLICIT
+logger.info("We are doing: %s" % str(todo))
+fu.print_colored(todo, 'green')
 
 p_pow = 2
 F_pow = 2
@@ -72,27 +75,28 @@ step = 1
 alpha_array = numpy.linspace(A1, A2, 1+int((A2-A1)/step))
 alpha_array = [A1]  
 
+fu.What_time_is_it(t0, 'Problem posted')
+
 for alpha in alpha_array:
     point_sources = fu.Array_Expression(fu.ArrayOfPointSources(psd.PointSource(alpha)))
-
-    #%% SOLVING PROBLEM#2
-
-    fu.What_time_is_it(t0, 'Problem posted')
-    #%% sources and point sources
     L = sum(point_sources)*r*v*dx 
-    # a = dot(grad(u)/r, grad(r_2*v))*dx - f_expr*r*v*dx - L 
-    a = dot(grad(u)/r, grad(r_2*v))*dx - (8.0*u*r_2 - 16.0*u)*r*v*dx - L 
-    solve(a == 0, u, bc, solver_parameters={"newton_solver": {"relative_tolerance": rel_tol, "absolute_tolerance": abs_tol, "maximum_iterations": maximum_iterations}})
-    #%% only sources
-    # a = dot(grad(u)/r, grad(r_2*v))*dx - f_expr*r*v*dx
-    # solve(a == 0, u, bc, solver_parameters={"newton_solver": {"relative_tolerance": rel_tol, "absolute_tolerance": abs_tol, "maximum_iterations": maximum_iterations}})
-    #%% only point sources
-    # L = sum(point_sources)*r*v*dx 
-    # u = TrialFunction(V)
-    # a = dot(grad(u)/r, grad(r_2*v))*dx 
-    # u = Function(V)
-    # solve(a == L, u, bc)
-    #%% Endproblem
+
+    if todo == fu.SOLVE_PLASMA_POINT_SOURCES:
+        a = dot(grad(u)/r, grad(r_2*v))*dx - f_expr*r*v*dx - L 
+        solve(a == 0, u, bc, solver_parameters={"newton_solver": {"relative_tolerance": rel_tol, "absolute_tolerance": abs_tol, "maximum_iterations": maximum_iterations}})
+    elif todo == fu.SOLVE_PLASMA:
+        a = dot(grad(u)/r, grad(r_2*v))*dx - f_expr*r*v*dx
+        solve(a == 0, u, bc, solver_parameters={"newton_solver": {"relative_tolerance": rel_tol, "absolute_tolerance": abs_tol, "maximum_iterations": maximum_iterations}})
+    else:
+        if todo == fu.SOLVE_PLASMA_POINT_SOURCES:
+            u = TrialFunction(V)
+            a = dot(grad(u)/r, grad(r_2*v))*dx 
+            u = Function(V)
+            solve(a == L, u, bc)
+        elif todo == fu.SOLVE_PLASMA_POINT_SOURCES_EXPLICIT:
+            a = dot(grad(u)/r, grad(r_2*v))*dx - (8.0*u*r_2 - 16.0*u)*r*v*dx - L 
+            solve(a == 0, u, bc, solver_parameters={"newton_solver": {"relative_tolerance": rel_tol, "absolute_tolerance": abs_tol, "maximum_iterations": maximum_iterations}})
+#%% Endproblem
     fu.What_time_is_it(t0, 'Variational problem solved')
     logger.log_n_output("(\u03C3*)\u03B1 = %e" % alpha, 'green')
     fu.print_colored("Solve for p_pow = %s, F_pow = %s" % (p_pow, F_pow), 'green')
