@@ -5,11 +5,13 @@ from funcs import print_colored
 from imports import *
 import time
 import logger
+import logging
 import mshr
 #%% Pre-programm stuff
 t0 = time.time()
 current_pyfile = '---------GS_MEPhIST_nomshr.py---------'
 logger.log_n_output("%s" % current_pyfile, 'red')
+logging.getLogger('FFC').setLevel(logging.WARNING)
 fu.print_colored("Date_Time is: %s" % fu.Time_name(), 'cyan')
 PATH = 'MEPhIST'
 #%% Geometry
@@ -55,7 +57,7 @@ if boundary == fu.DIRICHLET_BOUNDARY:
 else:
     bc = DirichletBC(V, u_D, fu.Neumann_boundary) #гран условие как в задаче дирихле
     logger.info(fu.NEUMANN_BOUNDARY)
-#%% Problem solve
+#%% Problem pre-solve
 todo = fu.SOLVE_PLASMA_POINT_SOURCES_EXPLICIT
 logger.info("We are doing: %s" % str(todo))
 fu.print_colored(todo, 'green')
@@ -76,7 +78,7 @@ alpha_array = numpy.linspace(A1, A2, 1+int((A2-A1)/step))
 alpha_array = [A1]  
 
 fu.What_time_is_it(t0, 'Problem posted')
-
+#%% Problem solve
 for alpha in alpha_array:
     point_sources = fu.Array_Expression(fu.ArrayOfPointSources(psd.PointSource(alpha)))
     L = sum(point_sources)*r*v*dx 
@@ -94,8 +96,12 @@ for alpha in alpha_array:
             u = Function(V)
             solve(a == L, u, bc)
         elif todo == fu.SOLVE_PLASMA_POINT_SOURCES_EXPLICIT:
-            a = dot(grad(u)/r, grad(r_2*v))*dx - (8.0*u*r_2 - 16.0*u)*r*v*dx - L 
-            solve(a == 0, u, bc, solver_parameters={"newton_solver": {"relative_tolerance": rel_tol, "absolute_tolerance": abs_tol, "maximum_iterations": maximum_iterations}})
+            u = TrialFunction(V)
+            a = dot(grad(u)/r, grad(r_2*v))*dx - (8.0*u*r_2 - 16.0*u)*r*v*dx
+            u = Function(V)
+            solve(a == L, u, bc)
+            # a = dot(grad(u)/r, grad(r_2*v))*dx - (8.0*u*r_2 - 16.0*u)*r*v*dx - L 
+            # solve(a == 0, u, bc, solver_parameters={"newton_solver": {"relative_tolerance": rel_tol, "absolute_tolerance": abs_tol, "maximum_iterations": maximum_iterations}})
 #%% Endproblem
     fu.What_time_is_it(t0, 'Variational problem solved')
     logger.log_n_output("(\u03C3*)\u03B1 = %e" % alpha, 'green')
@@ -106,4 +112,3 @@ for alpha in alpha_array:
     fu.Contour_plot([r1, r2], [z1,  z2], u, PATH, '', [mesh_r, mesh_z], plot_title, 20)
     fu.What_time_is_it(t0, "\u03C8(r, z) is plotted")
     logger.info("'Done'"+"\n")
-    
