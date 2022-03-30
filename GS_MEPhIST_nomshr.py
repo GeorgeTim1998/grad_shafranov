@@ -12,6 +12,7 @@ t0 = time.time()
 current_pyfile = '---------GS_MEPhIST_nomshr.py---------'
 logger.log_n_output("%s" % current_pyfile, 'red')
 logging.getLogger('FFC').setLevel(logging.WARNING)
+logging.getLogger('UFL').setLevel(logging.WARNING)
 fu.print_colored("Date_Time is: %s" % fu.Time_name(), 'cyan')
 PATH = 'MEPhIST'
 #%% Geometry
@@ -58,7 +59,7 @@ else:
     bc = DirichletBC(V, u_D, fu.Neumann_boundary) #гран условие как в задаче дирихле
     logger.info(fu.NEUMANN_BOUNDARY)
 #%% Problem pre-solve
-todo = fu.SOLVE_PLASMA_POINT_SOURCES_EXPLICIT
+todo = fu.SOLVE_PLASMA
 logger.info("We are doing: %s" % str(todo))
 fu.print_colored(todo, 'green')
 
@@ -68,7 +69,7 @@ logger.info("p_pow = %d, F_pow = %d" % (p_pow, F_pow))
 f_text = fu.Hand_input(p_pow, F_pow)
 
 f_expr = Expression(f_text, u = u, degree = 2)
-u = fu.Initial_guess_for_u(u, 0)
+u = fu.Initial_guess_for_u(u, 10)
 
 A1 = 1 
 A2 = 10
@@ -87,7 +88,7 @@ for alpha in alpha_array:
         a = dot(grad(u)/r, grad(r_2*v))*dx - f_expr*r*v*dx - L 
         solve(a == 0, u, bc, solver_parameters={"newton_solver": {"relative_tolerance": rel_tol, "absolute_tolerance": abs_tol, "maximum_iterations": maximum_iterations}})
     elif todo == fu.SOLVE_PLASMA:
-        a = dot(grad(u)/r, grad(r_2*v))*dx - f_expr*r*v*dx
+        a = dot(grad(u)/r, grad(r_2*v))*dx - (8.0*u*r*r - 16.0*u)*r*v*dx
         solve(a == 0, u, bc, solver_parameters={"newton_solver": {"relative_tolerance": rel_tol, "absolute_tolerance": abs_tol, "maximum_iterations": maximum_iterations}})
     else:
         if todo == fu.SOLVE_PLASMA_POINT_SOURCES:
@@ -97,7 +98,7 @@ for alpha in alpha_array:
             solve(a == L, u, bc)
         elif todo == fu.SOLVE_PLASMA_POINT_SOURCES_EXPLICIT:
             u = TrialFunction(V)
-            a = dot(grad(u)/r, grad(r_2*v))*dx - (8.0*u*r_2 - 16.0*u)*r*v*dx
+            a = dot(grad(u)/r, grad(r_2*v))*dx - (8.0*u*r*r - 16.0*u)*r*v*dx
             u = Function(V)
             solve(a == L, u, bc)
             # a = dot(grad(u)/r, grad(r_2*v))*dx - (8.0*u*r_2 - 16.0*u)*r*v*dx - L 
