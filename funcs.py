@@ -21,7 +21,7 @@ SOLVE_PLASMA_POINT_SOURCES_EXPLICIT = 4
 
 M0 = 1.25e-6
 
-DEFAULT_MESH = 500 # for mesher characterized by 2 params
+DEFAULT_MESH = 100 # for mesher characterized by 2 params
 MESH_DENSITY = 20 # for mesher characterized by 1 param
 
 EPS = 0.05 # when zero maybe inf (1/r)
@@ -359,13 +359,13 @@ def Contour_plot(r_area, z_area, u, path, f_expr, mesh, plot_title, contour_amou
         matplt.colorbar()
         matplt.gca().set_aspect("equal")
         
-    print( colored( 'u_max = ', 'green') + str(u_contour.max()) )
-    print( colored( 'u_min = ', 'green') + str(u_contour.min()) )
-    print( colored( 'u_max - u_min = ', 'green') + str(u_contour.max() - u_contour.min()) )
+    print( colored( 'u_max = ', 'green') + str(u.vector()[:].max()) )
+    print( colored( 'u_min = ', 'green') + str(u.vector()[:].min()) )
+    print( colored( 'u_max - u_min = ', 'green') + str(u.vector()[:].max() - u.vector()[:].min()) )
     
-    logger.info( "u_max = %s" % str(u_contour.max()) )
-    logger.info( "u_min = %s" % str(u_contour.min()) )
-    logger.info( "u_max - u_min = %s" % str(u_contour.max() - u_contour.min()) )
+    logger.info( "u_max = %s" % str(u.vector()[:].max()) )
+    logger.info( "u_min = %s" % str(u.vector()[:].min()) )
+    logger.info( "u_max - u_min = %s" % str(u.vector()[:].max() - u.vector()[:].min()) )
     
     
     Save_figure(f_expr, mesh[0], mesh[1], '', path, plot_title)
