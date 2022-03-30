@@ -17,7 +17,7 @@ NEUMANN_BOUNDARY = 'NEUMANN_BOUNDARY'
 M0 = 1.25e-6
 
 DEFAULT_MESH = 500
-MESH_DENSITY = 60
+MESH_DENSITY = 20
 
 EPS = 0.05 # when zero maybe inf (1/r)
 R1, Z1 = 0, -0.4 # see Krat's unpublishet article
@@ -345,7 +345,7 @@ def Contour_plot(r_area, z_area, u, path, f_expr, mesh, plot_title, contour_amou
         return 0
     else:
         levels = numpy.linspace(-6e-5, 18e-5)
-        matplt.contour(r, z, u_contour, levels)
+        matplt.contour(r, z, u_contour, contour_amount)
         matplt.xlim(r_area[0], r_area[1])
         matplt.ylim(z_area[0], z_area[1])
         
@@ -357,6 +357,11 @@ def Contour_plot(r_area, z_area, u, path, f_expr, mesh, plot_title, contour_amou
     print( colored( 'u_max = ', 'green') + str(u_contour.max()) )
     print( colored( 'u_min = ', 'green') + str(u_contour.min()) )
     print( colored( 'u_max - u_min = ', 'green') + str(u_contour.max() - u_contour.min()) )
+    
+    logger.info( "u_max = %s" % str(u_contour.max()) )
+    logger.info( "u_min = %s" % str(u_contour.min()) )
+    logger.info( "u_max - u_min = %s" % str(u_contour.max() - u_contour.min()) )
+    
     
     Save_figure(f_expr, mesh[0], mesh[1], '', path, plot_title)
     return 0
@@ -440,7 +445,7 @@ def Hand_input(p_pow, F_pow):
 
 def Initial_guess_for_u(u, const):
     for i in range(len(u.vector())):
-        u.vector()[i] = float(10)
+        u.vector()[i] = float(const)
         
     return u
 
@@ -455,7 +460,7 @@ def print_colored(text, color):
     print(colored(text, color))
     
 def refine_mesh(mesh, domains_amount):
-    cell_markers = MeshFunction("bool", mesh, mesh.topology().dim(), False)
+    cell_markers = MeshFunction("bool", mesh, mesh.topology().dim())
     cell_markers.set_all(False)
     for i in range(domains_amount):
         submesh = SubMesh(mesh, i+1)
@@ -477,6 +482,8 @@ def refine_subdomain(mesh, submesh, cell_markers):
     for cell in cells(mesh):
         if cell.index() in global_mesh_index:
             cell_markers[cell] = True
+        else:
+            cell_markers[cell] = False
     
     return cell_markers, global_mesh_index
 
