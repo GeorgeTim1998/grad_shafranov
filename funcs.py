@@ -451,7 +451,7 @@ def Hand_input(p_pow, F_pow):
 def Initial_guess_for_u(u, const):
     for i in range(len(u.vector())):
         u.vector()[i] = float(const)
-        
+    logger.info("Initial guess for u: %s" % const)
     return u
 
 def Neumann_boundary(x, on_boundary):

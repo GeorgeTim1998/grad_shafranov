@@ -41,7 +41,7 @@ domain = mshr.Rectangle(rect_low, rect_high)
 mesh = mshr.generate_mesh(domain, mesh_density)
 logger.info("Before refinement. Number of cells: %d, Number of vertices: %d" % (mesh.num_cells(), mesh.num_vertices()))
 
-mesh = fu.refine_mesh(mesh, domains_amount)
+# mesh = fu.refine_mesh(mesh, domains_amount)
 
 fu.plot_mesh(mesh, PATH)
 

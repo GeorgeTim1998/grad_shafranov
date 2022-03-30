@@ -55,6 +55,16 @@ else:
     bc = DirichletBC(V, u_D, fu.Neumann_boundary) #гран условие как в задаче дирихле
     logger.info(fu.NEUMANN_BOUNDARY)
 #%% Problem solve
+todo = fu.SOLVE_PLASMA_POINT_SOURCES
+
+p_pow = 2
+F_pow = 2
+logger.info("p_pow = %d, F_pow = %d" % (p_pow, F_pow))
+f_text = fu.Hand_input(p_pow, F_pow)
+
+f_expr = Expression(f_text, u = u, degree = 2)
+u = fu.Initial_guess_for_u(u, 0)
+
 A1 = 1 
 A2 = 10
 step = 1
@@ -65,31 +75,13 @@ alpha_array = [A1]
 for alpha in alpha_array:
     point_sources = fu.Array_Expression(fu.ArrayOfPointSources(psd.PointSource(alpha)))
 
-    #%% SOLVING PROBLEM#1
-    # p_pow = 1
-    # F_pow = 2
-    # f_text = fu.Hand_input(p_pow, F_pow)
-
-    # f_expr = Expression(f_text, u = u, degree = 2)
-    # a = dot(grad(u)/r, grad(r_2*v))*dx - f_expr*r*v*dx
-    # solve(a == 0, u, bc, solver_parameters={"newton_solver": {"relative_tolerance": rel_tol, "absolute_tolerance": abs_tol}})
-    # fu.What_time_is_it(t0, "Solve for p_pow = %s, F_pow = %s" % (p_pow, F_pow))
-    # fu.Contour_plot([r1, r2], [z1,  z2], u, PATH, '', [mesh_r, mesh_z], '', 20)
-
-    # fu.Contour_plot([r1, r2], [z1,  z2], u, PATH, '', [mesh_r, mesh_z], '', 20)
-    # fu.What_time_is_it(t0, "3D plot of \u03C8(r, z) is plotted")
     #%% SOLVING PROBLEM#2
-    p_pow = 2
-    F_pow = 2
-    logger.info("p_pow = %d, F_pow = %d" % (p_pow, F_pow))
 
-    f_text = fu.Hand_input(p_pow, F_pow)
-    f_expr = Expression(f_text, u = u, degree = 2)
-    u = fu.Initial_guess_for_u(u, 0)
     fu.What_time_is_it(t0, 'Problem posted')
     #%% sources and point sources
     L = sum(point_sources)*r*v*dx 
-    a = dot(grad(u)/r, grad(r_2*v))*dx - f_expr*r*v*dx - L 
+    # a = dot(grad(u)/r, grad(r_2*v))*dx - f_expr*r*v*dx - L 
+    a = dot(grad(u)/r, grad(r_2*v))*dx - (8.0*u*r_2 - 16.0*u)*r*v*dx - L 
     solve(a == 0, u, bc, solver_parameters={"newton_solver": {"relative_tolerance": rel_tol, "absolute_tolerance": abs_tol, "maximum_iterations": maximum_iterations}})
     #%% only sources
     # a = dot(grad(u)/r, grad(r_2*v))*dx - f_expr*r*v*dx
