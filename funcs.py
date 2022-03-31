@@ -532,3 +532,17 @@ def plot_mesh(mesh, path):
     Save_figure( '', 100, 100, '', path, "" )
     
     return 0
+
+
+def plasma_sources_coefficients_pow_2():
+    M = MEPH.MEPhIST()
+    print_colored("MEPhIST data:", 'magenta')
+    logger.log_n_output(M.__dict__, 'white')
+    
+    p_coeff = 2 * M0 * M.p_axis / M.psi_axis**2
+    F_2_coeff = -M.F0_2 / M.psi_axis**2
+
+    logger.log_n_output("Right hand part: ", 'magenta')
+    logger.log_n_output("%s*pow(x[0], 2)*u + %s*u" % (p_coeff, F_2_coeff), 'white')
+    
+    return p_coeff, F_2_coeff
