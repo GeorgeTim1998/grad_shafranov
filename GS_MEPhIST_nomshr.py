@@ -49,8 +49,8 @@ r = Expression('x[0]', degree = 1) # interpolation is needed so that 'a' could e
 #%% Boundary conditions and function space V
 u_D_str = '0'
 u_D = Expression(u_D_str, degree = 1) # Define boundary condition
-boundary = fu.DIRICHLET_BOUNDARY
 logger.info('u_D = %s' % u_D_str)
+boundary = fu.DIRICHLET_BOUNDARY
 
 if boundary == fu.DIRICHLET_BOUNDARY:
     bc = DirichletBC(V, u_D, fu.Dirichlet_boundary) #гран условие как в задаче дирихле
@@ -60,16 +60,13 @@ else:
     logger.info(fu.NEUMANN_BOUNDARY)
 #%% Problem pre-solve
 todo = fu.SOLVE_PLASMA
+initial_guess = 0
 logger.info("We are doing: %s" % str(todo))
 fu.print_colored(todo, 'green')
 
-p_pow = 2
-F_pow = 2
-logger.info("p_pow = %d, F_pow = %d" % (p_pow, F_pow))
-f_text = fu.Hand_input(p_pow, F_pow)
+[p_coeff, F_2_coeff] = fu.plasma_sources_coefficients_pow_2()
 
-f_expr = Expression(f_text, u = u, degree = 2)
-u = fu.Initial_guess_for_u(u, 10)
+u = fu.Initial_guess_for_u(u, initial_guess)
 
 A1 = 1 
 A2 = 10
@@ -85,20 +82,20 @@ for alpha in alpha_array:
     L = sum(point_sources)*r*v*dx 
 
     if todo == fu.SOLVE_PLASMA_POINT_SOURCES:
-        a = dot(grad(u)/r, grad(r_2*v))*dx - f_expr*r*v*dx - L 
+        a = dot(grad(u)/r, grad(r_2*v))*dx - (p_coeff*u*r*r + F_2_coeff*u)*r*v*dx - L 
         solve(a == 0, u, bc, solver_parameters={"newton_solver": {"relative_tolerance": rel_tol, "absolute_tolerance": abs_tol, "maximum_iterations": maximum_iterations}})
     elif todo == fu.SOLVE_PLASMA:
-        a = dot(grad(u)/r, grad(r_2*v))*dx - (8.0*u*r*r - 16.0*u)*r*v*dx
+        a = dot(grad(u)/r, grad(r_2*v))*dx - (p_coeff*u*r*r + F_2_coeff*u)*r*v*dx
         solve(a == 0, u, bc, solver_parameters={"newton_solver": {"relative_tolerance": rel_tol, "absolute_tolerance": abs_tol, "maximum_iterations": maximum_iterations}})
     else:
-        if todo == fu.SOLVE_PLASMA_POINT_SOURCES:
+        if todo == fu.SOLVE_POINT_SOURCES:
             u = TrialFunction(V)
             a = dot(grad(u)/r, grad(r_2*v))*dx 
             u = Function(V)
             solve(a == L, u, bc)
         elif todo == fu.SOLVE_PLASMA_POINT_SOURCES_EXPLICIT:
             u = TrialFunction(V)
-            a = dot(grad(u)/r, grad(r_2*v))*dx - (8.0*u*r*r - 16.0*u)*r*v*dx
+            a = dot(grad(u)/r, grad(r_2*v))*dx - (p_coeff*u*r*r + F_2_coeff*u)*r*v*dx
             u = Function(V)
             solve(a == L, u, bc)
             # a = dot(grad(u)/r, grad(r_2*v))*dx - (8.0*u*r_2 - 16.0*u)*r*v*dx - L 
