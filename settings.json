@@ -12,5 +12,7 @@
     //         ]
     //     }
     // },
-    "editor.lineHighlightBorder": "#FF0000"
+    "editor.lineHighlightBorder": "#FF0000",
+    "python.analysis.autoImportCompletions": false 
+
 }
