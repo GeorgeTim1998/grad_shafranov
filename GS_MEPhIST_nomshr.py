@@ -67,7 +67,7 @@ logger.log_n_output("We are doing: %s" % fu.SOLVE_DICT[todo], 'yellow')
 
 u = fu.Initial_guess_for_u(u, initial_guess)
 
-A1 = 1 
+A1 = 1
 A2 = 10
 step = 1
 
