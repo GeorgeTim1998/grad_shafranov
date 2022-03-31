@@ -59,7 +59,7 @@ else:
     bc = DirichletBC(V, u_D, fu.Neumann_boundary) #гран условие как в задаче дирихле
     logger.info(fu.NEUMANN_BOUNDARY)
 #%% Problem pre-solve
-todo = fu.SOLVE_PLASMA
+todo = fu.SOLVE_PLASMA_POINT_SOURCES_LINEAR_SOLVER
 initial_guess = 0
 logger.info("We are doing: %s" % str(todo))
 fu.print_colored(todo, 'green')
@@ -93,17 +93,16 @@ for alpha in alpha_array:
             a = dot(grad(u)/r, grad(r_2*v))*dx 
             u = Function(V)
             solve(a == L, u, bc)
-        elif todo == fu.SOLVE_PLASMA_POINT_SOURCES_EXPLICIT:
+        elif todo == fu.SOLVE_PLASMA_POINT_SOURCES_LINEAR_SOLVER:
             u = TrialFunction(V)
             a = dot(grad(u)/r, grad(r_2*v))*dx - (p_coeff*u*r*r + F_2_coeff*u)*r*v*dx
             u = Function(V)
             solve(a == L, u, bc)
-            # a = dot(grad(u)/r, grad(r_2*v))*dx - (8.0*u*r_2 - 16.0*u)*r*v*dx - L 
+            # a = dot(grad(u)/r, grad(r_2*v))*dx - (p_coeff*u*r*r + F_2_coeff*u)*r*v*dx - L 
             # solve(a == 0, u, bc, solver_parameters={"newton_solver": {"relative_tolerance": rel_tol, "absolute_tolerance": abs_tol, "maximum_iterations": maximum_iterations}})
 #%% Endproblem
     fu.What_time_is_it(t0, 'Variational problem solved')
     logger.log_n_output("(\u03C3*)\u03B1 = %e" % alpha, 'green')
-    fu.print_colored("Solve for p_pow = %s, F_pow = %s" % (p_pow, F_pow), 'green')
     fu.print_colored("Calculations, however bad, finished", 'green')
 
     plot_title = "\u03C3*%.2e, #%d" % (alpha, int(default_mesh))
