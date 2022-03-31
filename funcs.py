@@ -15,8 +15,9 @@ DEFAULT_MESH = 100 # for mesher characterized by 2 params
 MESH_DENSITY = 20 # for mesher characterized by 1 param
 
 EPS = 0.05 # when zero maybe inf (1/r)
-R1, Z1 = 0, -0.4 # see Krat's unpublishet article
-R2, Z2 = 0.55, 0.4
+Z0 = 0.4
+R1, Z1 = 0, -Z0 # see Krat's unpublishet article
+R2, Z2 = 0.55, Z0
 #%% Some consts
 DIRICHLET_BOUNDARY = 'DIRICHLET_BOUNDARY'
 NEUMANN_BOUNDARY = 'NEUMANN_BOUNDARY'
