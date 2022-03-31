@@ -61,8 +61,7 @@ else:
 #%% Problem pre-solve
 todo = fu.SOLVE_PLASMA_POINT_SOURCES_LINEAR_SOLVER
 initial_guess = 0
-logger.info("We are doing: %s" % str(fu.SOLVE_DICT[todo]))
-fu.print_colored(todo, 'green')
+logger.log_n_output("We are doing: %s" % fu.SOLVE_DICT[todo], 'yellow')
 
 [p_coeff, F_2_coeff] = fu.plasma_sources_coefficients_pow_2()
 
