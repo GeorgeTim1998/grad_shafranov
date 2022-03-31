@@ -10,6 +10,13 @@ import math
 import point_source_data as psd
 import logger
 import mshr
+#%% Problem parameters
+DEFAULT_MESH = 100 # for mesher characterized by 2 params
+MESH_DENSITY = 20 # for mesher characterized by 1 param
+
+EPS = 0.05 # when zero maybe inf (1/r)
+R1, Z1 = 0, -0.4 # see Krat's unpublishet article
+R2, Z2 = 0.55, 0.4
 #%% Some consts
 DIRICHLET_BOUNDARY = 'DIRICHLET_BOUNDARY'
 NEUMANN_BOUNDARY = 'NEUMANN_BOUNDARY'
@@ -19,14 +26,14 @@ SOLVE_PLASMA = 2
 SOLVE_POINT_SOURCES = 3
 SOLVE_PLASMA_POINT_SOURCES_LINEAR_SOLVER = 4
 
+SOLVE_DICT = {
+    1: "SOLVE_PLASMA_POINT_SOURCES",
+    2: "SOLVE_PLASMA",
+    3: "SOLVE_POINT_SOURCES",
+    4: "SOLVE_PLASMA_POINT_SOURCES_LINEAR_SOLVER"
+}
+
 M0 = 1.25e-6
-
-DEFAULT_MESH = 100 # for mesher characterized by 2 params
-MESH_DENSITY = 20 # for mesher characterized by 1 param
-
-EPS = 0.05 # when zero maybe inf (1/r)
-R1, Z1 = 0, -0.4 # see Krat's unpublishet article
-R2, Z2 = 0.55, 0.4
 #%% Plot stuff
 DPI = 200 # quality of plots
 TEXT_FILE_U_MAX = "Text_data/func_max"
@@ -357,7 +364,7 @@ def Contour_plot(r_area, z_area, u, path, f_expr, mesh, plot_title, contour_amou
         logger.info( "u_max - u_min = %s" % str(u.vector()[:].max() - u.vector()[:].min()) )
         return 0
     else:
-        matplt.contour(r, z, u_contour, contour_amount)
+        matplt.contour(r, z, u_contour, levels)
         matplt.xlim(r_area[0], r_area[1])
         matplt.ylim(z_area[0], z_area[1])
         
