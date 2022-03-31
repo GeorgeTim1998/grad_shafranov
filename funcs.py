@@ -339,6 +339,7 @@ def Contour_plot(r_area, z_area, u, path, f_expr, mesh, plot_title, contour_amou
     r = numpy.linspace(r_area[0] + tol, r_area[1] - tol, point_num)
     z = numpy.linspace(z_area[0] + tol, z_area[1] - tol, int(point_num*mesh[1]/mesh[0]))
     
+    levels = numpy.linspace(-15e-5, 0)
     u_contour = numpy.zeros([len(z), len(r)])
     
     for i in range(len(r)):
@@ -356,7 +357,6 @@ def Contour_plot(r_area, z_area, u, path, f_expr, mesh, plot_title, contour_amou
         logger.info( "u_max - u_min = %s" % str(u.vector()[:].max() - u.vector()[:].min()) )
         return 0
     else:
-        levels = numpy.linspace(-6e-5, 18e-5)
         matplt.contour(r, z, u_contour, contour_amount)
         matplt.xlim(r_area[0], r_area[1])
         matplt.ylim(z_area[0], z_area[1])
