@@ -554,3 +554,37 @@ def plasma_sources_coefficients_pow_2():
     logger.log_n_output("%s*pow(x[0], 2)*u + %s*u" % (p_coeff, F_2_coeff), 'white')
     
     return p_coeff, F_2_coeff
+
+def spheromak_point(r, R, alpha):
+    z = 1/2/alpha * math.sqrt(2 * R**2 - (r - R)**2)
+    return z
+    
+def plot_spheromak_boundary(R, alpha, smoothness):
+    r_array = numpy.linspace((1 + math.sqrt(2)) * R, (1 - math.sqrt(2)) * R, smoothness)
+    z_array = []
+    for r in r_array:
+        z_array.append(spheromak_point(r, R, alpha))
+    
+    z_array = numpy.array(z_array)
+    
+    r_array = numpy.append(r_array, numpy.flip(r_array)) # замкнуть кривую
+    z_array = numpy.append(z_array, numpy.flip(-z_array)) # замкнуть кривую
+    return r_array, z_array
+    # matplt.plot(r_array, z_array)
+    # matplt.gca().set_aspect("equal")
+    # matplt.grid()
+    # matplt.show()
+    
+def spheromak_boundary(R, alpha, smoothness):
+    [r_array, z_array] = plot_spheromak_boundary(R, alpha, smoothness)
+    boundary_geometry = []
+    for i in range(len(r_array)):
+        boundary_geometry.append(Point(r_array[i],z_array[i]))
+    
+    return mshr.Polygon(boundary_geometry)
+
+def spheromak_pressure(psi_0, R, alpha):
+    L = Expression("pow(x[0], 2) / pow(%s, 4) * (1 + pow(%s, 2)) * %s" % (R, alpha, psi_0), degree = 2)
+    logger.log_n_output("Rigth hand part:", 'red')
+    logger.log_n_output(L._cppcode, 'white')
+    return L
