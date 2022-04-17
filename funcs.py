@@ -586,7 +586,7 @@ def countour_plot_via_mesh(geometry, u, levels, PATH, plot_title):
     triang = tri.Triangulation(*geometry.mesh.coordinates().reshape((-1, 2)).T, triangles=geometry.mesh.cells())
     u_array = u.compute_vertex_values(geometry.mesh)
     
-    matplt.tricontour(triang, u_array)
+    matplt.tricontour(triang, u_array, levels)
     matplt.xlim(geometry.r1, geometry.r2)
     matplt.ylim(geometry.z1, geometry.z2)
 
