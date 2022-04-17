@@ -62,3 +62,9 @@ cntrl+alt+[/]
 
     # fu.Contour_plot([r1, r2], [z1,  z2], u, PATH, '', [mesh_r, mesh_z], '', 20)
     # fu.What_time_is_it(t0, "3D plot of \u03C8(r, z) is plotted")
+# Compare with analytical
+fenics, numpy
+vertex_values_u_D = interpolate(boundary.psi_sol_expr, V).compute_vertex_values(geometry.mesh)
+vertex_values_u = u.compute_vertex_values(geometry.mesh)
+error_max = numpy.max(numpy.abs(vertex_values_u_D - vertex_values_u))
+print(error_max)
