@@ -1,15 +1,11 @@
-from os import name
-from turtle import circle
-from matplotlib.pyplot import contour
-from pyparsing import White
 import MEPHIST_data as MEPH
-from numpy import mat
 from imports import *
 import time
 import math
 import point_source_data as psd
 import logger
 import mshr
+import matplotlib.tri as tri
 #%% Problem parameters
 DEFAULT_MESH = 100 # for mesher characterized by 2 params
 MESH_DENSITY = 20 # for mesher characterized by 1 param
@@ -590,19 +586,10 @@ def spheromak_pressure(psi_0, R, alpha):
     return L
 
 def countour_plot_via_mesh(geometry, u, levels, PATH, plot_title):
-    # u_array = []
-    # for r in geometry.mesh.coordinates():
-    #     u_array.append(u(r[0], r[1]))
-    u_array = u.compute_vertex_values(geometry.mesh).reshape(geometry.mesh_r + 1, geometry.mesh_z + 1)
-    r = geometry.mesh.coordinates().transpose()
+    triang = tri.Triangulation(*geometry.mesh.coordinates().reshape((-1, 2)).T, triangles=geometry.mesh.cells())
+    u_array = u.compute_vertex_values(geometry.mesh)
     
-    x = r[0].reshape(geometry.mesh_r + 1, geometry.mesh_z + 1)
-    y = r[1].reshape(geometry.mesh_r + 1, geometry.mesh_z + 1)
-    
-    r = numpy.array(r)
-    r.unique()
-    
-    matplt.contour(x, y, u_array, levels)
+    matplt.tricontour(triang, u_array)
     matplt.xlim(geometry.r1, geometry.r2)
     matplt.ylim(geometry.z1, geometry.z2)
 
