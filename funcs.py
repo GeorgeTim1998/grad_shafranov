@@ -183,6 +183,7 @@ def Save_figure(f_expr, mesh_r, mesh_z, addition, PATH, plot_title):
     logger.info(file_path)
     matplt.savefig(file_path, dpi = DPI, bbox_inches="tight") #no title figure for reports
     matplt.close() # close created plot
+    time.sleep(2)
     
     print(colored("3D countour plot saved to PATH: %s" % file_path, 'green'))
     
