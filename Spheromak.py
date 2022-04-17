@@ -31,7 +31,7 @@ u = TrialFunction(V) # u must be defined as function before expression def
 v = TestFunction(V)
 
 #%% Boundary conditions
-boundary.spheromak_boundary_condition(psi_0 = 1, R = 0.4, alpha = M.MEPhIST().delta)
+boundary.spheromak_boundary_condition(psi_0 = 1, R = 0.4, alpha = 1)
 u_D = boundary.psi_sol_expr
 bc = DirichletBC(V, u_D, fu.Dirichlet_boundary) #гран условие как в задаче дирихле
 
