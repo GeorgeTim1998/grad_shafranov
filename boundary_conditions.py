@@ -27,6 +27,7 @@ class BoundaryConditions:
         return self.spheromak_right_hand_expr
         
     def log_spheromak_boundary(self):
+        logger.info("R = %s, alpha = %s" % (self.R, self.alpha))
         logger.info("psi_sol = %s" % self.spheromak_text)
         logger.log_n_output("Rigth hand part:", 'red')
         logger.log_n_output(self.spheromak_right_hand_expr._cppcode, 'white')
