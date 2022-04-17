@@ -3,6 +3,10 @@ from termcolor import colored
 
 logging.basicConfig(filename='test.log', level = logging.INFO,
                     format='%(asctime)s:%(message)s')
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger("rothemain.rothe_utils")
+logging.getLogger('UFL').setLevel(logging.WARNING)
+logging.getLogger('FFC').setLevel(logging.WARNING)
 
 def log_n_output(message, color):
     logging.info(message)
