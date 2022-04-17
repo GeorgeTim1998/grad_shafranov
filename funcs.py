@@ -567,10 +567,6 @@ def plot_spheromak_boundary(R, alpha, smoothness):
     r_array = numpy.append(r_array, numpy.flip(r_array)) # замкнуть кривую
     z_array = numpy.append(z_array, numpy.flip(-z_array)) # замкнуть кривую
     return r_array, z_array
-    # matplt.plot(r_array, z_array)
-    # matplt.gca().set_aspect("equal")
-    # matplt.grid()
-    # matplt.show()
     
 def spheromak_boundary(R, alpha, smoothness):
     [r_array, z_array] = plot_spheromak_boundary(R, alpha, smoothness)
@@ -582,7 +578,7 @@ def spheromak_boundary(R, alpha, smoothness):
 
 def spheromak_pressure(psi_0, R, alpha):
     L = Expression("pow(x[0], 2) / pow(%s, 4) * (1 + pow(%s, 2)) * %s" % (R, alpha, psi_0), degree = 2)
-    logger.log_n_output("Rigth hand part:", 'red')
+    logger.log_n_output("Right hand part:", 'red')
     logger.log_n_output(L._cppcode, 'white')
     return L
 
