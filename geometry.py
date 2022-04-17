@@ -32,9 +32,10 @@ class Geometry:
         self.mesh = RectangleMesh(rect_low, rect_high, self.mesh_r, self.mesh_z) # points define domain size rect_low x rect_high
         
     def rectangle_mesh_log(self):
-        logger.log_n_output('DEFAULT_MESH = %d' % self.default_mesh, 'green')
+        logger.log_n_output("mesh_r = %d, mesh_z = %d" % (self.mesh_r, self.mesh_z), 'green')
         logger.info('R1 = %f, Z1 = %f' % (self.r1, self.z1))
         logger.info('R2 = %f, Z2 = %f' % (self.r2, self.z2))
+        logger.info( "Number of cells: %d, Number of vertices: %d" % (self.mesh.num_cells(), self.mesh.num_vertices()) )
     
     def rectangle_mesh_values(self):
         self.mesh_r, self.mesh_z = self.default_mesh, abs(int(self.default_mesh * (self.z2-self.z1)/(self.r2-self.r1)))
