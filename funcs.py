@@ -588,3 +588,40 @@ def spheromak_pressure(psi_0, R, alpha):
     logger.log_n_output("Rigth hand part:", 'red')
     logger.log_n_output(L._cppcode, 'white')
     return L
+
+def countour_plot_via_mesh(geometry, u, levels, PATH, plot_title):
+    # u_array = []
+    # for r in geometry.mesh.coordinates():
+    #     u_array.append(u(r[0], r[1]))
+    u_array = u.compute_vertex_values(geometry.mesh).reshape(geometry.mesh_r + 1, geometry.mesh_z + 1)
+    r = geometry.mesh.coordinates().transpose()
+    
+    x = r[0].reshape(geometry.mesh_r + 1, geometry.mesh_z + 1)
+    y = r[1].reshape(geometry.mesh_r + 1, geometry.mesh_z + 1)
+    
+    r = numpy.array(r)
+    r.unique()
+    
+    matplt.contour(x, y, u_array, levels)
+    matplt.xlim(geometry.r1, geometry.r2)
+    matplt.ylim(geometry.z1, geometry.z2)
+
+    matplt.xlabel("r, м")
+    matplt.ylabel("z, м")
+    matplt.colorbar()
+    matplt.gca().set_aspect("equal")
+    
+    save_contour_plot(PATH, plot_title)
+    
+def save_contour_plot(PATH, plot_title):
+    time_title = Time_name()
+
+    path_my_file = 'Figures/%s/%s' % (PATH, time_title)
+    file_path = "%s.png" % path_my_file
+    logger.info(file_path)
+
+    matplt.title(plot_title) # titled figure for my self
+    matplt.savefig(file_path, dpi = DPI, bbox_inches="tight") #no title figure for reports
+    matplt.close() # close created plot
+    
+    print(colored("3D countour plot saved to PATH: %s" % file_path, 'green'))
