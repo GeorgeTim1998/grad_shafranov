@@ -22,7 +22,9 @@ class BoundaryConditions:
         self.spheromak_text = sympy.printing.ccode(symbols)
     
     def spheromak_source(self):
-        self.spheromak_right_hand_expr = Expression("pow(x[0], 2) / pow(%s, 4) * (1 + pow(%s, 2)) * %s" % (self.R, self.alpha, self.psi_0), degree = 2)
+        r = sympy.symbols('x[0]')
+        symbols = 8 * self.psi_0 * pow(r, 2) / pow(self.R, 4) * (1 + pow(self.alpha, 2))
+        self.spheromak_right_hand_expr = Expression(sympy.printing.ccode(symbols), degree = 2)
         
         return self.spheromak_right_hand_expr
         
