@@ -22,13 +22,12 @@ geometry = Geometry()
 mesh_density = 50
 
 levels = 20
-levels = numpy.linspace(-0.14, 0.15, 25)
+# levels = numpy.linspace(-0.14, 0.15, 25)
 
 #%% Domain and mesh definition
-geometry.rectangle_mesh_init(r1 = 0.05, r2 = 0.7, z1 = -0.6, z2 = 0.6, default_mesh = 80)
+# geometry.rectangle_mesh_init(r1 = 0.05, r2 = 0.7, z1 = -0.6, z2 = 0.6, default_mesh = 80)
+geometry.arbitrary_mesh_init()
 fu.plot_mesh(geometry.mesh, PATH)
-# domain = fu.spheromak_bounfdary(R, delta, 500)
-# mesh = mshr.generate_mesh(domain, 50)
 
 #%% Define function space and
 V = FunctionSpace(geometry.mesh, 'P', 1) # standard triangular mesh
