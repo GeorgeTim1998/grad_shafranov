@@ -32,7 +32,8 @@ class Geometry:
         self.mesh = RectangleMesh(rect_low, rect_high, self.mesh_r, self.mesh_z) # points define domain size rect_low x rect_high
         
     def rectangle_mesh_log(self):
-        logger.log_n_output("mesh_r = %d, mesh_z = %d" % (self.mesh_r, self.mesh_z), 'green')
+        logger.log_n_output_colored_message(colored_message="mesh_r = ", color='green', white_message=str(self.mesh_r))
+        logger.log_n_output_colored_message(colored_message="mesh_z = ", color='green', white_message=str(self.mesh_z))
         logger.info('R1 = %f, Z1 = %f' % (self.r1, self.z1))
         logger.info('R2 = %f, Z2 = %f' % (self.r2, self.z2))
         logger.info( "Number of cells: %d, Number of vertices: %d" % (self.mesh.num_cells(), self.mesh.num_vertices()) )
@@ -40,3 +41,6 @@ class Geometry:
     def rectangle_mesh_values(self):
         self.mesh_r, self.mesh_z = self.default_mesh, abs(int(self.default_mesh * (self.z2-self.z1)/(self.r2-self.r1)))
 #%% Arbitrary mesh
+    def arbitrary_mesh_init(self):
+        domain = mshr.Circle(Point(0.3, 0), 0.25)
+        self.mesh = mshr.generate_mesh(domain, 50)
