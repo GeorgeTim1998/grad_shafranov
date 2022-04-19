@@ -1,3 +1,4 @@
+from matplotlib.pyplot import text
 import MEPHIST_data as MEPH
 from imports import *
 import time
@@ -185,7 +186,7 @@ def Save_figure(f_expr, mesh_r, mesh_z, addition, PATH, plot_title):
     matplt.close() # close created plot
     time.sleep(2)
     
-    print(colored("3D countour plot saved to PATH: %s" % file_path, 'green'))
+    print_colored_n_white(colored_text="3D countour plot saved to PATH: ", color='green', white_text=file_path)
     
 def Write2file_umax_vs_def_mesh(mesh_r, mesh_z, u_max):
     file_path = "%s.txt" % TEXT_FILE_U_MAX
@@ -587,13 +588,19 @@ def countour_plot_via_mesh(geometry, u, levels, PATH, plot_title):
     u_array = u.compute_vertex_values(geometry.mesh)
     
     matplt.tricontour(triang, u_array, levels)
-    matplt.xlim(geometry.r1, geometry.r2)
-    matplt.ylim(geometry.z1, geometry.z2)
+    # matplt.xlim(geometry.r1, geometry.r2)
+    # matplt.ylim(geometry.z1, geometry.z2)
+    # matplt.xlim(0.05, 0.7)
+    # matplt.ylim(-0.6, 0.6)
 
     matplt.xlabel("r, м")
     matplt.ylabel("z, м")
     matplt.colorbar()
     matplt.gca().set_aspect("equal")
+    
+    print_colored_n_white(colored_text="u_max = ", color='green', white_text=str(u.vector()[:].max()))
+    print_colored_n_white(colored_text="u_min = ", color='green', white_text=str(u.vector()[:].min()))
+    print_colored_n_white(colored_text="u_max-u_min = ", color='green', white_text=str(u.vector()[:].max() - u.vector()[:].min()))
     
     save_contour_plot(PATH, plot_title)
     
@@ -608,4 +615,8 @@ def save_contour_plot(PATH, plot_title):
     matplt.savefig(file_path, dpi = DPI, bbox_inches="tight") #no title figure for reports
     matplt.close() # close created plot
     
-    print(colored("3D countour plot saved to PATH: %s" % file_path, 'green'))
+    print_colored_n_white(colored_text="3D countour plot saved to PATH: ", color='green', white_text=file_path)
+
+def print_colored_n_white(colored_text, color, white_text):
+    print(colored(colored_text, color) + white_text)
+# %%
