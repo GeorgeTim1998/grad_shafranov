@@ -23,6 +23,7 @@ f.list_linear_solver_methods()
   
 Jac     = derivative(T, w, dup) (пойдет?)  
 # посмотреть содержимое пакета package content  
+from fenics  import *
 dir(package_name)  
 $ for i in dir(numpy):  
 $ print(i)  
