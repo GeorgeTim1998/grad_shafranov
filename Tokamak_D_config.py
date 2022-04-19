@@ -48,8 +48,14 @@ L = boundary.tokamak_D_config_right_hand_expr * r * v * dx
 
 u = Function(V)
 solve(a == L, u, bc)
+
+#%% Post solve
 fu.What_time_is_it(t0, "Problem is solved")
+
 # fu.countour_plot_via_mesh(geometry, interpolate(boundary.psi_sol_expr, V), levels = levels, PATH = PATH, plot_title = '')
 fu.countour_plot_via_mesh(geometry, u, levels = levels, PATH = PATH, plot_title = '')
 fu.What_time_is_it(t0, "\u03C8(r, z) is plotted")
+
+fu.ErrorEstimate(u = u, u_D = u_D, mesh = geometry.mesh)
+
 logger.info("'Done'"+"\n")

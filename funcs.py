@@ -619,4 +619,16 @@ def save_contour_plot(PATH, plot_title):
 
 def print_colored_n_white(colored_text, color, white_text):
     print(colored(colored_text, color) + white_text)
+    
+def ErrorEstimate(u, u_D, mesh):
+    error_L2 = errornorm(u_D, u, 'L2')
+
+    vertex_values_u_D = u_D.compute_vertex_values(mesh)
+    vertex_values_u = u.compute_vertex_values(mesh)
+    error_max = numpy.max(numpy.abs(vertex_values_u_D - vertex_values_u))
+
+    print_colored_n_white(colored_text="error_L2 = ", color='red', white_text=str(error_L2))
+    print_colored_n_white(colored_text="error_max = ", color='red', white_text=str(error_max))
+    
+    return error_L2, error_max
 # %%
