@@ -44,3 +44,16 @@ class Geometry:
     def arbitrary_mesh_init(self):
         domain = mshr.Circle(Point(0.3, 0), 0.25)
         self.mesh = mshr.generate_mesh(domain, 50)
+#%% Interval geometry
+    def interval_mesh_init(self, a, b, default_mesh):
+        self.a = a
+        self.b = b
+        self.default_mesh = default_mesh
+        
+        self.mesh = IntervalMesh(default_mesh, a,b)
+        self.interval_mesh_log()
+        
+    def interval_mesh_log(self):
+        logger.log_n_output_colored_message(colored_message="a = ", color='green', white_message=str(self.a))
+        logger.log_n_output_colored_message(colored_message="b = ", color='green', white_message=str(self.b))
+        logger.log_n_output_colored_message(colored_message="default mesh = ", color='green', white_message=str(self.default_mesh))
