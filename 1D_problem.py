@@ -26,7 +26,7 @@ geometry = Geometry()
 my_expressions = Expressions()
 
 #%% All definition
-geometry.interval_mesh_init(a=0.1, b=2, default_mesh=200)
+geometry.interval_mesh_init(a=0.1, b=2, default_mesh=10)
 my_expressions.axissymm_config(j0=1, r0=1)
 
 #%% Function space and oundary conditione
@@ -46,11 +46,12 @@ def boundary(x, on_boundary):
 a = grad(u)[0] * v * dx
 L = my_expressions.axissymm_config_right_hand_expr * v * dx
 
-#%% Solve
+#%% Solvelog_n_output_colorlog_n_output_colored_messageed_message
 u = Function(V)
 solve(a == L, u, bc)
 
 #%% Plot
 fu.plot_1D(PATH, u, geometry)
+fu.ErrorEstimate(u=u, u_D=interpolate(my_expressions.axissymm_config_solution_expr, V=V), mesh=geometry.mesh)
 
 logger.info("'Done'" + "\n")

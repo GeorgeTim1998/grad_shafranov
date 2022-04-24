@@ -15,6 +15,7 @@ class Expressions:
         f_symbols = -M0 * pow(j0, 2) * pow(r0/r, 2)
         self.axissymm_config_right_hand_expr = Expression(sympy.printing.ccode(f_symbols), degree = 2)
         self.axissymm_config_log()
+        self.axissymm_config_solution()
         
     def axissymm_config_log(self):
         logger.log_n_output_colored_message(colored_message='j0 = ', color='green', white_message=str(self.j0))
@@ -22,4 +23,9 @@ class Expressions:
         
         logger.print_colored("Right hand part: ", 'magenta')
         logger.print_colored(self.axissymm_config_right_hand_expr._cppcode, 'white')
+    
+    def axissymm_config_solution(self):
+        r = sympy.symbols('x[0]')
         
+        p_symbols = M0 * pow(self.j0, 2) * pow(self.r0, 2) * (1/r - 1/self.r0)
+        self.axissymm_config_solution_expr = Expression(sympy.printing.ccode(p_symbols), degree = 2)

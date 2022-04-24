@@ -287,21 +287,6 @@ def MyLog(c):
     
     return log_text
 
-def ErrorEstimate(u, u_D, mesh):
-    # Compute error in L2 norm
-    error_L2 = errornorm(u_D, u, 'L2')
-
-    # Compute maximum error at vertices
-    vertex_values_u_D = u_D.compute_vertex_values(mesh)
-    vertex_values_u = u.compute_vertex_values(mesh)
-    error_max = numpy.max(numpy.abs(vertex_values_u_D - vertex_values_u))
-
-    # Print errors
-    print(colored('error_L2  = ', 'red'), error_L2)
-    print(colored('error_max = ', 'red'), error_max)
-    
-    return error_L2, error_max
-
 def CreatePointSource(r, I, disp):
     x = sympy.symbols('x[0]') # r coordinate
     z = sympy.symbols('x[1]') # r coordinate
@@ -627,8 +612,8 @@ def ErrorEstimate(u, u_D, mesh):
     vertex_values_u = u.compute_vertex_values(mesh)
     error_max = numpy.max(numpy.abs(vertex_values_u_D - vertex_values_u))
 
-    print_colored_n_white(colored_text="error_L2 = ", color='red', white_text=str(error_L2))
-    print_colored_n_white(colored_text="error_max = ", color='red', white_text=str(error_max))
+    logger.log_n_output_colored_message(colored_message="error_L2 = ", color='red', white_message=str(error_L2))
+    logger.log_n_output_colored_message(colored_message="error_max = ", color='red', white_message=str(error_max))
     
     return error_L2, error_max
 # %%
