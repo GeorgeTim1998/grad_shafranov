@@ -44,7 +44,7 @@ SQ_MAX = 9
 SQUARE_SIZE_ARRAY = numpy.linspace(SQ_MIN, SQ_MAX, 1+int((SQ_MAX-SQ_MIN)/SQ_MIN))
 #%% Fonts for plots
 FONT = {'family' : "Times New Roman",
-        'size' : 9}
+        'size' : 15}
 matplt.rc('font', **FONT)
 #%% Funcs
 def Form_f_text(A1, A2):
@@ -632,3 +632,18 @@ def ErrorEstimate(u, u_D, mesh):
     
     return error_L2, error_max
 # %%
+
+def plot_1D(PATH, u, geometry):
+    
+    plot(u)
+    
+    matplt.grid("True")
+    matplt.xlim(geometry.a, geometry.b)
+    matplt.xlabel("r, м")
+    matplt.ylabel("p(r), Па")
+    
+    logger.print_colored_n_white(colored_text="u_max = ", color='green', white_text=str(u.vector()[:].max()))
+    logger.print_colored_n_white(colored_text="u_min = ", color='green', white_text=str(u.vector()[:].min()))
+    logger.print_colored_n_white(colored_text="u_max-u_min = ", color='green', white_text=str(u.vector()[:].max() - u.vector()[:].min()))
+    
+    save_contour_plot(PATH, "")
