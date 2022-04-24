@@ -48,6 +48,7 @@ L = my_expressions.axissymm_config_right_hand_expr * v * dx
 #%% Solvelog_n_output_colorlog_n_output_colored_messageed_message
 u = Function(V)
 solve(a == L, u, bc)
+fu.What_time_is_it(t0, "Problem solved")
 
 #%% Plot
 fu.plot_1D(PATH, u, geometry)
