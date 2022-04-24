@@ -26,8 +26,8 @@ geometry = Geometry()
 my_expressions = Expressions()
 
 #%% All definition
-geometry.interval_mesh_init(a=0.1, b=2, default_mesh=10)
-my_expressions.axissymm_config(j0=1, r0=1)
+geometry.interval_mesh_init(a=0.1, b=2, default_mesh=150)
+my_expressions.axissymm_config(j0=1, r0=geometry.b)
 
 #%% Function space and oundary conditione
 V = FunctionSpace(geometry.mesh, 'P', 1) # standard triangular mesh
