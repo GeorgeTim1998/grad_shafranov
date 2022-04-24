@@ -569,25 +569,30 @@ def spheromak_pressure(psi_0, R, alpha):
     return L
 
 def countour_plot_via_mesh(geometry, u, levels, PATH, plot_title):
-    triang = tri.Triangulation(*geometry.mesh.coordinates().reshape((-1, 2)).T, triangles=geometry.mesh.cells())
-    u_array = u.compute_vertex_values(geometry.mesh)
-    
-    matplt.tricontour(triang, u_array, levels)
-    # matplt.xlim(geometry.r1, geometry.r2)
-    # matplt.ylim(geometry.z1, geometry.z2)
-    # matplt.xlim(0.05, 0.7)
-    # matplt.ylim(-0.6, 0.6)
+    u_min = u.vector()[:].min()
+    u_max = u.vector()[:].max()
+    if u_min == u_max:
+        logger.log_n_output(message="Trivial solution. u = %s" % u_max, color='red')
+    else:
+        triang = tri.Triangulation(*geometry.mesh.coordinates().reshape((-1, 2)).T, triangles=geometry.mesh.cells())
+        u_array = u.compute_vertex_values(geometry.mesh)
+        
+        matplt.tricontour(triang, u_array, levels)
+        # matplt.xlim(geometry.r1, geometry.r2)
+        # matplt.ylim(geometry.z1, geometry.z2)
+        # matplt.xlim(0.05, 0.7)
+        # matplt.ylim(-0.6, 0.6)
 
-    matplt.xlabel("r, м")
-    matplt.ylabel("z, м")
-    matplt.colorbar()
-    matplt.gca().set_aspect("equal")
-    
-    print_colored_n_white(colored_text="u_max = ", color='green', white_text=str(u.vector()[:].max()))
-    print_colored_n_white(colored_text="u_min = ", color='green', white_text=str(u.vector()[:].min()))
-    print_colored_n_white(colored_text="u_max-u_min = ", color='green', white_text=str(u.vector()[:].max() - u.vector()[:].min()))
-    
-    save_contour_plot(PATH, plot_title)
+        matplt.xlabel("r, м")
+        matplt.ylabel("z, м")
+        matplt.colorbar()
+        matplt.gca().set_aspect("equal")
+        
+        print_colored_n_white(colored_text="u_max = ", color='green', white_text=str(u_max))
+        print_colored_n_white(colored_text="u_min = ", color='green', white_text=str(u_min))
+        print_colored_n_white(colored_text="u_max-u_min = ", color='green', white_text=str(u_max-u_min))
+        
+        save_contour_plot(PATH, plot_title)
     
 def save_contour_plot(PATH, plot_title):
     time_title = Time_name()
