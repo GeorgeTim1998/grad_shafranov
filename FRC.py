@@ -23,11 +23,13 @@ boundary_conditions = BoundaryConditions()
 geometry = Geometry()
 levels = 20
 
+psi_0 = 0.1
 m0_p2 = 0.277
 logger.log_n_output_colored_message(colored_message="m0 * p2 = ", color='green', white_message=str(m0_p2))
+logger.log_n_output_colored_message(colored_message="psi_0 = ", color='green', white_message=str(psi_0))
 
 #%% Domain and mesh definition
-geometry.rectangle_mesh_init(r1 = 0.01, r2 = 1.04, z1 = -0.5, z2 = 0.5, default_mesh = 200) # Howell2014
+geometry.rectangle_mesh_init(r1 = 0.01, r2 = 1.04, z1 = -0.5, z2 = 0.5, default_mesh = 500) # Howell2014
 
 #%% Define function space and
 V = FunctionSpace(geometry.mesh, 'P', 1) # standard triangular mesh
@@ -35,17 +37,14 @@ u = TrialFunction(V) # u must be defined as function before expression def
 v = TestFunction(V)
 
 #%% Boundary conditions
-u_D = boundary_conditions.constant_boundary_condition("0")
+u_D = boundary_conditions.constant_boundary_condition("0.1")
 bc = DirichletBC(V, u_D, fu.Dirichlet_boundary) #гран условие как в задаче дирихле
 
 #%% Solve
 [r_2, r] = geometry.operator_weights(V)
 
-u = Function(V)
-fu.Initial_guess_for_u(u, 1)
-
-a = dot(grad(u)/r, grad(r_2*v))*dx + 2*m0_p2 * r * r * u * r * v * dx
-
+u = Function(V) 
+a = dot(grad(u)/r, grad(r_2*v))*dx + 2*m0_p2 * r * r * u/psi_0 * r * v * dx
 solve(a == 0, u, bc)
 
 #%% Post solve
