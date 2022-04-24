@@ -41,7 +41,7 @@ TWOD_PLOT_SAVE_PATH = 'Figures/Post_analyt'
 #%% Square influence  stuff
 SQ_MIN = 1
 SQ_MAX = 9
-SQUARE_SIZE_ARRAY = numpy.linspace(SQ_MIN, SQ_MAX, 1+int((SQ_MAX-SQ_MIN)/SQ_MIN))
+SQUARE_SIZE_ARRAY = numpy.linspace(SQ_MIN, SQ_MAX, 1+int((SQ_MAX-SQ_MIN)/abs(SQ_MIN)))
 #%% Fonts for plots
 FONT = {'family' : "Times New Roman",
         'size' : 15}
@@ -449,7 +449,7 @@ def Hand_input(p_pow, F_pow):
 def Initial_guess_for_u(u, const):
     for i in range(len(u.vector())):
         u.vector()[i] = float(const)
-    logger.info("Initial guess for u: %s" % const)
+    logger.log_n_output_colored_message(colored_message="Initial guess for u: ", color='green', white_message=str(const))
     return u
 
 def Neumann_boundary(x, on_boundary):
@@ -637,3 +637,9 @@ def plot_1D(PATH, u, geometry):
     logger.print_colored_n_white(colored_text="u_max-u_min = ", color='green', white_text=str(u.vector()[:].max() - u.vector()[:].min()))
     
     save_contour_plot(PATH, "")
+    
+def multiply_u_by_const(u, const):
+    for i in range(len(u.vector())):
+        u.vector()[i] = float(const)*u.vector()[i]
+    logger.log_n_output_colored_message(colored_message="u is multiplied by: ", color='green', white_message=str(const))
+    return u
