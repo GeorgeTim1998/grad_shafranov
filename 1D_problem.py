@@ -21,7 +21,6 @@ PATH = '1D_problem'
 
 #%% Needed objects and contour levels
 fu.What_time_is_it(t0, "Start problem")
-boundary = BoundaryConditions()
 geometry = Geometry()
 my_expressions = Expressions()
 
