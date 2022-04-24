@@ -37,7 +37,9 @@ class BoundaryConditions:
 #%% Constant boundary conditions
     def constant_boundary_condition(self, const_str):
         logger.info("u_D = %s" % const_str)
-        self.const_boundary = Expression(const_str, degree = 1) # Define boundary condition
+        self.const_boundary_condition = Expression(const_str, degree = 1) # Define boundary condition
+        
+        return self.const_boundary_condition
 #%% Tokamak D configuration
     def tokamak_D_config_boundary_condition(self, psi_0, eps, a, b):
         self.psi_0 = psi_0
