@@ -26,7 +26,7 @@ levels = 50
 levels = numpy.linspace(-0.10, 10, 25)
 
 #%% Domain and mesh definition
-geometry.rectangle_mesh_init(r1 = 0.02, r2 = 1.5, z1 = -0.7, z2 = 0.7, default_mesh = 200)
+geometry.rectangle_mesh_init(r1 = 0.02, r2 = 1.5, z1 = -0.7, z2 = 0.7, default_mesh = 100)
 fu.plot_mesh(geometry.mesh, PATH)
 # geometry.arbitrary_mesh_init()
 
