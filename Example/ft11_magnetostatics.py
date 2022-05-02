@@ -90,7 +90,7 @@ class Permeability(UserExpression):
         else:
             values[0] = 3   # copper
 
-mu = Permeability(markers, degree=1)
+mu = Permeability(markers, degree=0)
 
 # Define variational problem
 A_z = TrialFunction(V)
