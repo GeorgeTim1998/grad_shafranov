@@ -40,11 +40,12 @@ class Geometry:
     
     def rectangle_mesh_values(self):
         self.mesh_r, self.mesh_z = self.default_mesh, abs(int(self.default_mesh * (self.z2-self.z1)/(self.r2-self.r1)))
+        
 #%% Arbitrary mesh
     def arbitrary_mesh_init(self):
         domain = mshr.Circle(Point(0.3, 0), 0.25)
         self.mesh = mshr.generate_mesh(domain, 50)
-#%% Interval geometry
+#%% 1D geometry (Interval geometry)
     def interval_mesh_init(self, a, b, default_mesh):
         self.a = a
         self.b = b
@@ -57,3 +58,41 @@ class Geometry:
         logger.log_n_output_colored_message(colored_message="a = ", color='green', white_message=str(self.a))
         logger.log_n_output_colored_message(colored_message="b = ", color='green', white_message=str(self.b))
         logger.log_n_output_colored_message(colored_message="default mesh = ", color='green', white_message=str(self.default_mesh))
+
+#%% Create domains
+    def rectangle_domain(self, area):
+        self.r1 = area[0]
+        self.r2 = area[1]
+        self.z1 = area[2]
+        self.z2 = area[3]
+        
+        self.domain_centre_r = (area[0] + area[1]) / 2
+        self.domain_centre_z = (area[2] + area[3]) / 2
+        
+        rect_low = Point(self.r1, self.z1) #define rectangle size: lower point
+        rect_high = Point(self.r2, self.z2) #define rectangle size: upper point
+        
+        self.rect_domain = mshr.Rectangle(rect_low, rect_high)
+        
+        self.rectangle_domain_log()
+
+        return self.rect_domain
+    
+    def rectangle_domain_log(self):
+        logger.info('R1 = %f, Z1 = %f' % (self.r1, self.z1))
+        logger.info('R2 = %f, Z2 = %f' % (self.r2, self.z2))
+        
+    def circle_domain(self, radius, segments):
+        circle = mshr.Circle(Point(self.domain_centre_r, self.domain_centre_z), radius, segments=segments)
+        logger.info("Created subdomain: centre: %s, radius=%f, segments=%d" % (str([self.domain_centre_r, self.domain_centre_z]), radius, segments))
+        
+        return circle
+    
+    def generate_mesh_in_domain(self, domain, density):
+        self.density = density
+        self.mesh = mshr.generate_mesh(domain, density)
+        self.log_mesh_in_domain()
+        
+    def log_mesh_in_domain(self):
+        logger.log_n_output_colored_message(colored_message="Mesh density = ", color='green', white_message=str(self.density))
+        logger.info( "Number of cells: %d, Number of vertices: %d" % (self.mesh.num_cells(), self.mesh.num_vertices()) )
