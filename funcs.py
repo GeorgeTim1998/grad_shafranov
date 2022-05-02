@@ -533,6 +533,9 @@ def plasma_sources_coefficients_pow_2(p_correction,F_correction):
     p_coeff = 2 * M0 * M.p_axis / M.psi_axis**2*p_correction
     F_2_coeff = -M.F0_2 / M.psi_axis**2*F_correction
 
+    logger.log_n_output_colored_message(colored_message="p_correction = ", color='green', white_message=str(p_correction))
+    logger.log_n_output_colored_message(colored_message="F_2_correction = ", color='green', white_message=str(F_correction))
+    
     logger.log_n_output_colored_message(colored_message="p_coeff = ", color='green', white_message=str(p_coeff))
     logger.log_n_output_colored_message(colored_message="F_2_coeff = ", color='green', white_message=str(F_2_coeff))
     
@@ -609,6 +612,7 @@ def save_contour_plot(PATH, plot_title):
     matplt.close() # close created plot
     
     print_colored_n_white(colored_text="3D countour plot saved to PATH: ", color='green', white_text=file_path)
+    time.sleep(0.5)
 
 def print_colored_n_white(colored_text, color, white_text):
     print(colored(colored_text, color) + white_text)
