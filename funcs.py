@@ -612,7 +612,7 @@ def save_contour_plot(PATH, plot_title):
     matplt.close() # close created plot
     
     print_colored_n_white(colored_text="3D countour plot saved to PATH: ", color='green', white_text=file_path)
-    time.sleep(0.5)
+    time.sleep(0.1)
 
 def print_colored_n_white(colored_text, color, white_text):
     print(colored(colored_text, color) + white_text)
