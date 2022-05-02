@@ -22,6 +22,12 @@ PATH = 'mu_vs_r'
 #%% Needed objects and contour levels
 boundary_conditions = BoundaryConditions()
 geometry = Geometry()
+
+VACUUM_PERMEABILITY = 1
+VESSEL_PERMEABILITY = 5
+logger.log_n_output_colored_message(colored_message="VACUUM_PERMEABILITY = ", color='green', white_message=str(VACUUM_PERMEABILITY))
+logger.log_n_output_colored_message(colored_message="VESSEL_PERMEABILITY = ", color='green', white_message=str(VESSEL_PERMEABILITY))
+
 levels = 20
 
 #%% Domain and mesh definition
@@ -36,33 +42,41 @@ ring = circle2 - circle1
 domain.set_subdomain(1, ring)
 domain.set_subdomain(2, circle1)
 
-geometry.generate_mesh_in_domain(domain=domain, density=32)
+geometry.generate_mesh_in_domain(domain=domain, density=128)
 
 plot(geometry.mesh)
 fu.save_contour_plot(PATH, '')
 
 markers = MeshFunction("size_t", geometry.mesh, geometry.mesh.topology().dim(), geometry.mesh.domains())
 
-# markers.set_all(0)
-# ring.mark(markers, 1)
 plot(markers)
 fu.save_contour_plot(PATH, '')
 
-class Permeability(Expression):
+class Permeability(UserExpression):
     def __init__(self, mesh, **kwargs):
+        super().__init__(**kwargs)
         self.markers = markers
     def eval_cell(self, values, x, cell):
         if self.markers[cell.index] == 1:
-            values[0] = 1.5 # vessel
+            values[0] = VESSEL_PERMEABILITY # vessel
         else:
-            values[0] = 1 # vacuum
+            values[0] = VACUUM_PERMEABILITY # vacuum
+
+class StepFunction(UserExpression):
+    def __init__(self, mesh, **kwargs):
+        super().__init__(**kwargs)
+        self.markers = markers
+    def eval_cell(self, values, x, cell):
+        if self.markers[cell.index] == 1:
+            values[0] = VESSEL_PERMEABILITY # vessel
+        else:
+            values[0] = VACUUM_PERMEABILITY # vacuum
 
 #%% Define function space and
 V = FunctionSpace(geometry.mesh, 'P', 1) # standard triangular mesh
 
-mu = Permeability(geometry.mesh, degree=1)
-plot(interpolate(mu, V))
-fu.save_contour_plot(PATH, '')
+mu = Permeability(geometry.mesh, degree=0)
+fu.countour_plot_via_mesh(geometry, interpolate(mu, V), levels = levels, PATH = PATH, plot_title = '')
 
 u = TrialFunction(V) # u must be defined as function before expression def
 v = TestFunction(V)
@@ -74,14 +88,14 @@ bc = DirichletBC(V, u_D, fu.Dirichlet_boundary) #гран условие как 
 #%% Solve
 [r_2, r] = geometry.operator_weights(V)
 
-dx = Measure('dx', domain=geometry.mesh, subdomain_data=markers)
+# dx = Measure('dx', domain=geometry.mesh, subdomain_data=markers)
 
 point_sources = fu.Array_Expression(fu.ArrayOfPointSources(psd.PointSource(1)))
 [p_coeff, F_2_coeff] = fu.plasma_sources_coefficients_pow_2(p_correction=100, F_correction=1)
 
-L = sum(point_sources)*r*v*dx 
+L = mu*sum(point_sources)*r*v*dx 
 
-a = dot(grad(u)/r, grad(r_2*v))*dx - (p_coeff*r*r + F_2_coeff)*u*r*v*dx
+a = dot(grad(u)/r, grad(r_2*v))*dx - mu*(p_coeff*r*r + F_2_coeff)*u*r*v*dx
 u = Function(V)
 solve(a == L, u, bc)
 
