@@ -4,7 +4,6 @@
 *.vtu
 *.log
 Figures
-Example
 Text_data
 poisson
 jitfailure-dolfin_expression_e07c626d00b63875443c5b44dd1fc871
