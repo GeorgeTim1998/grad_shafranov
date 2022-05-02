@@ -37,14 +37,14 @@ u = TrialFunction(V) # u must be defined as function before expression def
 v = TestFunction(V)
 
 #%% Boundary conditions
-u_D = boundary_conditions.constant_boundary_condition("0.1")
+u_D = boundary_conditions.constant_boundary_condition("-1e-6")
 bc = DirichletBC(V, u_D, fu.Dirichlet_boundary) #гран условие как в задаче дирихле
 
 #%% Solve
 [r_2, r] = geometry.operator_weights(V)
 
 u = Function(V) 
-a = dot(grad(u)/r, grad(r_2*v))*dx + 2*m0_p2 * r * r * u/psi_0 * r * v * dx
+a = dot(grad(u)/r, grad(r_2*v))*dx - 2*m0_p2 * r * r * u/psi_0 * r * v * dx
 solve(a == 0, u, bc)
 
 #%% Post solve
