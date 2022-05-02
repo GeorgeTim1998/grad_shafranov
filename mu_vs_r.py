@@ -45,12 +45,12 @@ domain.set_subdomain(2, circle1)
 geometry.generate_mesh_in_domain(domain=domain, density=128)
 
 plot(geometry.mesh)
-fu.save_contour_plot(PATH, 'Markers')
+fu.save_contour_plot(PATH, '')
 
 markers = MeshFunction("size_t", geometry.mesh, geometry.mesh.topology().dim(), geometry.mesh.domains())
 
 plot(markers)
-fu.save_contour_plot(PATH, '')
+fu.save_contour_plot(PATH, 'Markers')
 
 #%% Step coefficients classes
 class Permeability(UserExpression):
@@ -92,14 +92,16 @@ bc = DirichletBC(V, u_D, fu.Dirichlet_boundary) #гран условие как 
 #%% Solve
 [r_2, r] = geometry.operator_weights(V)
 
-# dx = Measure('dx', domain=geometry.mesh, subdomain_data=markers)
+dx = Measure('dx', domain=geometry.mesh, subdomain_data=markers)
 
 point_sources = fu.Array_Expression(fu.ArrayOfPointSources(psd.PointSource(1)))
 [p_coeff, F_2_coeff] = fu.plasma_sources_coefficients_pow_2(p_correction=100, F_correction=1)
 
 L = mu*sum(point_sources)*r*v*dx 
 
-a = dot(grad(u)/r, grad(r_2*v))*dx - etta*mu*(p_coeff*r*r + F_2_coeff)*u*r*v*dx
+a = dot(grad(u)/r, grad(r_2*v))*dx - mu*(p_coeff*r*r + F_2_coeff)*u*r*v*dx(2)
+# a = dot(grad(u)/r, grad(r_2*v))*dx
+
 u = Function(V)
 solve(a == L, u, bc)
 
