@@ -45,13 +45,14 @@ domain.set_subdomain(2, circle1)
 geometry.generate_mesh_in_domain(domain=domain, density=128)
 
 plot(geometry.mesh)
-fu.save_contour_plot(PATH, '')
+fu.save_contour_plot(PATH, 'Markers')
 
 markers = MeshFunction("size_t", geometry.mesh, geometry.mesh.topology().dim(), geometry.mesh.domains())
 
 plot(markers)
 fu.save_contour_plot(PATH, '')
 
+#%% Step coefficients classes
 class Permeability(UserExpression):
     def __init__(self, mesh, **kwargs):
         super().__init__(**kwargs)
@@ -67,16 +68,19 @@ class StepFunction(UserExpression):
         super().__init__(**kwargs)
         self.markers = markers
     def eval_cell(self, values, x, cell):
-        if self.markers[cell.index] == 1:
-            values[0] = VESSEL_PERMEABILITY # vessel
+        if self.markers[cell.index] == 2:
+            values[0] = 1 # inside vessel
         else:
-            values[0] = VACUUM_PERMEABILITY # vacuum
+            values[0] = 0 # outside vessel
 
-#%% Define function space and
+#%% Define function space and step coefficients
 V = FunctionSpace(geometry.mesh, 'P', 1) # standard triangular mesh
 
 mu = Permeability(geometry.mesh, degree=0)
-fu.countour_plot_via_mesh(geometry, interpolate(mu, V), levels = levels, PATH = PATH, plot_title = '')
+fu.countour_plot_via_mesh(geometry, interpolate(mu, V), levels = levels, PATH = PATH, plot_title = 'Permeability')
+
+etta = StepFunction(geometry.mesh, degree=0)
+fu.countour_plot_via_mesh(geometry, interpolate(etta, V), levels = levels, PATH = PATH, plot_title = 'Step Function')
 
 u = TrialFunction(V) # u must be defined as function before expression def
 v = TestFunction(V)
@@ -95,7 +99,7 @@ point_sources = fu.Array_Expression(fu.ArrayOfPointSources(psd.PointSource(1)))
 
 L = mu*sum(point_sources)*r*v*dx 
 
-a = dot(grad(u)/r, grad(r_2*v))*dx - mu*(p_coeff*r*r + F_2_coeff)*u*r*v*dx
+a = dot(grad(u)/r, grad(r_2*v))*dx - etta*mu*(p_coeff*r*r + F_2_coeff)*u*r*v*dx
 u = Function(V)
 solve(a == L, u, bc)
 
