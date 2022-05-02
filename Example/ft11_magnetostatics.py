@@ -12,13 +12,29 @@ from __future__ import print_function
 from fenics import *
 from mshr import *
 from math import sin, cos, pi
+import matplotlib.pyplot as matplt
+import time
+import datetime
+
+def save_contour_plot(PATH, plot_title):
+    ttime = datetime.datetime.now().strftime("%d%m%Y_%H%M%S")
+    time_title = str(ttime)  #get current time to make figure name unique
+
+    path_my_file = 'Figures/%s/%s' % (PATH, time_title)
+    file_path = "%s.png" % path_my_file
+
+    matplt.title(plot_title) # titled figure for my self
+    matplt.savefig(file_path, dpi = 200, bbox_inches="tight") #no title figure for reports
+    matplt.close() # close created plot
+
+PATH = 'ft11_magnetostatics'
 
 a = 1.0   # inner radius of iron cylinder
 b = 1.2   # outer radius of iron cylinder
 c_1 = 0.8 # radius for inner circle of copper wires
 c_2 = 1.4 # radius for outer circle of copper wires
 r = 0.1   # radius of copper wires
-R = 5.0   # radius of domain
+R = 2   # radius of domain
 n = 10    # number of windings
 
 # Define geometry for background
@@ -43,7 +59,9 @@ for (i, wire) in enumerate(wires_S):
     domain.set_subdomain(2 + n + i, wire)
 
 # Create mesh
-mesh = generate_mesh(domain, 128)
+mesh = generate_mesh(domain, 60)
+plot(mesh)
+save_contour_plot(PATH, '')
 
 # Define function space
 V = FunctionSpace(mesh, 'P', 1)
@@ -60,16 +78,17 @@ J_N = Constant(1.0)
 J_S = Constant(-1.0)
 
 # Define magnetic permeability
-class Permeability(Expression):
+class Permeability(UserExpression):
     def __init__(self, markers, **kwargs):
+        super().__init__(**kwargs)
         self.markers = markers
     def eval_cell(self, values, x, cell):
         if self.markers[cell.index] == 0:
-            values[0] = 4*pi*1e-7 # vacuum
+            values[0] =  1 # vacuum
         elif self.markers[cell.index] == 1:
-            values[0] = 1e-5      # iron (should really be 6.3e-3)
+            values[0] = 2      # iron (should really be 6.3e-3)
         else:
-            values[0] = 1.26e-6   # copper
+            values[0] = 3   # copper
 
 mu = Permeability(markers, degree=1)
 
@@ -83,6 +102,9 @@ L = L_N + L_S
 
 # Solve variational problem
 A_z = Function(V)
+plot(interpolate(mu, V))
+save_contour_plot(PATH, '')
+
 solve(a == L, A_z, bc)
 
 # Compute magnetic field (B = curl A)
@@ -94,10 +116,10 @@ plot(A_z)
 plot(B)
 
 # Save solution to file
-vtkfile_A_z = File('magnetostatics/potential.pvd')
-vtkfile_B = File('magnetostatics/field.pvd')
-vtkfile_A_z << A_z
-vtkfile_B << B
+# vtkfile_A_z = File('magnetostatics/potential.pvd')
+# vtkfile_B = File('magnetostatics/field.pvd')
+# vtkfile_A_z << A_z
+# vtkfile_B << B
 
 # Hold plot
-interactive()
+# interactive()
