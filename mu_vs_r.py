@@ -24,7 +24,8 @@ boundary_conditions = BoundaryConditions()
 geometry = Geometry()
 
 VACUUM_PERMEABILITY = 1
-VESSEL_PERMEABILITY = 5
+VESSEL_PERMEABILITY = 100
+
 logger.log_n_output_colored_message(colored_message="VACUUM_PERMEABILITY = ", color='green', white_message=str(VACUUM_PERMEABILITY))
 logger.log_n_output_colored_message(colored_message="VESSEL_PERMEABILITY = ", color='green', white_message=str(VESSEL_PERMEABILITY))
 
@@ -63,24 +64,11 @@ class Permeability(UserExpression):
         else:
             values[0] = VACUUM_PERMEABILITY # vacuum
 
-class StepFunction(UserExpression):
-    def __init__(self, mesh, **kwargs):
-        super().__init__(**kwargs)
-        self.markers = markers
-    def eval_cell(self, values, x, cell):
-        if self.markers[cell.index] == 2:
-            values[0] = 1 # inside vessel
-        else:
-            values[0] = 0 # outside vessel
-
 #%% Define function space and step coefficients
 V = FunctionSpace(geometry.mesh, 'P', 1) # standard triangular mesh
 
 mu = Permeability(geometry.mesh, degree=0)
 fu.countour_plot_via_mesh(geometry, interpolate(mu, V), levels = levels, PATH = PATH, plot_title = 'Permeability')
-
-etta = StepFunction(geometry.mesh, degree=0)
-fu.countour_plot_via_mesh(geometry, interpolate(etta, V), levels = levels, PATH = PATH, plot_title = 'Step Function')
 
 u = TrialFunction(V) # u must be defined as function before expression def
 v = TestFunction(V)
@@ -95,19 +83,23 @@ bc = DirichletBC(V, u_D, fu.Dirichlet_boundary) #гран условие как 
 dx = Measure('dx', domain=geometry.mesh, subdomain_data=markers)
 
 point_sources = fu.Array_Expression(fu.ArrayOfPointSources(psd.PointSource(1)))
-[p_coeff, F_2_coeff] = fu.plasma_sources_coefficients_pow_2(p_correction=100, F_correction=1)
+p_correction_array = [1e-2, 1e-1, 1e1, 1e2, 1e3, 1e4]
 
-L = mu*sum(point_sources)*r*v*dx 
+for p_correction in p_correction_array:
+    [p_coeff, F_2_coeff] = fu.plasma_sources_coefficients_pow_2(p_correction=p_correction, F_correction=1)
 
-a = dot(grad(u)/r, grad(r_2*v))*dx - mu*(p_coeff*r*r + F_2_coeff)*u*r*v*dx(2)
-# a = dot(grad(u)/r, grad(r_2*v))*dx
+    a = dot(grad(u)/r, grad(r_2*v))*dx - mu*(p_coeff*r*r + F_2_coeff)*u*r*v*dx(2)
+    L = mu*sum(point_sources)*r*v*dx 
 
-u = Function(V)
-solve(a == L, u, bc)
+    # a = dot(grad(u)/r, grad(r_2*v))*dx - (p_coeff*r*r + F_2_coeff)*u*r*v*dx(0)
+    # L = Constant(0)*r*v*dx 
 
-#%% Post solve
-fu.What_time_is_it(t0, 'Variational problem solved')
-fu.countour_plot_via_mesh(geometry, u, levels = levels, PATH = PATH, plot_title = '')
+    u = Function(V)
+    solve(a == L, u, bc)
 
-fu.What_time_is_it(t0, "\u03C8(r, z) is plotted")
-logger.info("'Done'"+"\n")
+    #%% Post solve
+    fu.What_time_is_it(t0, 'Variational problem solved')
+    fu.countour_plot_via_mesh(geometry, u, levels = levels, PATH = PATH, plot_title = '')
+
+    fu.What_time_is_it(t0, "\u03C8(r, z) is plotted")
+    logger.info("'Done'"+"\n")
