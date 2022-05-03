@@ -35,7 +35,7 @@ domain.set_subdomain(1, mephist_vessel)
 geometry.generate_mesh_in_domain(domain=domain, density=100)
 
 # plot(geometry.mesh)
-# matplt.show()
+# fu.save_contour_plot(PATH, '')
 
 markers = MeshFunction("size_t", geometry.mesh, geometry.mesh.topology().dim(), geometry.mesh.domains())
 
@@ -59,10 +59,11 @@ dx = Measure('dx', domain=geometry.mesh, subdomain_data=markers)
 
 point_sources = fu.Array_Expression(fu.ArrayOfPointSources(psd.PointSource(1)))
 
-[p_coeff, F_2_coeff] = fu.plasma_sources_coefficients_pow_2(p_correction=1e3, F_correction=1)
+[p_coeff, F_2_coeff] = fu.plasma_sources_coefficients_pow_2(p_correction=1e2, F_correction=1)
+
+u = TrialFunction(V) # u must be defined as function before expression def
 
 a = dot(grad(u)/r, grad(r_2*v))*dx - (p_coeff*r*r + F_2_coeff)*u*r*v*dx(1)
-# L = mu*sum(point_sources)*r*v*dx 
 L = sum(point_sources)*r*v*dx(0)
 
 # a = dot(grad(u)/r, grad(r_2*v))*dx - (p_coeff*r*r + F_2_coeff)*u*r*v*dx(0)
