@@ -24,13 +24,13 @@ boundary_conditions = BoundaryConditions()
 geometry = Geometry()
 
 VACUUM_PERMEABILITY = 1
-VESSEL_PERMEABILITY = 100
+VESSEL_PERMEABILITY = 1.008
 
 logger.log_n_output_colored_message(colored_message="VACUUM_PERMEABILITY = ", color='green', white_message=str(VACUUM_PERMEABILITY))
 logger.log_n_output_colored_message(colored_message="VESSEL_PERMEABILITY = ", color='green', white_message=str(VESSEL_PERMEABILITY))
 
-levels = 80
-# levels = numpy.linspace(0, 7e-5)
+levels = 100
+# levels = list(numpy.linspace(-60e-5, 9e-5, 100))
 
 #%% Domain and mesh definition
 domain = geometry.rectangle_domain(area=[0.05, 0.55, -0.4, 0.4])
@@ -91,8 +91,9 @@ point_sources = fu.Array_Expression(fu.ArrayOfPointSources(psd.PointSource(1)))
 #     u = TrialFunction(V) # u must be defined as function before expression def
 [p_coeff, F_2_coeff] = fu.plasma_sources_coefficients_pow_2(p_correction=1e3, F_correction=1)
 
-a = dot(grad(u)/r, grad(r_2*v))*dx - mu*(p_coeff*r*r + F_2_coeff)*u*r*v*dx(2)
-L = mu*sum(point_sources)*r*v*dx 
+a = dot(grad(u)/r, grad(r_2*v))*dx - (p_coeff*r*r + F_2_coeff)*u*r*v*dx(2)
+# L = mu*sum(point_sources)*r*v*dx 
+L = sum(point_sources)*r*v*dx(0) + VACUUM_PERMEABILITY*sum(point_sources)*r*v*dx(1)
 
 # a = dot(grad(u)/r, grad(r_2*v))*dx - (p_coeff*r*r + F_2_coeff)*u*r*v*dx(0)
 # L = Constant(0)*r*v*dx 
