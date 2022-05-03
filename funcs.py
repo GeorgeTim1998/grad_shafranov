@@ -594,9 +594,9 @@ def countour_plot_via_mesh(geometry, u, levels, PATH, plot_title):
         matplt.colorbar()
         matplt.gca().set_aspect("equal")
         
-        print_colored_n_white(colored_text="u_max = ", color='green', white_text=str(u_max))
-        print_colored_n_white(colored_text="u_min = ", color='green', white_text=str(u_min))
-        print_colored_n_white(colored_text="u_max-u_min = ", color='green', white_text=str(u_max-u_min))
+        logger.log_n_output_colored_message(colored_message="u_max = ", color='green', white_message=str(u_max))
+        logger.log_n_output_colored_message(colored_message="u_min = ", color='green', white_message=str(u_min))
+        logger.log_n_output_colored_message(colored_message="u_max-u_min = ", color='green', white_message=str(u_max-u_min))
         
         save_contour_plot(PATH, plot_title)
     
