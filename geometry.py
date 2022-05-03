@@ -1,6 +1,7 @@
 from fenics import *
 import logger
 import mshr
+import numpy
 class Geometry:
     def operator_weights(self, V):
         r_2 = interpolate(Expression('x[0]*x[0]', degree = 2), V) # interpolation is needed so that 'a' could evaluate deriviations and such
@@ -96,3 +97,40 @@ class Geometry:
     def log_mesh_in_domain(self):
         logger.log_n_output_colored_message(colored_message="Mesh density = ", color='green', white_message=str(self.density))
         logger.info( "Number of cells: %d, Number of vertices: %d" % (self.mesh.num_cells(), self.mesh.num_vertices()) )
+#%% MEPhIST domain
+    def mephist_vessel(self):
+        [x, z] = self.read_data_from_file()
+        
+        point_list = []
+
+        for i in range(len(x)):
+            point_list.append(Point(x[i], z[i]))
+            
+        self.domain = mshr.Polygon(point_list)
+        
+        return self.domain
+    
+    def Column(self, matrix, col):
+        return [row[col] for row in matrix]
+    
+    def read_data_from_file(self):
+        file_path = "КонтурКамерыСредний.txt"
+        with open(file_path, "r") as file: # change to Read_from_file func
+            data = [[float(num) for num in line.split('  ')] for line in file]
+
+        x = numpy.array(self.Column(data, 0))*1e-3
+        z = numpy.array(self.Column(data, 1))*1e-3
+        
+        camera_height = 581.69*1e-3
+        z_height = z[-2]
+
+        x = x[0:len(x)-1]
+        z = z[0:len(z)-1]
+
+        z = z - z_height/2 * numpy.ones(len(z))
+        z = z + (camera_height/2 - numpy.amax(z)) * numpy.ones(len(z)) 
+        
+        x = numpy.append(x, numpy.flip(x)) # move it along x axis!
+        z = numpy.append(z, numpy.flip(-z))
+        
+        return x, z
