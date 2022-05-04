@@ -69,3 +69,17 @@ vertex_values_u_D = interpolate(boundary.psi_sol_expr, V).compute_vertex_values(
 vertex_values_u = u.compute_vertex_values(geometry.mesh)
 error_max = numpy.max(numpy.abs(vertex_values_u_D - vertex_values_u))
 print(error_max)
+
+# Permeability class
+class Permeability(UserExpression):
+    def __init__(self, mesh, **kwargs):
+        super().__init__(**kwargs)
+        self.markers = markers
+    def eval_cell(self, values, x, cell):
+        if self.markers[cell.index] == 1:
+            values[0] = 1 # vessel
+        else:
+            values[0] = 0 # vacuum
+    def value_shape(self):
+        return ()
+mu = Permeability(geometry.mesh, degree=0)
