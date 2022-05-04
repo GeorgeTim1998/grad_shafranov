@@ -67,9 +67,6 @@ class Geometry:
         self.z1 = area[2]
         self.z2 = area[3]
         
-        self.domain_centre_r = (area[0] + area[1]) / 2
-        self.domain_centre_z = (area[2] + area[3]) / 2
-        
         rect_low = Point(self.r1, self.z1) #define rectangle size: lower point
         rect_high = Point(self.r2, self.z2) #define rectangle size: upper point
         
@@ -83,9 +80,12 @@ class Geometry:
         logger.info('R1 = %f, Z1 = %f' % (self.r1, self.z1))
         logger.info('R2 = %f, Z2 = %f' % (self.r2, self.z2))
         
-    def circle_domain(self, radius, segments):
+    def circle_domain(self, centre_point, radius, segments):
+        self.domain_centre_r = centre_point[0]
+        self.domain_centre_z = centre_point[1]
+        
         circle = mshr.Circle(Point(self.domain_centre_r, self.domain_centre_z), radius, segments=segments)
-        logger.info("Created subdomain: centre: %s, radius=%f, segments=%d" % (str([self.domain_centre_r, self.domain_centre_z]), radius, segments))
+        logger.info("Created subdomain: centre: %s, radius=%f, segments=%d" % (str(centre_point), radius, segments))
         
         return circle
     
