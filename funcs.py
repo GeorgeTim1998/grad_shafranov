@@ -530,8 +530,27 @@ def plasma_sources_coefficients_pow_2(p_correction,F_correction):
     print_colored("MEPhIST data:", 'magenta')
     logger.log_n_output(M.__dict__, 'white')
     
-    p_coeff = 2 * M0 * M.p_axis / M.psi_axis**2*p_correction
-    F_2_coeff = -M.F0_2 / M.psi_axis**2*F_correction
+    p_coeff = 2 * M0 * M.p_axis / M.psi_axis**2 * p_correction
+    F_2_coeff = -M.F0_2 / M.psi_axis**2 * F_correction
+
+    logger.log_n_output_colored_message(colored_message="p_correction = ", color='green', white_message=str(p_correction))
+    logger.log_n_output_colored_message(colored_message="F_2_correction = ", color='green', white_message=str(F_correction))
+    
+    logger.log_n_output_colored_message(colored_message="p_coeff = ", color='green', white_message=str(p_coeff))
+    logger.log_n_output_colored_message(colored_message="F_2_coeff = ", color='green', white_message=str(F_2_coeff))
+    
+    logger.log_n_output("Right hand part: ", 'magenta')
+    logger.log_n_output("%s*pow(x[0], 2)*u + %s*u" % (p_coeff, F_2_coeff), 'white')
+    
+    return p_coeff, F_2_coeff
+
+def plasma_sources_coefficients_pow_2_iteration(p_correction, F_correction, psi_axis):
+    M = MEPH.MEPhIST()
+    print_colored("MEPhIST data:", 'magenta')
+    logger.log_n_output(M.__dict__, 'white')
+    
+    p_coeff = 2 * M0 * M.p_axis / psi_axis**2 * p_correction
+    F_2_coeff = -M.F0_2 / psi_axis**2 * F_correction
 
     logger.log_n_output_colored_message(colored_message="p_correction = ", color='green', white_message=str(p_correction))
     logger.log_n_output_colored_message(colored_message="F_2_correction = ", color='green', white_message=str(F_correction))
@@ -599,6 +618,8 @@ def countour_plot_via_mesh(geometry, u, levels, PATH, plot_title):
         logger.log_n_output_colored_message(colored_message="u_max-u_min = ", color='green', white_message=str(u_max-u_min))
         
         save_contour_plot(PATH, plot_title)
+        
+        return u_max
     
 def save_contour_plot(PATH, plot_title):
     time_title = Time_name()
