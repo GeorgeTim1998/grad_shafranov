@@ -20,7 +20,7 @@ logger.log_n_output("%s" % current_pyfile, 'red')
 fu.print_colored("Date_Time is: %s" % fu.Time_name(), 'cyan')
 PATH = 'MEPhIST_psi_axis'
 
-#%% Needed objects and contour levels
+#%% Needed objects
 boundary_conditions = BoundaryConditions()
 geometry = Geometry()
 psi_axis = M.MEPhIST().psi_axis
@@ -29,22 +29,21 @@ problem = P.Problem()
 #%% Domain and mesh definition
 domain = geometry.rectangle_domain(area=problem.domain_geometry)
 plasma_circle = geometry.circle_domain(centre_point=problem.plasma_centre_point, radius=problem.plasma_radius, segments=problem.plasma_domain_segments)
-
 domain.set_subdomain(1, plasma_circle)
 
 geometry.generate_mesh_in_domain(domain=domain, density=problem.mesh_density)
 
 markers = MeshFunction("size_t", geometry.mesh, geometry.mesh.topology().dim(), geometry.mesh.domains())
 
-#%% Define function space and step coefficients
-V = FunctionSpace(geometry.mesh, 'P', 1) # standard triangular mesh
+#%% Define function space
+V = FunctionSpace(geometry.mesh, 'P', 1)
 
-u = TrialFunction(V) # u must be defined as function before expression def
+u = TrialFunction(V)
 v = TestFunction(V)
 
 #%% Boundary conditions
 u_D = boundary_conditions.constant_boundary_condition(problem.boundary_condition_str)
-bc = DirichletBC(V, u_D, fu.Dirichlet_boundary) #гран условие как в задаче дирихле
+bc = DirichletBC(V, u_D, fu.Dirichlet_boundary)
 
 #%% Solve
 [r_2, r] = geometry.operator_weights(V)
