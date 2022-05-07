@@ -23,28 +23,18 @@ PATH = 'MEPhIST'
 boundary_conditions = BoundaryConditions()
 geometry = Geometry()
 
-# levels = 40
-levels = list(numpy.linspace(-5e-5, 6e-5, 20))
+levels = 40
+# levels = list(numpy.geomspace(-1e-3, 1e-8))
 
 #%% Domain and mesh definition
 domain = geometry.rectangle_domain(area=[0.05, 0.55, -0.4, 0.4])
-mephist_vessel = geometry.mephist_vessel()
 plasma_circle = geometry.circle_domain(centre_point=[0.23, 0], radius=M.MEPhIST().a*0.65, segments=60)
 
-no_plasma_domain = mephist_vessel - plasma_circle
+domain.set_subdomain(1, plasma_circle)
 
-domain.set_subdomain(1, no_plasma_domain)
-domain.set_subdomain(2, plasma_circle)
-
-geometry.generate_mesh_in_domain(domain=domain, density=120)
-
-# plot(geometry.mesh)
-# fu.save_contour_plot(PATH, '')
+geometry.generate_mesh_in_domain(domain=domain, density=180)
 
 markers = MeshFunction("size_t", geometry.mesh, geometry.mesh.topology().dim(), geometry.mesh.domains())
-
-# plot(markers)
-# fu.save_contour_plot(PATH, 'Markers')
 
 #%% Define function space and step coefficients
 V = FunctionSpace(geometry.mesh, 'P', 1) # standard triangular mesh
@@ -63,13 +53,10 @@ dx = Measure('dx', domain=geometry.mesh, subdomain_data=markers)
 
 point_sources = fu.Array_Expression(fu.ArrayOfPointSources(psd.PointSource(1)))
 
-[p_coeff, F_2_coeff] = fu.plasma_sources_coefficients_pow_2(p_correction=1e3, F_correction=1)
+[p_coeff, F_2_coeff] = fu.plasma_sources_coefficients_pow_2(p_correction=1, F_correction=1)
 
-a = dot(grad(u)/r, grad(r_2*v))*dx - (p_coeff*r*r + F_2_coeff)*u*r*v*dx(2)
-L = sum(point_sources)*r*v*dx(0) + sum(point_sources)*r*v*dx(1)
-
-# a = dot(grad(u)/r, grad(r_2*v))*dx - (p_coeff*r*r + F_2_coeff)*u*r*v*dx(0)
-# L = Constant(0)*r*v*dx 
+a = dot(grad(u)/r, grad(r_2*v))*dx - (p_coeff*r*r + F_2_coeff)*u*r*v*dx(1)
+L = sum(point_sources)*r*v*dx(0)
 
 u = Function(V)
 solve(a == L, u, bc)
