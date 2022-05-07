@@ -30,15 +30,11 @@ levels = 40
 
 #%% Domain and mesh definition
 domain = geometry.rectangle_domain(area=[0.05, 0.55, -0.4, 0.4])
-mephist_vessel = geometry.mephist_vessel()
 plasma_circle = geometry.circle_domain(centre_point=[0.23, 0], radius=M.MEPhIST().a*0.65, segments=60)
 
-no_plasma_domain = mephist_vessel - plasma_circle
+domain.set_subdomain(1, plasma_circle)
 
-domain.set_subdomain(1, no_plasma_domain)
-domain.set_subdomain(2, plasma_circle)
-
-geometry.generate_mesh_in_domain(domain=domain, density=100)
+geometry.generate_mesh_in_domain(domain=domain, density=180)
 
 markers = MeshFunction("size_t", geometry.mesh, geometry.mesh.topology().dim(), geometry.mesh.domains())
 
@@ -63,21 +59,21 @@ A1 = 1e-3
 A2 = 1e-2  
 step = 0.5e-3
 array = numpy.linspace(A1, A2, 1+int((A2-A1)/step))  
+correction = 1
+# for correction in array:
+[p_coeff, F_2_coeff] = fu.plasma_sources_coefficients_pow_2_iteration(p_correction=1, F_correction=1, psi_axis=correction*psi_axis)
+logger.log_n_output_colored_message(colored_message="Correction coeff for psi on axis = ", color='green', white_message=str(correction))
 
-for correction in array:
-    [p_coeff, F_2_coeff] = fu.plasma_sources_coefficients_pow_2_iteration(p_correction=1, F_correction=1, psi_axis=correction*psi_axis)
-    logger.log_n_output_colored_message(colored_message="correction=", color='red', white_message=str(correction))
-    
-    u = TrialFunction(V)
-    a = dot(grad(u)/r, grad(r_2*v))*dx - (p_coeff*r*r + F_2_coeff)*u*r*v*dx(2)
-    L = (sum(point_sources)*r*v*dx(0) + sum(point_sources)*r*v*dx(1))
+u = TrialFunction(V)
+a = dot(grad(u)/r, grad(r_2*v))*dx - (p_coeff*r*r + F_2_coeff)*u*r*v*dx(1)
+L = sum(point_sources)*r*v*dx(0)
 
-    u = Function(V)
-    solve(a == L, u, bc)
+u = Function(V)
+solve(a == L, u, bc)
 
-    #%% Post solve
-    fu.What_time_is_it(t0, 'Variational problem solved')
-    fu.countour_plot_via_mesh(geometry, u, levels = levels, PATH = PATH, plot_title = '')
+#%% Post solve
+fu.What_time_is_it(t0, 'Variational problem solved')
+fu.countour_plot_via_mesh(geometry, u, levels = levels, PATH = PATH, plot_title = '')
 
-    fu.What_time_is_it(t0, "\u03C8(r, z) is plotted")
-    logger.log_n_output_colored_message(colored_message="'Done'\n", color='red', white_message='')
+fu.What_time_is_it(t0, "\u03C8(r, z) is plotted")
+logger.log_n_output_colored_message(colored_message="'Done'\n", color='red', white_message='')
