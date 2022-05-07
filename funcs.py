@@ -558,6 +558,8 @@ def plasma_sources_coefficients_pow_2_iteration(p_correction, F_correction, psi_
     logger.log_n_output_colored_message(colored_message="p_coeff = ", color='green', white_message=str(p_coeff))
     logger.log_n_output_colored_message(colored_message="F_2_coeff = ", color='green', white_message=str(F_2_coeff))
     
+    logger.log_n_output_colored_message(colored_message="psi axis (by me) = ", color='green', white_message=str(psi_axis))
+    
     logger.log_n_output("Right hand part: ", 'magenta')
     logger.log_n_output("%s*pow(x[0], 2)*u + %s*u" % (p_coeff, F_2_coeff), 'white')
     
