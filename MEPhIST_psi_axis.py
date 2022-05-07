@@ -23,8 +23,7 @@ PATH = 'MEPhIST_psi_axis'
 #%% Needed objects and contour levels
 boundary_conditions = BoundaryConditions()
 geometry = Geometry()
-M = MEPH.MEPhIST()
-psi_axis = M.psi_axis
+psi_axis = M.MEPhIST().psi_axis
 
 levels = 40
 # levels = list(numpy.geomspace(-1e-3, 1e-8))
@@ -59,20 +58,21 @@ bc = DirichletBC(V, u_D, fu.Dirichlet_boundary) #гран условие как 
 dx = Measure('dx', domain=geometry.mesh, subdomain_data=markers)
 
 point_sources = fu.Array_Expression(fu.ArrayOfPointSources(psd.PointSource(1)))
-for i in range(10):
-    u = TrialFunction(V) # u must be defined as function before expression def
+# for i in range(10):
+    # u = TrialFunction(V) # u must be defined as function before expression def
 
-    [p_coeff, F_2_coeff] = fu.plasma_sources_coefficients_pow_2_iteration(p_correction=1, F_correction=1, psi_axis=psi_axis)
+correction = 1e-3
+[p_coeff, F_2_coeff] = fu.plasma_sources_coefficients_pow_2_iteration(p_correction=1, F_correction=1, psi_axis=psi_axis*correction)
 
-    a = dot(grad(u)/r, grad(r_2*v))*dx - (p_coeff*r*r + F_2_coeff)*u*r*v*dx(2)
-    L = (sum(point_sources)*r*v*dx(0) + sum(point_sources)*r*v*dx(1))
+a = dot(grad(u)/r, grad(r_2*v))*dx - (p_coeff*r*r + F_2_coeff)*u*r*v*dx(2)
+L = (sum(point_sources)*r*v*dx(0) + sum(point_sources)*r*v*dx(1))
 
-    u = Function(V)
-    solve(a == L, u, bc)
+u = Function(V)
+solve(a == L, u, bc)
 
-    #%% Post solve
-    fu.What_time_is_it(t0, 'Variational problem solved')
-    psi_axis = fu.countour_plot_via_mesh(geometry, u, levels = levels, PATH = PATH, plot_title = '')
+#%% Post solve
+fu.What_time_is_it(t0, 'Variational problem solved')
+psi_axis = fu.countour_plot_via_mesh(geometry, u, levels = levels, PATH = PATH, plot_title = '')
 
-    fu.What_time_is_it(t0, "\u03C8(r, z) is plotted")
-    logger.log_n_output_colored_message(colored_message="'Done'\n", color='red', white_message='')
+fu.What_time_is_it(t0, "\u03C8(r, z) is plotted")
+logger.log_n_output_colored_message(colored_message="'Done'\n", color='red', white_message='')
