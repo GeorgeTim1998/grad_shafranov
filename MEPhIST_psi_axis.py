@@ -45,7 +45,7 @@ u = TrialFunction(V) # u must be defined as function before expression def
 v = TestFunction(V)
 
 #%% Boundary conditions
-u_D = boundary_conditions.constant_boundary_condition("0")
+u_D = boundary_conditions.constant_boundary_condition("-1e-3")
 bc = DirichletBC(V, u_D, fu.Dirichlet_boundary) #гран условие как в задаче дирихле
 
 #%% Solve
@@ -55,10 +55,10 @@ dx = Measure('dx', domain=geometry.mesh, subdomain_data=markers)
 
 point_sources = fu.Array_Expression(fu.ArrayOfPointSources(psd.PointSource(1)))
 
-A1 = 1e-3  
-A2 = 1e-2  
-step = 0.5e-3
-array = numpy.linspace(A1, A2, 1+int((A2-A1)/step))  
+# A1 = 1e-3  
+# A2 = 1e-2  
+# step = 0.5e-3
+# array = numpy.linspace(A1, A2, 1+int((A2-A1)/step))  
 correction = 1
 # for correction in array:
 [p_coeff, F_2_coeff] = fu.plasma_sources_coefficients_pow_2_iteration(p_correction=1, F_correction=1, psi_axis=correction*psi_axis)
