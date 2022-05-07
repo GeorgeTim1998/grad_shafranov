@@ -36,7 +36,7 @@ class BoundaryConditions:
         logger.log_n_output(self.spheromak_right_hand_expr._cppcode, 'white')
 #%% Constant boundary conditions
     def constant_boundary_condition(self, const_str):
-        logger.info("u_D = %s" % const_str)
+        logger.info("u_D = '%s'" % const_str)
         self.const_boundary_condition = Expression(const_str, degree = 1) # Define boundary condition
         
         return self.const_boundary_condition
