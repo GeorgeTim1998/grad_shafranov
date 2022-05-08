@@ -93,3 +93,9 @@ plot(submesh)
 # get u values on a submesh
 submesh = SubMesh(geometry.mesh, subdomain_index)
 u_plasma = u.compute_vertex_values(submesh)
+
+# Newton solver part
+a = dot(grad(u)/r, grad(r_2*v))*dx - etta * (p_coeff*r*r + F_2_coeff)*u*r*v*dx - tetta * sum(point_sources[2:len(point_sources)])*r*v*dx
+u_D = boundary_conditions.constant_boundary_condition("0")
+bc = DirichletBC(V, u_D, fu.Dirichlet_boundary)
+solve(a == 0, u, bc)
