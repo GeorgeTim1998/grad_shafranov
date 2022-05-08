@@ -452,6 +452,12 @@ def Initial_guess_for_u(u, const):
     logger.log_n_output_colored_message(colored_message="Initial guess for u: ", color='green', white_message=str(const))
     return u
 
+def level_u(u, const):
+    for i in range(len(u.vector())):
+        u.vector()[i] = float(const) + u.vector()[i]
+    logger.log_n_output_colored_message(colored_message="Boundary condition added for u: ", color='green', white_message=str(const))
+    return u
+
 def Neumann_boundary(x, on_boundary):
     tol = 1e-10
     return on_boundary and (abs(x[1] - Z1) < tol or abs(x[1] - Z2) < tol or abs(x[0] - R2) < tol)
@@ -618,6 +624,7 @@ def countour_plot_via_mesh(geometry, u, levels, PATH, plot_title):
         logger.log_n_output_colored_message(colored_message="u_max = ", color='green', white_message=str(u_max))
         logger.log_n_output_colored_message(colored_message="u_min = ", color='green', white_message=str(u_min))
         logger.log_n_output_colored_message(colored_message="u_max-u_min = ", color='green', white_message=str(u_max-u_min))
+        logger.info("levels = %s" % str(levels))
         
         save_contour_plot(PATH, plot_title)
         
