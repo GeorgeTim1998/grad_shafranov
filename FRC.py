@@ -1,6 +1,7 @@
 #%% Imports
 from fenics import *
 import matplotlib.pyplot as matplt
+from sympy import degree
 import logger
 import mshr
 import time
@@ -25,7 +26,10 @@ geometry = Geometry()
 problem = Problem()
 
 #%% Domain and mesh definition
-geometry.rectangle_mesh_init(r1 = problem.domain_geometry[0], r2 = problem.domain_geometry[1], z1 = problem.domain_geometry[2], z2 = problem.domain_geometry[3], default_mesh = problem.default_mesh) # Howell2014
+# geometry.rectangle_mesh_init(r1 = problem.domain_geometry[0], r2 = problem.domain_geometry[1], z1 = problem.domain_geometry[2], z2 = problem.domain_geometry[3], default_mesh = problem.default_mesh) # Howell2014
+
+domain = geometry.circle_domain(centre_point=problem.centre_point, radius=problem.radius, segments=problem.segments)
+geometry.generate_mesh_in_domain(domain, density=problem.mesh_density)
 
 #%% Define function space and
 V = FunctionSpace(geometry.mesh, 'P', 1) # standard triangular mesh
@@ -39,11 +43,10 @@ bc = DirichletBC(V, u_D, fu.Dirichlet_boundary) #гран условие как 
 #%% Solve
 [r_2, r] = geometry.operator_weights(V)
 
-logger.log_n_output_colored_message(colored_message="m0 * p2 = ", color='green', white_message=str(problem.m0_p2))
-logger.log_n_output_colored_message(colored_message="psi_0 = ", color='green', white_message=str(problem.psi_0))
-
 u = Function(V) 
-a = dot(grad(u)/r, grad(r_2*v))*dx - 2*problem.m0_p2 * r * r * u/problem.psi_0 * r * v * dx
+# u = interpolate(Expression("1e6", degree=1), V)
+a = dot(grad(u)/r, grad(r_2*v))*dx - 2*problem.m0_p2 * r * r * u/problem.psi_0 * r*v*dx
+
 solve(a == 0, u, bc)
 
 #%% Post solve
