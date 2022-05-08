@@ -83,3 +83,9 @@ class Permeability(UserExpression):
     def value_shape(self):
         return ()
 mu = Permeability(geometry.mesh, degree=0)
+
+# get submesh of a mesh using index
+submesh = SubMesh(geometry.mesh, 1)
+matplt.xlim(geometry.r1, geometry.r2)
+matplt.ylim(geometry.z1, geometry.z2)
+plot(submesh)
