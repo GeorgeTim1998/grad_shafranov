@@ -58,7 +58,7 @@ logger.log_n_output_colored_message(colored_message="Correction coeff for psi on
 
 u = TrialFunction(V)
 a = dot(grad(u)/r, grad(r_2*v))*dx - (p_coeff*r*r + F_2_coeff)*u*r*v*dx(1)
-L = sum(point_sources[2:len(point_sources)])*r*v*dx(0)
+L = sum(point_sources[2:len(point_sources)])*r*v*dx(0) + Constant(0)*r*v*dx(1)
 
 u = Function(V)
 solve(a == L, u, bc)
