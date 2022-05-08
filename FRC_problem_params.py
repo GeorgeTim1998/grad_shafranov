@@ -19,9 +19,8 @@ class Problem:
         
         self.boundary_condition_str = '-1e-5'
         
-        self.psi_0 = 0.1
         self.m0_p2 = 0.277
-        self.psi_0 = 1
+        self.psi_0 = 0.1
         
         self.A1 = 1e-3  
         self.A2 = 1e-2  
