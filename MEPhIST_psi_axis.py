@@ -52,18 +52,13 @@ dx = Measure('dx', domain=geometry.mesh, subdomain_data=markers)
 
 point_sources = fu.Array_Expression(fu.ArrayOfPointSources(psd.PointSource(1)))
 
-# A1 = 1e-3  
-# A2 = 1e-2  
-# step = 0.5e-3
-# array = numpy.linspace(A1, A2, 1+int((A2-A1)/step))  
-
 # for correction in array:
 [p_coeff, F_2_coeff] = fu.plasma_sources_coefficients_pow_2_iteration(p_correction=problem.p_correction, F_correction=problem.F_correction, psi_axis=problem.psi_correction*psi_axis)
 logger.log_n_output_colored_message(colored_message="Correction coeff for psi on axis = ", color='green', white_message=str(problem.psi_correction))
 
 u = TrialFunction(V)
 a = dot(grad(u)/r, grad(r_2*v))*dx - (p_coeff*r*r + F_2_coeff)*u*r*v*dx(1)
-L = sum(point_sources)*r*v*dx(0)
+L = sum(point_sources[2:len(point_sources)])*r*v*dx(0)
 
 u = Function(V)
 solve(a == L, u, bc)
