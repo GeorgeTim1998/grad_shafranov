@@ -62,7 +62,7 @@ class VacuumStepConstant(UserExpression):
 etta = PlasmaStepConstant(geometry.mesh, degree=1)
 tetta = VacuumStepConstant(geometry.mesh, degree=1)
 #%% Define function space
-V = FunctionSpace(geometry.mesh, 'P', 1)
+V = FunctionSpace(geometry.mesh, 'Lagrange', 1)
 
 u = TrialFunction(V)
 v = TestFunction(V)
@@ -76,7 +76,7 @@ bc = DirichletBC(V, u_D, fu.Dirichlet_boundary)
 
 dx = Measure('dx', domain=geometry.mesh, subdomain_data=markers)
 
-point_sources = fu.Array_Expression(fu.ArrayOfPointSources(psd.PointSource(1)))
+point_sources = fu.Array_Expression(fu.ArrayOfPointSources(psd.PointSource(problem.point_source_disp)))
 
 # for correction in array:
 [p_coeff, F_2_coeff] = fu.plasma_sources_coefficients_pow_2_iteration(p_correction=problem.p_correction, F_correction=problem.F_correction, psi_axis=problem.psi_correction*psi_axis)
@@ -91,9 +91,9 @@ solve(a == L, u, bc)
 
 #%% Post solve
 fu.What_time_is_it(t0, 'Variational problem solved')
-# submesh = SubMesh(geometry.mesh, 1)
-# plot(submesh)
 fu.countour_plot_via_mesh(geometry, u, levels = problem.contour_levels, PATH = PATH, plot_title = '')
+
+fu.fenics_plot(u, PATH, plot_title='')
 
 fu.What_time_is_it(t0, "\u03C8(r, z) is plotted")
 logger.log_n_output_colored_message(colored_message="'Done'\n", color='red', white_message='')
