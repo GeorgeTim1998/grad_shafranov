@@ -85,7 +85,11 @@ class Permeability(UserExpression):
 mu = Permeability(geometry.mesh, degree=0)
 
 # get submesh of a mesh using index
-submesh = SubMesh(geometry.mesh, 1)
+submesh = SubMesh(geometry.mesh, subdomain_index)
 matplt.xlim(geometry.r1, geometry.r2)
 matplt.ylim(geometry.z1, geometry.z2)
 plot(submesh)
+
+# get u values on a submesh
+submesh = SubMesh(geometry.mesh, subdomain_index)
+u_plasma = u.compute_vertex_values(submesh)
