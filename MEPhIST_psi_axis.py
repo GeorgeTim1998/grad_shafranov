@@ -35,6 +35,32 @@ geometry.generate_mesh_in_domain(domain=domain, density=problem.mesh_density)
 
 markers = MeshFunction("size_t", geometry.mesh, geometry.mesh.topology().dim(), geometry.mesh.domains())
 
+class PlasmaStepConstant(UserExpression):
+    def __init__(self, mesh, **kwargs):
+        super().__init__(**kwargs)
+        self.markers = markers
+    def eval_cell(self, values, x, cell):
+        if self.markers[cell.index] == 1:
+            values[0] = 1 # vessel
+        else:
+            values[0] = 0 # vacuum
+    def value_shape(self):
+        return ()
+
+class VacuumStepConstant(UserExpression):
+    def __init__(self, mesh, **kwargs):
+        super().__init__(**kwargs)
+        self.markers = markers
+    def eval_cell(self, values, x, cell):
+        if self.markers[cell.index] == 1:
+            values[0] = 0 # vessel
+        else:
+            values[0] = 1 # vacuum
+    def value_shape(self):
+        return ()
+    
+etta = PlasmaStepConstant(geometry.mesh, degree=1)
+tetta = VacuumStepConstant(geometry.mesh, degree=1)
 #%% Define function space
 V = FunctionSpace(geometry.mesh, 'P', 1)
 
@@ -57,14 +83,16 @@ point_sources = fu.Array_Expression(fu.ArrayOfPointSources(psd.PointSource(1)))
 logger.log_n_output_colored_message(colored_message="Correction coeff for psi on axis = ", color='green', white_message=str(problem.psi_correction))
 
 u = TrialFunction(V)
-a = dot(grad(u)/r, grad(r_2*v))*dx - (p_coeff*r*r + F_2_coeff)*u*r*v*dx(1)
-L = sum(point_sources[2:len(point_sources)])*r*v*dx(0) + Constant(0)*r*v*dx(1)
+a = dot(grad(u)/r, grad(r_2*v))*dx - etta * (p_coeff*r*r + F_2_coeff)*u*r*v*dx
+L = tetta * sum(point_sources[2:len(point_sources)])*r*v*dx
 
 u = Function(V)
 solve(a == L, u, bc)
 
 #%% Post solve
 fu.What_time_is_it(t0, 'Variational problem solved')
+# submesh = SubMesh(geometry.mesh, 1)
+# plot(submesh)
 fu.countour_plot_via_mesh(geometry, u, levels = problem.contour_levels, PATH = PATH, plot_title = '')
 
 fu.What_time_is_it(t0, "\u03C8(r, z) is plotted")
