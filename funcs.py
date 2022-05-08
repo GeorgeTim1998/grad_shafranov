@@ -7,6 +7,7 @@ import point_source_data as psd
 import logger
 import mshr
 import matplotlib.tri as tri
+import pylab
 #%% Problem parameters
 DEFAULT_MESH = 100 # for mesher characterized by 2 params
 MESH_DENSITY = 20 # for mesher characterized by 1 param
@@ -629,6 +630,13 @@ def countour_plot_via_mesh(geometry, u, levels, PATH, plot_title):
         save_contour_plot(PATH, plot_title)
         
         return u_max
+    
+def fenics_plot(u, PATH, plot_title):
+    pylab.colorbar(plot(u))
+    matplt.xlabel("r, м")
+    matplt.ylabel("z, м")
+    save_contour_plot(PATH, plot_title)
+    
     
 def save_contour_plot(PATH, plot_title):
     time_title = Time_name()
