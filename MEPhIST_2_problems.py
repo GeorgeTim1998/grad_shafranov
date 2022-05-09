@@ -30,34 +30,6 @@ problem = P.Problem()
 domain = geometry.circle_domain(centre_point=problem.plasma_centre_point, radius=problem.plasma_radius, segments=problem.plasma_domain_segments)
 geometry.generate_mesh_in_domain(domain=domain, density=problem.mesh_density)
 
-markers = MeshFunction("size_t", geometry.mesh, geometry.mesh.topology().dim(), geometry.mesh.domains())
-
-class PlasmaStepConstant(UserExpression):
-    def __init__(self, mesh, **kwargs):
-        super().__init__(**kwargs)
-        self.markers = markers
-    def eval_cell(self, values, x, cell):
-        if self.markers[cell.index] == 1:
-            values[0] = 1 # vessel
-        else:
-            values[0] = 0 # vacuum
-    def value_shape(self):
-        return ()
-
-class VacuumStepConstant(UserExpression):
-    def __init__(self, mesh, **kwargs):
-        super().__init__(**kwargs)
-        self.markers = markers
-    def eval_cell(self, values, x, cell):
-        if self.markers[cell.index] == 1:
-            values[0] = 0 # vessel
-        else:
-            values[0] = 1 # vacuum
-    def value_shape(self):
-        return ()
-    
-etta = PlasmaStepConstant(geometry.mesh, degree=1)
-tetta = VacuumStepConstant(geometry.mesh, degree=1)
 #%% Define function space
 V = FunctionSpace(geometry.mesh, 'Lagrange', 1)
 
@@ -71,8 +43,6 @@ bc = DirichletBC(V, u_D, fu.Dirichlet_boundary)
 #%% Solve
 [r_2, r] = geometry.operator_weights(V)
 
-dx = Measure('dx', domain=geometry.mesh, subdomain_data=markers)
-
 point_sources = fu.Array_Expression(fu.ArrayOfPointSources(psd.PointSource(problem.point_source_disp)))
 
 # for correction in array:
@@ -80,7 +50,7 @@ point_sources = fu.Array_Expression(fu.ArrayOfPointSources(psd.PointSource(probl
 logger.log_n_output_colored_message(colored_message="Correction coeff for psi on axis = ", color='green', white_message=str(problem.psi_correction))
 
 u = TrialFunction(V)
-a = dot(grad(u)/r, grad(r_2*v))*dx + (p_coeff*r*r + F_2_coeff)*u*r*v*dx
+a = dot(grad(u)/r, grad(r_2*v))*dx - (p_coeff*r*r + F_2_coeff)*u*r*v*dx
 L = Constant(0)*r*v*dx
 # L = tetta * sum(point_sources[2:len(point_sources)])*r*v*dx
 
@@ -91,7 +61,7 @@ solve(a == L, u, bc)
 fu.What_time_is_it(t0, 'Variational problem solved')
 fu.countour_plot_via_mesh(geometry, u, levels = problem.contour_levels, PATH = PATH, plot_title = '')
 
-fu.fenics_plot(u, PATH, plot_title='')
+# fu.fenics_plot(u, PATH, plot_title='')
 
 fu.What_time_is_it(t0, "\u03C8(r, z) is plotted")
 logger.log_n_output_colored_message(colored_message="'Done'\n", color='red', white_message='')
