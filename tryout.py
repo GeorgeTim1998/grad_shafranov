@@ -2,25 +2,28 @@
 # import fenics
 
 import numpy as np
-import matplotlib.pyplot as plt
+import matplotlib.pyplot as matplt
 import matplotlib.tri as tri
+import funcs as fu
 
-x, y, z = np.genfromtxt(r'psi.dat', unpack=True)
+fu.plot_Dina_results("DINA")
 
-x = np.unique(x)
-y = np.unique(y)
-z = z.reshape((len(y), len(x)))
+# x, y, z = np.genfromtxt(r'psi.dat', unpack=True)
 
-triang = tri.Triangulation(x, y)
-interpolator = tri.LinearTriInterpolator(triang, z)
+# # x = np.unique(x)
+# # y = np.unique(y)
+# # z = z.reshape((len(y), len(x)))
 
-Xi, Yi = np.meshgrid(x, y)
-zi = interpolator(Xi, Yi)
+# # triang = tri.Triangulation(x, y)
+# # interpolator = tri.LinearTriInterpolator(triang, z)
 
-plt.contour(Xi, Yi, zi, levels = 100)
-plt.colorbar()
-plt.gca().set_aspect("equal")
-plt.show()
+# # Xi, Yi = np.meshgrid(x, y)
+# # zi = interpolator(Xi, Yi)
+
+# matplt.tricontour(x, y, z, levels = 100)
+# matplt.colorbar()
+# matplt.gca().set_aspect("equal")
+# matplt.show()
 
 # def Column(matrix, col):
 #     return [row[col] for row in matrix]
