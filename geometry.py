@@ -52,7 +52,7 @@ class Geometry:
         self.b = b
         self.default_mesh = default_mesh
         
-        self.mesh = IntervalMesh(default_mesh, a,b)
+        self.mesh = IntervalMesh(int(default_mesh), a,b)
         self.interval_mesh_log()
         
     def interval_mesh_log(self):
