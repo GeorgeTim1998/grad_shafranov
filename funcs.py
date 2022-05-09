@@ -730,3 +730,11 @@ def plot_Dina_results(PATH):
     matplt.gca().set_aspect("equal")
     
     save_contour_plot(PATH, "")
+    
+def plot_error_vs_mesh_density(mesh_array, errors, PATH):
+    matplt.semilogy(mesh_array, errors, 'o', linewidth=2)  # magnify w
+    matplt.grid(True)
+    matplt.xlabel('Плотность сетки')
+    matplt.ylabel('Максимальная ошибка, Вб')
+
+    save_contour_plot(PATH, "")
