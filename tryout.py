@@ -1,13 +1,15 @@
-import mshr
-import fenics
+# import mshr
+# import fenics
 
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.tri as tri
 
-N = 1000 #number of points for plotting/interpolation
-
 x, y, z = np.genfromtxt(r'psi.dat', unpack=True)
+
+x = np.unique(x)
+y = np.unique(y)
+z = z.reshape((len(y), len(x)))
 
 triang = tri.Triangulation(x, y)
 interpolator = tri.LinearTriInterpolator(triang, z)
@@ -15,7 +17,9 @@ interpolator = tri.LinearTriInterpolator(triang, z)
 Xi, Yi = np.meshgrid(x, y)
 zi = interpolator(Xi, Yi)
 
-plt.contour(x, y, zi, levels=14, linewidths=0.5, colors='k')
+plt.contour(Xi, Yi, zi, levels = 100)
+plt.colorbar()
+plt.gca().set_aspect("equal")
 plt.show()
 
 # def Column(matrix, col):
