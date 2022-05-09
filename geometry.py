@@ -14,7 +14,7 @@ class Geometry:
         self.r2 = r2
         self.z1 = z1
         self.z2 = z2
-        self.default_mesh = default_mesh
+        self.default_mesh = int(default_mesh)
         
         self.rectangle_mesh()
         self.rectangle_mesh_log()
