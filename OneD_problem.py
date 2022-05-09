@@ -56,6 +56,7 @@ for default_mesh in p.default_mesh_array:
     #%% Plot
     fu.plot_1D(PATH, u, geometry)
     p.errors.append(fu.ErrorEstimate(u=u, u_D=interpolate(my_expressions.axissymm_config_solution_expr, V=V), mesh=geometry.mesh)[1])
+fu.plot_error_vs_mesh_density(p.default_mesh_array, p.errors, PATH)
 fu.save_errors_to_file(p.default_mesh_array, p.errors, PATH)
 
 logger.info("'Done'" + "\n")
