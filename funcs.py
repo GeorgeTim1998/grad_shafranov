@@ -1,4 +1,5 @@
 from matplotlib.pyplot import text
+from numpy import mat
 import MEPHIST_data as MEPH
 from imports import *
 import time
@@ -8,6 +9,7 @@ import logger
 import mshr
 import matplotlib.tri as tri
 import pylab
+from MEPhIST_psi_axis_problem_params import Problem
 #%% Problem parameters
 DEFAULT_MESH = 100 # for mesher characterized by 2 params
 MESH_DENSITY = 20 # for mesher characterized by 1 param
@@ -688,3 +690,32 @@ def multiply_u_by_const(u, const):
         u.vector()[i] = float(const)*u.vector()[i]
     logger.log_n_output_colored_message(colored_message="u is multiplied by: ", color='green', white_message=str(const))
     return u
+
+def plot_Dina_results(PATH):
+    problem = Problem()
+    
+    x, y, z = numpy.genfromtxt(r'psi.dat', unpack=True)
+    
+    r_lim = [x.min(), x.max()]
+    z_lim = [y.min(), y.max()]
+    
+    levels = 100
+    
+    print_colored_n_white(colored_text="r min = ", color='green', white_text=str(r_lim[0]))
+    print_colored_n_white(colored_text="r max = ", color='green', white_text=str(r_lim[1]))
+    
+    print_colored_n_white(colored_text="z min = ", color='green', white_text=str(z_lim[0]))
+    print_colored_n_white(colored_text="z max = ", color='green', white_text=str(z_lim[1]))
+    
+    print_colored_n_white(colored_text="u min = ", color='green', white_text=str(z.min()))
+    print_colored_n_white(colored_text="u max = ", color='green', white_text=str(z.max()))
+    
+    matplt.tricontour(x, y, z, levels = levels)
+    matplt.xlim(problem.domain_geometry[0], problem.domain_geometry[1])
+    matplt.ylim(problem.domain_geometry[2], problem.domain_geometry[3])
+    matplt.colorbar()
+    matplt.xlabel("r, cм")
+    matplt.ylabel("z, cм")
+    matplt.gca().set_aspect("equal")
+    
+    save_contour_plot(PATH, "")
