@@ -5,7 +5,7 @@ class Problem:
     def __init__(self):
         self.mesh_density = 50
         self.default_mesh = 80
-        self.default_mesh_array = numpy.linspace(50, 1000, 1+int((1000-50)/50))
+        self.default_mesh_array = numpy.linspace(50, 950, 1+int((950-50)/50))
         self.domain_boundary_coordinates = [0.05, 0.7, 
                                             -0.6, 0.6]
         
