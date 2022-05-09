@@ -99,3 +99,6 @@ a = dot(grad(u)/r, grad(r_2*v))*dx - etta * (p_coeff*r*r + F_2_coeff)*u*r*v*dx -
 u_D = boundary_conditions.constant_boundary_condition("0")
 bc = DirichletBC(V, u_D, fu.Dirichlet_boundary)
 solve(a == 0, u, bc)
+
+# fenics version
+$ dolfin-version 
