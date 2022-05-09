@@ -738,3 +738,12 @@ def plot_error_vs_mesh_density(mesh_array, errors, PATH):
     matplt.ylabel('Максимальная ошибка, Вб')
 
     save_contour_plot(PATH, "")
+    
+def save_errors_to_file(mesh_array, errors, file_name):
+    time_title = Time_name()
+    file_path = "Errors/%s_%s.txt" % (file_name, time_title)
+    with open(file_path,'w') as file:
+        for i in range(len(mesh_array)):
+            file.write("%s,%s\n" % (mesh_array[i], errors[i]))
+            
+    print_colored_n_white(colored_text="Data saved to PATH: ", color='green', white_text=file_path)
