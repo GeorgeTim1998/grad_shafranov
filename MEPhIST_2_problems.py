@@ -45,23 +45,25 @@ bc = DirichletBC(V, u_D, fu.Dirichlet_boundary)
 
 point_sources = fu.Array_Expression(fu.ArrayOfPointSources(psd.PointSource(problem.point_source_disp)))
 
-# for correction in array:
-[p_coeff, F_2_coeff] = fu.plasma_sources_coefficients_pow_2_iteration(p_correction=problem.p_correction, F_correction=problem.F_correction, psi_axis=problem.psi_correction*problem.psi_axis)
-logger.log_n_output_colored_message(colored_message="Correction coeff for psi on axis = ", color='green', white_message=str(problem.psi_correction))
+for psi_correction in problem.psi_correction_array:
+    for F_correction in problem.F_correction_array:
+        for p_correction in problem.p_correction_array:
+            [p_coeff, F_2_coeff] = fu.plasma_sources_coefficients_pow_2_iteration(p_correction=p_correction, F_correction=F_correction, psi_axis=psi_correction*problem.psi_axis)
+            logger.log_n_output_colored_message(colored_message="Correction coeff for psi on axis = ", color='green', white_message=str(problem.psi_correction))
 
-u = TrialFunction(V)
-a = dot(grad(u)/r, grad(r_2*v))*dx - (p_coeff*r*r + F_2_coeff)*u*r*v*dx
-L = Constant(0)*r*v*dx
-# L = tetta * sum(point_sources[2:len(point_sources)])*r*v*dx
+            u = TrialFunction(V)
+            a = dot(grad(u)/r, grad(r_2*v))*dx - (p_coeff*r*r + F_2_coeff)*u*r*v*dx
+            L = Constant(0)*r*v*dx
+            # L = tetta * sum(point_sources[2:len(point_sources)])*r*v*dx
 
-u = Function(V)
-solve(a == L, u, bc)
+            u = Function(V)
+            solve(a == L, u, bc)
 
-#%% Post solve
-fu.What_time_is_it(t0, 'Variational problem solved')
-fu.countour_plot_via_mesh(geometry, u, levels = problem.contour_levels, PATH = PATH, plot_title = '')
+            #%% Post solve
+            fu.What_time_is_it(t0, 'Variational problem solved')
+            fu.countour_plot_via_mesh(geometry, u, levels = problem.contour_levels, PATH = PATH, plot_title = '')
 
-# fu.fenics_plot(u, PATH, plot_title='')
+            # fu.fenics_plot(u, PATH, plot_title='')
 
-fu.What_time_is_it(t0, "\u03C8(r, z) is plotted")
-logger.log_n_output_colored_message(colored_message="'Done'\n", color='red', white_message='')
+            fu.What_time_is_it(t0, "\u03C8(r, z) is plotted")
+            logger.log_n_output_colored_message(colored_message="'Done'\n", color='red', white_message='')
