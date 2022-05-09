@@ -1,16 +1,13 @@
 #%% imports
-from __future__ import print_function
-from math import degrees
 from fenics import *
-import matplotlib
 import matplotlib.pyplot as plt
-from matplotlib.pyplot import figure, gcf, isinteractive, title
 import datetime
 import numpy 
 import sympy
 from termcolor import colored
 import pylab as plt
 import funcs as fu
+from geometry import Geometry
 
 PATH = 'Analytical'
 CONTOUR_AMOUNT = 25
@@ -23,29 +20,6 @@ def Form_f_text(A1, A2):
     print(colored("INVERCED right-hand equation side: \n", 'magenta') + f_text)
 
     return f_text
-
-def Save_figure(addition):
-    # Plot solution and mesh. Save plot
-    #nothing passed to function, because variables are global
-    if plot_mesh == 1:
-        plot(mesh)
-
-    mesh_title = str(mesh_r) + 'x' + str(mesh_z) + ' mesh'
-    
-    ttime = datetime.datetime.now().strftime("%d%m%Y_%H%M%S")
-    time_title = str(ttime)  #get current time to make figure name unique
-
-    #create a path to save my figure to. For some reason now I cant save using relative path
-    path_my_file = '/home/george/Projects2/Projects/Figures/Analytical/' + time_title
-
-    if addition == '_notitle':
-        plt.savefig(path_my_file + addition + '.png', dpi = dpi) #no title figure for reports
-    elif addition == '_title':
-        plt.title('Analyt Soloviev: ' + mesh_title + "\n" + f_expr._cppcode) # titled figure for my self
-        plt.savefig(path_my_file + addition + '.png', dpi = dpi)
-    else:
-        plt.title(addition) # titled figure for my self
-        plt.savefig(path_my_file + addition + '.png', dpi = dpi)
 
 def Analyt_sol(c, A1, A2):
     x = sympy.symbols('x[0]') # r coordinate
@@ -100,54 +74,45 @@ def ErrorEstimate(u, u_D, mesh):
     return error_L2, error_max
 
 print(colored("GS_Soloviev_analyt.py", 'green'))
+
+#%% Needed objects
+geom = Geometry()
+
 #%% paremeters definition
-mesh_min = 100
-mesh_max = 200
-MESH_ARRAY = numpy.linspace(mesh_min, mesh_max, 1+int((mesh_max-mesh_min)/mesh_min))
+area = [0.2, 2.2, -1, 1] # format is: [r1, r2, z1, z2]
+geom.rectangle_mesh_init(area[0], area[1], area[2], area[3], default_mesh=150)
 
-for a in MESH_ARRAY:
-    mesh_r, mesh_z = int(a), int(a) # mesh for r-z space
-    area = [0.2, 2.2, -1, 1] # format is: [r1, r2, z1, z2]
-    rect_low = Point(area[0], area[2]) #define rectangle size: lower point
-    rect_high = Point(area[1], area[3]) #define rectangle size: upper point
+A1, A2 = 0.14, -0.01 # values from Ilgisonis2016, 244
+c = [1, -0.22, -0.01, -0.08] # values from Ilgisonis2016, 244
 
-    plot_mesh = 0 #choose whether to plot mesh or not
-    save_NoTitle = 0 #save figure that doesnt have title in it
-    show_plot = 0 # show plot by the end of the program or not
-    dpi = 200 # quality of a figure 
+f_text = Form_f_text(-8 * A1, -2 * A2) # form right hand side that corresponds to analytical solution
+psi_text = Analyt_sol(c, A1, A2) # см. научка.txt. Там есть вывод, как и куда надо подставлять
 
 
-    A1, A2 = 0.14, -0.01 # values from Ilgisonis2016, 244
-    c = [1, -0.22, -0.01, -0.08] # values from Ilgisonis2016, 244
+#%% Create mesh and define function space
+V = FunctionSpace(geom.mesh, 'P', 1) # standard triangular mesh
+u_D = Expression(psi_text, degree = 4) # Define boundary condition
 
-    f_text = Form_f_text(-8 * A1, -2 * A2) # form right hand side that corresponds to analytical solution
-    psi_text = Analyt_sol(c, A1, A2) # см. научка.txt. Там есть вывод, как и куда надо подставлять
-    # print(psi_text)
-    #%% Create mesh and define function space
-    mesh = RectangleMesh(rect_low, rect_high, mesh_r, mesh_z) # points define domain size rect_low x rect_high
-    V = FunctionSpace(mesh, 'P', 1) # standard triangular mesh
-    u_D = Expression(psi_text, degree = 4) # Define boundary condition
+psi = interpolate(u_D, V) #plot exact solution
+def boundary(x, on_boundary):
+    return on_boundary
 
-    psi = interpolate(u_D, V) #plot exact solution
-    fu.Contour_plot([area[0], area[1]], [area[2], area[3]], psi, PATH, '', [mesh_r, mesh_z], '', CONTOUR_AMOUNT)
-    def boundary(x, on_boundary):
-        return on_boundary
+bc = DirichletBC(V, u_D, boundary) #гран условие как в задаче дирихле
+#%% Define variational problem
+u = TrialFunction(V)
+v = TestFunction(V)
+f_expr = Expression(f_text, degree = 2)
 
-    bc = DirichletBC(V, u_D, boundary) #гран условие как в задаче дирихле
-    #%% Define variational problem
-    u = TrialFunction(V)
-    v = TestFunction(V)
-    f_expr = Expression(f_text, degree = 2)
-    r_2 = interpolate(Expression('x[0]*x[0]', degree = 2), V) # interpolation is needed so that 'a' could evaluate deriviations and such
-    r = Expression('x[0]', degree = 1) # interpolation is needed so that 'a' could evaluate deriviations and such
+[r_2, r] = geom.operator_weights(V)
 
-    a = dot(grad(u)/r, grad(r_2*v))*dx
-    L = f_expr*r*v*dx
-    #%% Compute solution
-    u = Function(V)
-    solve(a == L, u, bc)
-    #%% Compute errors
-    [err_L2, err_max] = ErrorEstimate(u, u_D, mesh)
-    fu.Write2file_errors(mesh_r, mesh_z, err_L2, err_max)
-    #%% Save output
-    fu.Contour_plot([area[0], area[1]], [area[2], area[3]], u, PATH, '', [mesh_r, mesh_z], '', CONTOUR_AMOUNT)
+a = dot(grad(u)/r, grad(r_2*v))*dx
+L = f_expr*r*v*dx
+#%% Compute solution
+u = Function(V)
+solve(a == L, u, bc)
+#%% Compute errors
+[err_L2, err_max] = ErrorEstimate(u, psi, geom.mesh)
+# fu.Write2file_errors(mesh_r, mesh_z, err_L2, err_max)
+#%% Save output
+levels = 40
+fu.countour_plot_via_mesh(geom, u, levels, PATH=PATH, plot_title='')
