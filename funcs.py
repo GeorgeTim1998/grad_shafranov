@@ -357,7 +357,7 @@ def Contour_plot(r_area, z_area, u, path, f_expr, mesh, plot_title, contour_amou
         
         matplt.xlabel("r, м")
         matplt.ylabel("z, м")
-        matplt.colorbar()
+        matplt.colorbar().set_label("\u03C8(r, z), Вб")
         matplt.gca().set_aspect("equal")
         
     print( colored( 'u_max = ', 'green') + str(u.vector()[:].max()) )
@@ -621,7 +621,7 @@ def countour_plot_via_mesh(geometry, u, levels, PATH, plot_title):
 
         matplt.xlabel("r, м")
         matplt.ylabel("z, м")
-        matplt.colorbar()
+        matplt.colorbar().set_label("\u03C8(r, z), Вб")
         matplt.gca().set_aspect("equal")
         
         logger.log_n_output_colored_message(colored_message="u_max = ", color='green', white_message=str(u_max))
@@ -634,7 +634,7 @@ def countour_plot_via_mesh(geometry, u, levels, PATH, plot_title):
         return u_max
     
 def fenics_plot(u, PATH, plot_title):
-    pylab.colorbar(plot(u))
+    pylab.colorbar(plot(u)).set_label("\u03C8(r, z), Вб")
     matplt.xlabel("r, м")
     matplt.ylabel("z, м")
     save_contour_plot(PATH, plot_title)
@@ -702,8 +702,9 @@ def plot_Dina_results(PATH):
     to_m = 1e-2 # to meters units conversion
     
     levels_min = 0
-    levels_max = 0.05
-    levels_values = 1 + int(100*(abs(levels_min)+abs(levels_max)))
+    levels_max = 0.055
+    
+    levels_values = 2*(1 + int(100*(abs(levels_min)+abs(levels_max))))
     levels = list(numpy.linspace(levels_min, levels_max, levels_values))
     
     print_colored_n_white(colored_text="r min = ", color='green', white_text=str(r_lim[0]))
@@ -718,7 +719,7 @@ def plot_Dina_results(PATH):
     matplt.tricontour(to_m*x, to_m*y, z, levels = levels)
     matplt.xlim(problem.domain_geometry[0], problem.domain_geometry[1])
     matplt.ylim(problem.domain_geometry[2], problem.domain_geometry[3])
-    matplt.colorbar()
+    matplt.colorbar().set_label("\u03C8(r, z), Вб")
     matplt.xlabel("r, м")
     matplt.ylabel("z, м")
     matplt.grid(True)
