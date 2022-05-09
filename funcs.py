@@ -747,3 +747,18 @@ def save_errors_to_file(mesh_array, errors, file_name):
             file.write("%s,%s\n" % (mesh_array[i], errors[i]))
             
     print_colored_n_white(colored_text="Data saved to PATH: ", color='green', white_text=file_path)
+    
+def plot_error_vs_mesh_from_file(folder_name, file_name, x_lim, PATH): # u max as a function of mesh parameters on the same solution area
+    with open("%s/%s.txt" % (folder_name, file_name), "r") as file:
+        data = [[float(num) for num in line.split(',')] for line in file]
+
+    mesh = Column(data, 0) 
+    error = Column(data, 1)
+
+    matplt.semilogy(mesh, error, 'o', linewidth=2)  # magnify w
+    matplt.xlim(x_lim[0], x_lim[1])
+    matplt.grid(True)
+    matplt.xlabel('Плотность сетки')
+    matplt.ylabel('Максимальная ошибка, Вб')
+    
+    save_contour_plot(PATH, '')
