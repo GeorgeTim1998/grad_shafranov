@@ -699,7 +699,12 @@ def plot_Dina_results(PATH):
     r_lim = [x.min(), x.max()]
     z_lim = [y.min(), y.max()]
     
-    levels = 100
+    to_m = 1e-2 # to meters units conversion
+    
+    levels_min = 0
+    levels_max = 0.05
+    levels_values = 1 + int(100*(abs(levels_min)+abs(levels_max)))
+    levels = list(numpy.linspace(levels_min, levels_max, levels_values))
     
     print_colored_n_white(colored_text="r min = ", color='green', white_text=str(r_lim[0]))
     print_colored_n_white(colored_text="r max = ", color='green', white_text=str(r_lim[1]))
@@ -710,12 +715,13 @@ def plot_Dina_results(PATH):
     print_colored_n_white(colored_text="u min = ", color='green', white_text=str(z.min()))
     print_colored_n_white(colored_text="u max = ", color='green', white_text=str(z.max()))
     
-    matplt.tricontour(x, y, z, levels = levels)
+    matplt.tricontour(to_m*x, to_m*y, z, levels = levels)
     matplt.xlim(problem.domain_geometry[0], problem.domain_geometry[1])
     matplt.ylim(problem.domain_geometry[2], problem.domain_geometry[3])
     matplt.colorbar()
-    matplt.xlabel("r, cм")
-    matplt.ylabel("z, cм")
+    matplt.xlabel("r, м")
+    matplt.ylabel("z, м")
+    matplt.grid(True)
     matplt.gca().set_aspect("equal")
     
     save_contour_plot(PATH, "")
