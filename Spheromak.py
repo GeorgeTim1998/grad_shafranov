@@ -9,6 +9,7 @@ import logger
 from geometry import Geometry
 from boundary_conditions import BoundaryConditions
 import numpy
+from Spheromak_problem_params import Problem
 #%% Pre-programm stuff
 t0 = time.time()
 current_pyfile = '---------Spheromak.py---------'
@@ -19,15 +20,13 @@ PATH = 'Spheromak'
 #%% Needed objects and contour levels
 boundary = BoundaryConditions()
 geometry = Geometry()
-mesh_density = 50
-
-levels = 20
-# levels = numpy.linspace(-0.14, 0.15, 25)
+p = Problem()
 
 #%% Domain and mesh definition
-# geometry.rectangle_mesh_init(r1 = 0.05, r2 = 0.7, z1 = -0.6, z2 = 0.6, default_mesh = 80)
-geometry.arbitrary_mesh_init()
-fu.plot_mesh(geometry.mesh, PATH)
+r = p.domain_boundary_coordinates
+geometry.rectangle_mesh_init(r1 = r[0], r2 = r[1], z1 = r[2], z2 = r[3], default_mesh = 80)
+# geometry.arbitrary_mesh_init(p.mesh_density)
+# fu.plot_mesh(geometry.mesh, PATH)
 
 #%% Define function space and
 V = FunctionSpace(geometry.mesh, 'P', 1) # standard triangular mesh
@@ -35,7 +34,7 @@ u = TrialFunction(V) # u must be defined as function before expression def
 v = TestFunction(V)
 
 #%% Boundary conditions
-boundary.spheromak_boundary_condition(psi_0 = 0.1, R = 0.3, alpha = 1.1)
+boundary.spheromak_boundary_condition(psi_0 = p.psi_0, R = p.R, alpha = p.alpha)
 u_D = boundary.psi_sol_expr
 bc = DirichletBC(V, u_D, fu.Dirichlet_boundary) #гран условие как в задаче дирихле
 
@@ -52,7 +51,7 @@ solve(a == L, u, bc)
 fu.What_time_is_it(t0, "Problem is solved")
 
 # fu.countour_plot_via_mesh(geometry, interpolate(boundary.psi_sol_expr, V), levels = levels, PATH = PATH, plot_title = '')
-fu.countour_plot_via_mesh(geometry, u, levels = levels, PATH = PATH, plot_title = '')
+fu.countour_plot_via_mesh(geometry, u, levels = p.levels, PATH = PATH, plot_title = '')
 fu.What_time_is_it(t0, "\u03C8(r, z) is plotted")
 
 fu.ErrorEstimate(u = u, u_D = u_D, mesh = geometry.mesh)
