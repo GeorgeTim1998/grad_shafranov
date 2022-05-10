@@ -14,8 +14,12 @@ class Problem:
         self.a = 1
         self.b = 0.5
         
+        self.psi_min = -1.5
+        self.psi_max = 9.5
+        self.psi_step = 0.5
+        
         self.levels = 20
-        self.levels = numpy.linspace(0, 9.5, 20)
+        self.levels = numpy.linspace(self.psi_min, self.psi_max, 1+int((self.psi_max-self.psi_min)/self.psi_step))
         
         self.errors = []
         
