@@ -10,12 +10,13 @@ class Problem:
         self.plasma_domain_segments=100
         self.point_source_disp = 1
         
-        self.mesh_density = 180
+        self.mesh_density = 300
         
         self.boundary_condition_str = '0.015'
         
-        # self.psi_axis = 0.05777839
-        self.psi_axis = 0.01554372369710166
+        self.betta = 0.1
+        self.psi_axis = 0.05777839
+        self.psi_pl_edge = float(self.boundary_condition_str)
         
         self.p_correction = 1
         self.F_correction = 1
