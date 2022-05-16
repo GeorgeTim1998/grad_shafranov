@@ -12,7 +12,7 @@ class Problem:
         
         self.mesh_density = 300
         
-        self.boundary_condition_str = '0.015'
+        self.boundary_condition_str = '0'
         
         self.betta = 0.1
         self.psi_axis = 0.05777839
