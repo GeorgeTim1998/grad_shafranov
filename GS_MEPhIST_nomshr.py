@@ -59,11 +59,11 @@ else:
     bc = DirichletBC(V, u_D, fu.Neumann_boundary) #гран условие как в задаче дирихле
     logger.info(fu.NEUMANN_BOUNDARY)
 #%% Problem pre-solve
-todo = fu.SOLVE_PLASMA_POINT_SOURCES_LINEAR_SOLVER
+todo = fu.SOLVE_POINT_SOURCES
 initial_guess = 0
 logger.log_n_output("We are doing: %s" % fu.SOLVE_DICT[todo], 'yellow')
 
-[p_coeff, F_2_coeff] = fu.plasma_sources_coefficients_pow_2()
+[p_coeff, F_2_coeff] = fu.plasma_sources_coefficients_pow_2(1, 1)
 
 u = fu.Initial_guess_for_u(u, initial_guess)
 
@@ -105,6 +105,6 @@ for alpha in alpha_array:
     fu.print_colored("Calculations, however bad, finished", 'green')
 
     plot_title = "\u03C3*%.2e, #%d" % (alpha, int(default_mesh))
-    fu.Contour_plot([r1, r2], [z1,  z2], u, PATH, '', [mesh_r, mesh_z], plot_title, 20)
+    fu.Contour_plot([r1, r2], [z1,  z2], u, PATH, '', [mesh_r, mesh_z], '', 20)
     fu.What_time_is_it(t0, "\u03C8(r, z) is plotted")
     logger.info("'Done'"+"\n")
