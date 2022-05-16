@@ -10,6 +10,7 @@ import mshr
 import matplotlib.tri as tri
 import pylab
 from MEPhIST_psi_axis_problem_params import Problem
+import MEPhIST_2_problems_problem_params as MEPhIST_exp_profile
 #%% Problem parameters
 DEFAULT_MESH = 100 # for mesher characterized by 2 params
 MESH_DENSITY = 20 # for mesher characterized by 1 param
@@ -333,7 +334,7 @@ def Contour_plot(r_area, z_area, u, path, f_expr, mesh, plot_title, contour_amou
     r = numpy.linspace(r_area[0] + tol, r_area[1] - tol, point_num)
     z = numpy.linspace(z_area[0] + tol, z_area[1] - tol, int(point_num*mesh[1]/mesh[0]))
     
-    levels = numpy.linspace(-15e-5, 0)
+    levels = numpy.linspace(-1e-3, 0, 21)
     u_contour = numpy.zeros([len(z), len(r)])
     
     for i in range(len(r)):
@@ -357,7 +358,7 @@ def Contour_plot(r_area, z_area, u, path, f_expr, mesh, plot_title, contour_amou
         
         matplt.xlabel("r, м")
         matplt.ylabel("z, м")
-        matplt.colorbar().set_label("\u03C8(r, z), Вб")
+        matplt.colorbar(format="%.0e").set_label("\u03C8(r, z), Вб")
         matplt.gca().set_aspect("equal")
         
     print( colored( 'u_max = ', 'green') + str(u.vector()[:].max()) )
@@ -574,6 +575,35 @@ def plasma_sources_coefficients_pow_2_iteration(p_correction, F_correction, psi_
     
     return p_coeff, F_2_coeff
 
+def plasma_sources_coefficients_exp_profile(p_correction, F_correction, psi_correction):
+    M = MEPH.MEPhIST()
+    exp_prof = MEPhIST_exp_profile.Problem()
+
+    psi1 = exp_prof.psi_axis
+    psi2 = exp_prof.psi_pl_edge
+    
+    p_0 = M.p_axis
+    F0_2 = M.F0_2
+    
+    print_colored("MEPhIST data:", 'magenta')
+    logger.log_n_output(M.__dict__, 'white')
+    
+    p_coeff = M0 * p_0 * p_correction / (psi1 - psi2) / psi_correction
+    F_2_coeff = -F0_2 * F_correction/ (psi1 - psi2) / psi_correction
+
+    logger.log_n_output_colored_message(colored_message="p_correction = ", color='green', white_message=str(p_correction))
+    logger.log_n_output_colored_message(colored_message="F_2_correction = ", color='green', white_message=str(F_correction))
+    
+    logger.log_n_output_colored_message(colored_message="psi1 = ", color='green', white_message=str(psi1))
+    logger.log_n_output_colored_message(colored_message="psi2 = ", color='green', white_message=str(psi2))
+    
+    logger.log_n_output_colored_message(colored_message="p_coeff = ", color='green', white_message=str(p_coeff))
+    logger.log_n_output_colored_message(colored_message="F_2_coeff = ", color='green', white_message=str(F_2_coeff))
+    
+    logger.log_n_output_colored_message(colored_message="psi axis (by me) = ", color='green', white_message=str(psi_correction))
+    
+    return p_coeff, F_2_coeff
+
 def spheromak_point(r, R, alpha):
     z = 1/2/alpha * math.sqrt(2 * R**2 - (r - R)**2)
     return z
@@ -613,10 +643,13 @@ def countour_plot_via_mesh(geometry, u, levels, PATH, plot_title):
         triang = tri.Triangulation(*geometry.mesh.coordinates().reshape((-1, 2)).T, triangles=geometry.mesh.cells())
         u_array = u.compute_vertex_values(geometry.mesh)
         
+        matplt.xticks(numpy.array([0.05, 0.25, 0.5, 0.75, 1, 1.25]))
+        # matplt.yticks(numpy.array([0, 0.3, 0.5]))
+        matplt.grid(True)
         matplt.tricontour(triang, u_array, levels)
         # matplt.xlim(geometry.r1, geometry.r2)
         # matplt.ylim(geometry.z1, geometry.z2)
-        # matplt.xlim(0.05, 0.7)
+        # matplt.xlim(0, 0.5)
         # matplt.ylim(-0.6, 0.6)
 
         matplt.xlabel("r, м")
