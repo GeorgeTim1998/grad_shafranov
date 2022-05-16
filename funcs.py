@@ -643,7 +643,7 @@ def countour_plot_via_mesh(geometry, u, levels, PATH, plot_title):
         triang = tri.Triangulation(*geometry.mesh.coordinates().reshape((-1, 2)).T, triangles=geometry.mesh.cells())
         u_array = u.compute_vertex_values(geometry.mesh)
         
-        matplt.xticks(numpy.array([0.05, 0.25, 0.5, 0.75, 1, 1.25]))
+        # matplt.xticks(numpy.array([0.05, 0.25, 0.5, 0.75, 1, 1.25]))
         # matplt.yticks(numpy.array([0, 0.3, 0.5]))
         matplt.grid(True)
         matplt.tricontour(triang, u_array, levels)
@@ -737,9 +737,9 @@ def plot_Dina_results(PATH):
     levels_min = 0
     levels_max = 0.055 # default good 0.055
     
-    levels_values = 12 # default good 3*(1 + int(100*(abs(levels_min)+abs(levels_max))))
-    print_colored_n_white(colored_text="levels values = ", color='green', white_text=str(levels_values))
-    levels = list(numpy.linspace(levels_min, levels_max, levels_values))
+    levels_amount = 12 # default good 3*(1 + int(100*(abs(levels_min)+abs(levels_max))))
+    print_colored_n_white(colored_text="levels values = ", color='green', white_text=str(levels_amount))
+    levels = 20 # list(numpy.linspace(levels_min, levels_max, levels_amount))
     
     print_colored_n_white(colored_text="r min = ", color='green', white_text=str(r_lim[0]))
     print_colored_n_white(colored_text="r max = ", color='green', white_text=str(r_lim[1]))
