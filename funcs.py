@@ -737,8 +737,8 @@ def plot_Dina_results(PATH):
     levels_min = 0
     levels_max = 0.055 # default good 0.055
     
-    levels_amount = 12 # default good 3*(1 + int(100*(abs(levels_min)+abs(levels_max))))
-    print_colored_n_white(colored_text="levels values = ", color='green', white_text=str(levels_amount))
+    # levels_amount = 12 # default good 3*(1 + int(100*(abs(levels_min)+abs(levels_max))))
+    # print_colored_n_white(colored_text="levels values = ", color='green', white_text=str(levels_amount))
     levels = 20 # list(numpy.linspace(levels_min, levels_max, levels_amount))
     
     print_colored_n_white(colored_text="r min = ", color='green', white_text=str(r_lim[0]))
