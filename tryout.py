@@ -6,7 +6,9 @@ import matplotlib.pyplot as matplt
 import matplotlib.tri as tri
 import funcs as fu
 
-fu.plot_error_vs_mesh_from_file(folder_name='Errors', file_name='1D_problem_09052022_235717', x_lim=[0, 1000], PATH='1D_problem')
+
+
+# fu.plot_error_vs_mesh_from_file(folder_name='Errors', file_name='1D_problem_09052022_235717', x_lim=[0, 1000], PATH='1D_problem')
 # fu.plot_Dina_results("DINA")
 
 # x, y, z = np.genfromtxt(r'psi.dat', unpack=True)
