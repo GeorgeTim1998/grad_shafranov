@@ -20,6 +20,7 @@ class Problem:
         
         self.levels = 20
         self.levels = numpy.linspace(self.psi_min, self.psi_max, 1+int((self.psi_max-self.psi_min)/self.psi_step))
+        # self.levels = numpy.array([-0.4, -0.3,-0.2,-0.1,0,0.01,0.04,0.09, 0.16])
         
         self.errors = []
         

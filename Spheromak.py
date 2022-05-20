@@ -25,8 +25,8 @@ p = Problem()
 #%% Domain and mesh definition
 r_dom = p.domain_boundary_coordinates
 # for default_mesh in p.default_mesh_array:
-# geometry.rectangle_mesh_init(r1 = r_dom[0], r2 = r_dom[1], z1 = r_dom[2], z2 = r_dom[3], default_mesh = p.default_mesh)
-geometry.arbitrary_mesh_init(p.mesh_density)
+geometry.rectangle_mesh_init(r1 = r_dom[0], r2 = r_dom[1], z1 = r_dom[2], z2 = r_dom[3], default_mesh = p.default_mesh)
+# geometry.arbitrary_mesh_init(p.mesh_density)
 # fu.plot_mesh(geometry.mesh, PATH)
 
 #%% Define function space and
@@ -55,7 +55,12 @@ fu.What_time_is_it(t0, "Problem is solved")
 fu.countour_plot_via_mesh(geometry, u, levels = p.levels, PATH = PATH, plot_title = '')
 fu.What_time_is_it(t0, "\u03C8(r, z) is plotted")
 
-p.errors.append(fu.ErrorEstimate(u = u, u_D = u_D, mesh = geometry.mesh)[1])
+# funcc = Expression("u>=0.09 ? 1 : 0", u=u, degree=2)
+# fu.fenics_plot(interpolate(funcc, V), PATH, '')
+# fu.countour_plot_via_mesh(geometry, interpolate(funcc, V), levels = p.levels, PATH = PATH, plot_title = '')
+# interpolate(funcc, V)(-0.1, 0.2)
+
+# p.errors.append(fu.ErrorEstimate(u = u, u_D = u_D, mesh = geometry.mesh)[1])
 
 # fu.plot_error_vs_mesh_density(p.default_mesh_array, p.errors, PATH)
 # fu.save_errors_to_file(p.default_mesh_array, p.errors, PATH)
