@@ -89,9 +89,11 @@ du = TrialFunction(V)
 J = derivative(a, u, du)
 solve(a == 0, u, bc, J=J)
 
+etta_u = interpolate(Expression("u>=%f ? 1 : 0" % p.psi_pl_expr, u=u, degree=2), V)
+fu.countour_plot_via_mesh(geometry, etta_u, levels = p.levels, PATH = PATH, plot_title = '')
 #%% Post solve
 fu.What_time_is_it(t0, 'Variational problem solved')
-fu.countour_plot_via_mesh(geometry, u, levels = p.contour_levels, PATH = PATH, plot_title = '')
+fu.countour_plot_via_mesh(geometry, u, levels = p.levels, PATH = PATH, plot_title = '')
 
 # fu.fenics_plot(u, PATH, plot_title='')
 

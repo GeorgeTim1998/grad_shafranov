@@ -10,13 +10,14 @@ class Problem:
         self.plasma_domain_segments=100
         self.point_source_disp = 1
         
-        self.mesh_density = 300
+        self.mesh_density = 180
         
         self.boundary_condition_str = '0'
         
         self.betta = 0.1
         self.psi_axis = 0.05777839
-        self.psi_pl_edge = float(self.boundary_condition_str)
+        self.psi_pl_edge = 0.015
+        self.psi_pl_expr = 0.007
         
         self.p_correction = 1
         self.F_correction = 1
@@ -31,6 +32,8 @@ class Problem:
         self.step = 0.5e-3
         self.cycle_array = numpy.linspace(self.A1, self.A2, 1+int((self.A2-self.A1)/self.step))  
             
-        self.contour_levels = 20
-        # self.contour_levels = list(numpy.geomspace(-1e-3, 1e-8))
+        self.levels = 10
+        # self.levels = numpy.array([0.007,0.0072, 0.0074, 0.0076, 0.0078, 0.008])
+        self.levels = numpy.array([-0.0007, -0.0004, -0.0002, 0, 0.001, 0.003,0.005, 0.007, 0.01])
+        # self.levels = numpy.linspace(-0.0007, 0.01, )
         logger.log_n_output_colored_message(colored_message="point_source_disp = ", color='green', white_message=str(self.point_source_disp))
