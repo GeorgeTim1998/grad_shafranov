@@ -117,14 +117,15 @@ dx = Measure('dx', domain=geometry.mesh, subdomain_data=markers)
 
 # %% Solve starionary
 a = dot(grad(u)/r, grad(r_2*v))*dx
-L = sum(point_sources[2:len(point_sources)])*r*v*dx(0) + boundary_conditions.spheromak_right_hand_expr*r*v*dx(2)
+L = sum(point_sources[2:len(point_sources)])*r*v*dx(0) + \
+    boundary_conditions.spheromak_right_hand_expr*r*v*dx(2)
 
-u = Function(V)
-solve(a == L, u, bc)
+u0 = Function(V)
+solve(a == L, u0, bc)
 
 # %% Post solve
 fu.What_time_is_it(t0, 'Variational problem solved')
-fu.countour_plot_via_mesh(geometry, u, levels=p.levels,
+fu.countour_plot_via_mesh(geometry, u0, levels=p.levels,
                           PATH=PATH, plot_title='')
 
 fu.What_time_is_it(t0, "\u03C8(r, z) is plotted")
