@@ -54,7 +54,11 @@ class Problem:
             colored_message="VACUUM_PERMEABILITY = ", color='green', white_message=str(self.VACUUM_PERMEABILITY))
         logger.log_n_output_colored_message(
             colored_message="VESSEL_PERMEABILITY = ", color='green', white_message=str(self.VESSEL_PERMEABILITY))
+        logger.log_n_output_colored_message(
+            colored_message="PLASMA_PERMEABILITY = ", color='green', white_message=str(self.PLASMA_PERMEABILITY))
 
+        logger.log_n_output_colored_message(
+            colored_message="VACUUM_CONDUCTIVITY = ", color='green', white_message=str(self.VACUUM_CONDUCTIVITY))
         logger.log_n_output_colored_message(
             colored_message="VESSEL_CONDUCTIVITY = ", color='green', white_message=str(self.VESSEL_CONDUCTIVITY))
         logger.log_n_output_colored_message(

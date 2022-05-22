@@ -124,7 +124,7 @@ u0 = Function(V)
 solve(a == L, u0, bc)
 
 # %% Post solve
-fu.What_time_is_it(t0, 'Variational problem solved')
+fu.What_time_is_it(t0, 'Initial problem solved')
 fu.countour_plot_via_mesh(geometry, u0, levels=p.levels,
                           PATH=PATH, plot_title='')
 
