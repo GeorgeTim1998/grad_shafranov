@@ -666,8 +666,12 @@ def countour_plot_via_mesh(geometry, u, levels, PATH, plot_title):
         
         return u_max
     
-def fenics_plot(u, PATH, plot_title):
-    pylab.colorbar(plot(u)).set_label("\u03C8(r, z), Вб")
+def fenics_plot(u, PATH, plot_title, todostr):
+    fig = plot(u)
+    if todostr == 'colorbar':
+        pylab.colorbar(fig).set_label("\u03C8(r, z), Вб")
+        
+    matplt.gca().set_aspect("equal")
     matplt.xlabel("r, м")
     matplt.ylabel("z, м")
     save_contour_plot(PATH, plot_title)
