@@ -82,6 +82,9 @@ v = TestFunction(V)
 po_2 = (u-Constant(p.psi_pl_edge))/Constant(p.psi_axis-p.psi_pl_edge)
 G_psi = (exp(1 - po_2) - 1)/(m.e - 1)
 
+# etta_u = interpolate(Expression("u>=%f ? 1 : 0" % p.psi_pl_expr, u=u, degree=2), V)
+# fu.countour_plot_via_mesh(geometry, etta_u, levels = p.levels, PATH = PATH, plot_title = '')
+
 L = tetta * sum(point_sources[2:len(point_sources)])*r*v*dx
 a = dot(grad(u)/r, grad(r_2*v))*dx + etta*(p_coeff*r*r + F_2_coeff) * G_psi * r*v*dx - L
 
@@ -89,8 +92,7 @@ du = TrialFunction(V)
 J = derivative(a, u, du)
 solve(a == 0, u, bc, J=J)
 
-etta_u = interpolate(Expression("u>=%f ? 1 : 0" % p.psi_pl_expr, u=u, degree=2), V)
-fu.countour_plot_via_mesh(geometry, etta_u, levels = p.levels, PATH = PATH, plot_title = '')
+
 #%% Post solve
 fu.What_time_is_it(t0, 'Variational problem solved')
 fu.countour_plot_via_mesh(geometry, u, levels = p.levels, PATH = PATH, plot_title = '')
