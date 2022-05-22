@@ -1,3 +1,4 @@
+### В этом файле решаю задачу о восстановлении равновевсия в FRC (Field Reverced Configuration)
 #%% Imports
 from fenics import *
 import matplotlib.pyplot as matplt
