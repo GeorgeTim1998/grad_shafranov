@@ -8,7 +8,7 @@ import logger
 class Problem:
     def __init__(self):
         self.domain_geometry = [0.05, 0.55, -0.4, 0.4]
-        self.mesh_density = 120
+        self.mesh_density = 200
 
 # %% Vessel info
         self.centre_point = [0.3, 0]
@@ -34,8 +34,8 @@ class Problem:
         self.alpha = 0.5
 
         self.t0 = 0
-        self.t_max = 0.5e-13
-        num_of_t = 1+1
+        self.t_max = 2e-15
+        num_of_t = 5+1
         self.t = numpy.linspace(self.t0, self.t_max, num_of_t)
 
         self.boundary_condition_str = '0'

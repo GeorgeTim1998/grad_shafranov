@@ -48,7 +48,7 @@ geometry.generate_mesh_in_domain(domain=domain, density=p.mesh_density)
 markers = MeshFunction("size_t", geometry.mesh,
                        geometry.mesh.topology().dim(), geometry.mesh.domains())
 
-# fu.fenics_plot(markers, PATH, '', '')
+fu.fenics_plot(markers, PATH, '', '')
 
 # %% Step coefficients classes
 
