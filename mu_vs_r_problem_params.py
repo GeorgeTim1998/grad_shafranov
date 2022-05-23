@@ -33,6 +33,11 @@ class Problem:
         self.R = 0.2*math.sqrt(2)
         self.alpha = 0.5
 
+        self.t0 = 0
+        self.t_max = 0.5e-13
+        num_of_t = 1+1
+        self.t = numpy.linspace(self.t0, self.t_max, num_of_t)
+
         self.boundary_condition_str = '0'
 # %% Plotting arrays and levels
         self.p_correction_array = numpy.geomspace(0.1, 10, 5)
@@ -49,7 +54,10 @@ class Problem:
         # self.levels = numpy.array([0.007,0.0072, 0.0074, 0.0076, 0.0078, 0.008])
         # self.levels = numpy.array([-0.0007, -0.0004, -0.0002, 0, 0.001, 0.003,0.005, 0.007, 0.01])
         # self.levels = numpy.linspace(-0.0007, 0.01, )
-#%% Logs
+# %% Logs
+        logger.info(message="t = linspace(%.4e, %.4e, %d)" %
+                    (self.t0, self.t_max, int(num_of_t)))
+
         logger.log_n_output_colored_message(
             colored_message="VACUUM_PERMEABILITY = ", color='green', white_message=str(self.VACUUM_PERMEABILITY))
         logger.log_n_output_colored_message(

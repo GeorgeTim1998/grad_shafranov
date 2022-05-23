@@ -115,7 +115,7 @@ point_sources = fu.Array_Expression(fu.ArrayOfPointSources(psd.PointSource(1)))
 
 dx = Measure('dx', domain=geometry.mesh, subdomain_data=markers)
 
-# %% Solve starionary
+# %% Solve stationary
 a = dot(grad(u)/r, grad(r_2*v))*dx
 L = sum(point_sources[2:len(point_sources)])*r*v*dx(0) + \
     boundary_conditions.spheromak_right_hand_expr*r*v*dx(2)
@@ -123,11 +123,27 @@ L = sum(point_sources[2:len(point_sources)])*r*v*dx(0) + \
 u0 = Function(V)
 solve(a == L, u0, bc)
 
-# %% Post solve
 fu.What_time_is_it(t0, 'Initial problem solved')
 fu.countour_plot_via_mesh(geometry, u0, levels=p.levels,
                           PATH=PATH, plot_title='')
 
-fu.What_time_is_it(t0, "\u03C8(r, z) is plotted")
+dt = numpy.diff(p.t)
+for i in range(len(dt)):
+    u = Function(V)
+    v = TestFunction(V)
+
+    F = dot(grad(u)/r, grad(r_2*v))*dx + \
+        fu.M0*mu*sg / dt[i] * (u - u0)*r*v*dx - \
+        sum(point_sources[2:len(point_sources)])*r*v*dx(0)
+
+    solve(F == 0, u, bc)
+
+    fu.What_time_is_it(t0, "Problem solved for t = %f" % p.t[i+1])
+    fu.countour_plot_via_mesh(geometry, u, levels=p.levels,
+                              PATH=PATH, plot_title='')
+
+    u0 = u
+
+
 logger.log_n_output_colored_message(
     colored_message="'Done'\n", color='red', white_message='')
