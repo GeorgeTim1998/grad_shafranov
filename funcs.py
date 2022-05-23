@@ -643,7 +643,7 @@ def countour_plot_via_mesh(geometry, u, levels, PATH, plot_title):
         triang = tri.Triangulation(*geometry.mesh.coordinates().reshape((-1, 2)).T, triangles=geometry.mesh.cells())
         u_array = u.compute_vertex_values(geometry.mesh)
         
-        # matplt.xticks(numpy.array([0.05, 0.25, 0.5, 0.75, 1, 1.25]))
+        matplt.xticks(numpy.array([0.1, 0.2, 0.3, 0.4, 0.5]))
         # matplt.yticks(numpy.array([0, 0.3, 0.5]))
         matplt.grid(True)
         matplt.tricontour(triang, u_array, levels)
@@ -674,6 +674,7 @@ def fenics_plot(u, PATH, plot_title, todostr):
     matplt.gca().set_aspect("equal")
     matplt.xlabel("r, м")
     matplt.ylabel("z, м")
+    matplt.grid(True)
     save_contour_plot(PATH, plot_title)
     
     
