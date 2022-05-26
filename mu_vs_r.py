@@ -14,11 +14,12 @@ from geometry import Geometry
 from boundary_conditions import BoundaryConditions
 import point_source_data as psd
 import numpy
+from expressions import Expressions
 from mu_vs_r_problem_params import Problem
 
 # %% Pre-programm stuff
 t0 = time.time()
-current_pyfile = '---------mu_vs_r.py---------'
+current_pyfile = "\n\n---------mu_vs_r.py---------"
 logger.log_n_output("%s" % current_pyfile, 'red')
 fu.print_colored("Date_Time is: %s" % fu.Time_name(), 'cyan')
 PATH = 'mu_vs_r'
@@ -27,6 +28,7 @@ PATH = 'mu_vs_r'
 boundary_conditions = BoundaryConditions()
 geometry = Geometry()
 p = Problem()
+e = Expressions()
 
 # %% Domain and mesh definition
 domain = geometry.rectangle_domain(
@@ -48,8 +50,8 @@ geometry.generate_mesh_in_domain(domain=domain, density=p.mesh_density)
 markers = MeshFunction("size_t", geometry.mesh,
                        geometry.mesh.topology().dim(), geometry.mesh.domains())
 
-fu.fenics_plot(markers, PATH, '', '')
-fu.fenics_plot(markers, "%s_nobar" % PATH, '', '')
+fu.fenics_plot(p, markers, PATH, '', '')
+fu.fenics_plot(p, markers, "%s_nobar" % PATH, '', '')
 
 # %% Step coefficients classes
 
@@ -123,20 +125,26 @@ L = sum(point_sources[2:len(point_sources)])*r*v*dx(0) + \
 
 u0 = Function(V)
 solve(a == L, u0, bc)
+p.find_levels(u0)
 
 fu.What_time_is_it(t0, 'Initial problem solved')
 fu.countour_plot_via_mesh(geometry, u0, levels=p.levels,
                           PATH=PATH, plot_title='')
+fu.countour_plot_via_mesh_nocolorbar(geometry, u0, levels=p.levels,
+                          PATH="%s_nobar" % PATH, plot_title='')
 
 dt = numpy.diff(p.t)
 for i in range(len(dt)):
     u = Function(V)
     v = TestFunction(V)
 
+    source = e.moving_sphmk_source(
+        R=p.R, a=M.MEPhIST().a * p.t[i+1]/p.tm, alpha=p.alpha, psi0=p.psi_0)
+
     F = dot(grad(u)/r, grad(r_2*v))*dx + \
         fu.M0*mu*sg / dt[i] * (u - u0)*r*v*dx - \
         sum(point_sources[2:len(point_sources)])*r*v*dx(0) - \
-        boundary_conditions.spheromak_right_hand_expr/p.R_t[i+1]*r*v*dx(2)
+        source*r*v*dx(2)
 
     solve(F == 0, u, bc)
 
