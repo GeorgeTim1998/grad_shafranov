@@ -19,4 +19,6 @@ f_expr_z = s.diff(s.diff(expr, z), z)
 
 f_expr = -s.simplify(f_expr_x1 + f_expr_x2 + f_expr_z)
 
-s.pprint(f_expr)
+f_text = s.printing.ccode(f_expr)
+# print(f_text)
+# s.pprint(f_expr)
