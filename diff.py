@@ -8,7 +8,10 @@ r0 = s.symbols('r0')
 R = s.symbols('R')
 a = s.symbols('a')
 
-expr = (x-r0)**2 * (2*R**2 - (x-r0)**2 - 4*a**2*z**2) / R**4
+psi0 = s.symbols('psi0')
+
+# expr = (x-r0)**2 * (2*R**2 - (x-r0)**2 - 4*a**2*z**2) / R**4
+expr = psi0*(R**2 - (x-r0)**2 - z**2) / R**2
 
 f_text = s.printing.ccode(expr)
 # print(f_text)
@@ -20,5 +23,5 @@ f_expr_z = s.diff(s.diff(expr, z), z)
 f_expr = -s.simplify(f_expr_x1 + f_expr_x2 + f_expr_z)
 
 f_text = s.printing.ccode(f_expr)
-# print(f_text)
-# s.pprint(f_expr)
+print(f_text)
+s.pprint(f_expr)
