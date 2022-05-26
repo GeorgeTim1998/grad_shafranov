@@ -49,6 +49,7 @@ markers = MeshFunction("size_t", geometry.mesh,
                        geometry.mesh.topology().dim(), geometry.mesh.domains())
 
 fu.fenics_plot(markers, PATH, '', '')
+fu.fenics_plot(markers, "%s_nobar" % PATH, '', '')
 
 # %% Step coefficients classes
 
@@ -134,13 +135,16 @@ for i in range(len(dt)):
 
     F = dot(grad(u)/r, grad(r_2*v))*dx + \
         fu.M0*mu*sg / dt[i] * (u - u0)*r*v*dx - \
-        sum(point_sources[2:len(point_sources)])*r*v*dx(0)
+        sum(point_sources[2:len(point_sources)])*r*v*dx(0) - \
+        boundary_conditions.spheromak_right_hand_expr/p.R_t[i+1]*r*v*dx(2)
 
     solve(F == 0, u, bc)
 
     fu.What_time_is_it(t0, "Problem solved for t = %f" % p.t[i+1])
     fu.countour_plot_via_mesh(geometry, u, levels=p.levels,
                               PATH=PATH, plot_title='')
+    fu.countour_plot_via_mesh_nocolorbar(geometry, u, levels=p.levels,
+                                         PATH="%s_nobar" % PATH, plot_title='')
 
     u0 = u
 

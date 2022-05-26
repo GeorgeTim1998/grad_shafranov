@@ -771,6 +771,35 @@ def countour_plot_via_mesh(geometry, u, levels, PATH, plot_title):
         save_contour_plot(PATH, plot_title)
 
         return u_max
+    
+def countour_plot_via_mesh_nocolorbar(geometry, u, levels, PATH, plot_title):
+    u_min = u.vector()[:].min()
+    u_max = u.vector()[:].max()
+    if u_min == u_max:
+        logger.log_n_output(message="Trivial solution. u = %s" %
+                            u_max, color='red')
+    else:
+        triang = tri.Triangulation(
+            *geometry.mesh.coordinates().reshape((-1, 2)).T, triangles=geometry.mesh.cells())
+        u_array = u.compute_vertex_values(geometry.mesh)
+
+        matplt.xticks(numpy.array([0.1, 0.2, 0.3, 0.4, 0.5]))
+        # matplt.yticks(numpy.array([0, 0.3, 0.5]))
+        matplt.grid(True)
+        matplt.tricontour(triang, u_array, levels)
+        # matplt.xlim(geometry.r1, geometry.r2)
+        # matplt.ylim(geometry.z1, geometry.z2)
+        # matplt.xlim(0, 0.5)
+        # matplt.ylim(-0.6, 0.6)
+
+        matplt.xlabel("r, м")
+        # matplt.xlabel("a)", va = "bottom", ha = "right")
+        matplt.ylabel("z, м")
+        matplt.gca().set_aspect("equal")
+
+        save_contour_plot(PATH, plot_title)
+
+        return u_max
 
 
 def fenics_plot(u, PATH, plot_title, todostr):
