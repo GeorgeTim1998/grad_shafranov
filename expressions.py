@@ -38,13 +38,11 @@ class Expressions:
 
 # %% Move  Spheromak source
 
-    def moving_sphmk_source(self, R, alpha, psi0):
+    def moving_sphmk_source(self, R, a, alpha, psi0):
+        logger.log_n_output_colored_message(
+            colored_message="Displacement of source by: ", color='green', white_message=str(a))
         x = sympy.symbols('x[0]')
         z = sympy.symbols('x[1]')
-
-        r0 = sympy.symbols('r0')
-        R = sympy.symbols('R')
-        a = sympy.symbols('a')
 
         expr = psi0 * (x-a)**2 * (2*R**2 - (x-a)**2 - 4*alpha**2*z**2) / R**4
 
@@ -57,5 +55,5 @@ class Expressions:
 
         f_text = sympy.printing.ccode(f_expr)
         sympy.pprint(f_expr)
-        
-        return f_text
+
+        return Expression(f_text, degree=2)
