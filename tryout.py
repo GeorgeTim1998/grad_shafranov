@@ -1,12 +1,17 @@
 # import mshr
-# import fenics
+import fenics as fn
 
 import numpy as np
 import matplotlib.pyplot as matplt
 import matplotlib.tri as tri
 import funcs as fu
 
-
+mesh = fn.RectangleMesh(fn.Point(-1, -1), fn.Point(1, 1), 100, 100)
+f = fn.Expression("10*(1-pow(x[0] - 1, 2)-pow(x[1]-1, 2))", degree=2)
+V = fn.FunctionSpace(mesh, 'P', 1)
+print(fn.interpolate(f, V).vector().max())
+fn.plot(fn.interpolate(f, V))
+matplt.show()
 
 # fu.plot_error_vs_mesh_from_file(folder_name='Errors', file_name='1D_problem_09052022_235717', x_lim=[0, 1000], PATH='1D_problem')
 # fu.plot_Dina_results("DINA")
