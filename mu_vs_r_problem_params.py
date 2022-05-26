@@ -44,8 +44,6 @@ class Problem:
         self.t = numpy.linspace(self.t0, self.t_max, num_of_t)
 
         self.tm = 1*self.ts
-        self.R_t = (numpy.ones(len(self.t)) + self.t/self.tm)**4
-        
 
         self.boundary_condition_str = '0'
 # %% Plotting arrays and levels
@@ -60,6 +58,7 @@ class Problem:
             self.A1, self.A2, 1+int((self.A2-self.A1)/self.step))
 
         self.levels = 20
+        self.amount_of_levels = 20 # for a method below! (find_levels)
         # self.levels = numpy.array([0.007,0.0072, 0.0074, 0.0076, 0.0078, 0.008])
         # self.levels = numpy.array([-0.0007, -0.0004, -0.0002, 0, 0.001, 0.003,0.005, 0.007, 0.01])
         # self.levels = numpy.linspace(-0.0007, 0.01, )
@@ -90,4 +89,13 @@ class Problem:
         logger.log_n_output_colored_message(
             colored_message="Area ratio: ", color='green', white_message=str(self.area_ratio)
         )
+
+#%% Find levels
+    def find_levels(self, u):
+        u_min = 0
+        u_max = u_max = u.vector()[:].max()
         
+        exponent = math.ceil(abs(math.log10(u_max))) + 1
+        u_max = int(u_max * pow(10, exponent)) / pow(10, exponent)
+        self.levels = numpy.linspace(u_min, u_max, 11)
+    
