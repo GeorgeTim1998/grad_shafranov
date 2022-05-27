@@ -131,16 +131,19 @@ fu.What_time_is_it(t0, 'Initial problem solved')
 fu.countour_plot_via_mesh(geometry, u0, levels=p.levels,
                           PATH=PATH, plot_title='')
 fu.countour_plot_via_mesh_nocolorbar(geometry, u0, levels=p.levels,
-                          PATH="%s_nobar" % PATH, plot_title='')
+                                     PATH="%s_nobar" % PATH, plot_title='')
 
 dt = numpy.diff(p.t)
 for i in range(len(dt)):
+    fu.print_colored_n_white(colored_text="Time: ", color='blue', white_text=str(p.t[i+1]))
     u = Function(V)
     v = TestFunction(V)
 
-    source = e.moving_sphmk_source(
-        R=p.R, a=M.MEPhIST().a * p.t[i+1]/p.tm, alpha=p.alpha, psi0=p.psi_0)
+    source = e.moving_point_source(
+        R=p.R, a=p.disp_fact*p.ves_inner_radius*p.t[i+1]/p.tm, t=p.t[i+1], problem=p)
 
+    fu.fenics_plot(p, interpolate(source, V), PATH, '', '')
+    
     F = dot(grad(u)/r, grad(r_2*v))*dx + \
         fu.M0*mu*sg / dt[i] * (u - u0)*r*v*dx - \
         sum(point_sources[2:len(point_sources)])*r*v*dx(0) - \
@@ -155,6 +158,8 @@ for i in range(len(dt)):
                                          PATH="%s_nobar" % PATH, plot_title='')
 
     u0 = u
+
+    fu.print_colored(text='Iteration finished', color='yellow')
 
 
 logger.log_n_output_colored_message(
