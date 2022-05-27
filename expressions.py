@@ -86,7 +86,7 @@ class Expressions:
         x = sympy.symbols('x[0]')
         z = sympy.symbols('x[1]')
 
-        sigma = problem.ves_inner_radius*0.5
+        sigma = problem.ves_inner_radius*0.25
         j0 = M.I/(math.pi*sigma**2)
         logger.info(message="sigma = %.3e" % sigma)
         logger.info(message="j0 = I/(pi*sigma**2) = %.3e" % j0)
@@ -97,6 +97,27 @@ class Expressions:
         f_text = f_text.replace('exp', 'std::exp')
 
         fu.print_colored(text='Moving source:', color='green')
+        sympy.pprint(f_expr)
+
+        return Expression(f_text, degree=2)
+    
+    def point_source_t0(self, R, problem):
+        M = MEPhIST()
+
+        x = sympy.symbols('x[0]')
+        z = sympy.symbols('x[1]')
+
+        sigma = problem.ves_inner_radius*0.25
+        j0 = M.I/(math.pi*sigma**2)
+        logger.info(message="sigma = %.3e" % sigma)
+        logger.info(message="j0 = I/(pi*sigma**2) = %.3e" % j0)
+
+        f_expr = M0*x*j0 * sympy.exp(-((x-R)**2 + z**2) / sigma**2)
+
+        f_text = sympy.printing.ccode(f_expr)
+        f_text = f_text.replace('exp', 'std::exp')
+
+        fu.print_colored(text='Initial source:', color='green')
         sympy.pprint(f_expr)
 
         return Expression(f_text, degree=2)
