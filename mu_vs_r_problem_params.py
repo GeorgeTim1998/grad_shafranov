@@ -29,7 +29,7 @@ class Problem:
 
         self.VACUUM_CONDUCTIVITY = 0
         self.VESSEL_CONDUCTIVITY = 1.4e6
-        self.PLASMA_CONDUCTIVITY = 1.4e6  # 9e6
+        self.PLASMA_CONDUCTIVITY = 1.4e5  # 9e6
 # %% Problem params
         self.psi_0 = 1e-3
         self.R = 0.3
@@ -39,13 +39,14 @@ class Problem:
             (self.ves_outer_radius - self.ves_inner_radius)**2
 
         self.t0 = 0
-        self.t_max = 1e-1*self.ts
-        num_of_t = 2+1
+        self.ts_fraction = 0.05
+        self.t_max = self.ts_fraction*self.ts
+        num_of_t = 8+1
         self.t = numpy.linspace(self.t0, self.t_max, num_of_t)
 
-        self.tm = 1e-1*self.ts
+        self.tm = 0.8*self.ts_fraction*self.ts
 
-        self.disp_fact = 0.5  # множитель для характерного смещения. Этот множитель умножается на радиус камеры
+        self.disp_fact = 0.4  # множитель для характерного смещения. Этот множитель умножается на радиус камеры
 
         self.boundary_condition_str = '0'
 # %% Plotting arrays and levels

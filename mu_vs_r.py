@@ -132,18 +132,20 @@ p.find_levels(u0, step=p.step)
 
 fu.What_time_is_it(t0, 'Initial problem solved')
 fu.countour_plot_via_mesh(geometry, u0, levels=p.levels,
-                          PATH=PATH, plot_title='')
+                          PATH=PATH, plot_title='0')
 fu.countour_plot_via_mesh_nocolorbar(geometry, u0, levels=p.levels,
-                                     PATH="%s_nobar" % PATH, plot_title='')
+                                     PATH="%s_nobar" % PATH, plot_title='0')
 
 dt = numpy.diff(p.t)
 for i in range(len(dt)):
+    logger.info("i = %d out of %d" % (i, len(dt)))
     fu.print_colored_n_white(colored_text="Time: ", color='blue', white_text=str(p.t[i+1]))
     u = Function(V)
     v = TestFunction(V)
 
+    disp = p.disp_fact*p.ves_inner_radius*p.t[i+1]/p.tm
     source = e.moving_point_source(
-        R=p.R, a=p.disp_fact*p.ves_inner_radius*p.t[i+1]/p.tm, t=p.t[i+1], problem=p)
+        R=p.R, a=+p.disp_fact*p.ves_inner_radius*p.t[i+1]/p.tm, t=p.t[i+1], problem=p)
 
     F = dot(grad(u)/r, grad(r_2*v))*dx + \
         fu.M0*mu*sg / dt[i] * (u - u0)*r*v*dx - \
@@ -155,9 +157,9 @@ for i in range(len(dt)):
     fu.What_time_is_it(t0, "Problem solved for t = %f" % p.t[i+1])
     # p.find_levels_with_exponent(u, exponent=p.exponent, step=p.step)
     fu.countour_plot_via_mesh(geometry, u, levels=p.levels,
-                              PATH=PATH, plot_title='')
+                              PATH=PATH, plot_title="%f" % disp)
     fu.countour_plot_via_mesh_nocolorbar(geometry, u, levels=p.levels,
-                                         PATH="%s_nobar" % PATH, plot_title='')
+                                         PATH="%s_nobar" % PATH, plot_title="%f" % disp)
 
     u0 = u
 
