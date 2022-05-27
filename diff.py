@@ -1,17 +1,18 @@
 import sympy as s
 import IPython.display as disp
 
-x = s.symbols('x[0]')
-z = s.symbols('x[1]')
+x = s.symbols('x')
+z = s.symbols('z')
 
 r0 = s.symbols('r0')
+z0 = s.symbols('z0')
 R = s.symbols('R')
 a = s.symbols('a')
 
 psi0 = s.symbols('psi0')
 
-# expr = (x-r0)**2 * (2*R**2 - (x-r0)**2 - 4*a**2*z**2) / R**4
-expr = psi0*(R**2 - (x-r0)**2 - z**2) / R**2
+expr = (x-r0)**2 * (2*R**2 - (x-r0)**2 - 4*a**2*(z-z0)**2) / R**4
+# expr = psi0*(R**2 - (x-r0)**2 - z**2) / R**2
 
 f_text = s.printing.ccode(expr)
 # print(f_text)
