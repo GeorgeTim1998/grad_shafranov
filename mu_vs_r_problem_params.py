@@ -29,7 +29,7 @@ class Problem:
 
         self.VACUUM_CONDUCTIVITY = 0
         self.VESSEL_CONDUCTIVITY = 1.4e6
-        self.PLASMA_CONDUCTIVITY = 9e6
+        self.PLASMA_CONDUCTIVITY = 1.4e6  # 9e6
 # %% Problem params
         self.psi_0 = 1e-3
         self.R = 0.3
@@ -37,15 +37,15 @@ class Problem:
 
         self.ts = M0 * self.VESSEL_PERMEABILITY * self.VESSEL_CONDUCTIVITY * \
             (self.ves_outer_radius - self.ves_inner_radius)**2
-            
+
         self.t0 = 0
         self.t_max = 1e-1*self.ts
         num_of_t = 2+1
         self.t = numpy.linspace(self.t0, self.t_max, num_of_t)
 
-        self.tm = 0.5*1e-1*self.ts
-        
-        self.disp_fact = 1 # множитель для характерного смещения на радиус камеры
+        self.tm = 1e-1*self.ts
+
+        self.disp_fact = 0.5  # множитель для характерного смещения. Этот множитель умножается на радиус камеры
 
         self.boundary_condition_str = '0'
 # %% Plotting arrays and levels
@@ -60,7 +60,8 @@ class Problem:
             self.A1, self.A2, 1+int((self.A2-self.A1)/self.step))
 
         self.levels = 20
-        self.amount_of_levels = 20 # for a method below! (find_levels)
+        self.amount_of_levels = 20  # for a method below! (find_levels)
+        self.step = 0.2 
         # self.levels = numpy.array([0.007,0.0072, 0.0074, 0.0076, 0.0078, 0.008])
         # self.levels = numpy.array([-0.0007, -0.0004, -0.0002, 0, 0.001, 0.003,0.005, 0.007, 0.01])
         # self.levels = numpy.linspace(-0.0007, 0.01, )
@@ -92,12 +93,33 @@ class Problem:
             colored_message="Area ratio: ", color='green', white_message=str(self.area_ratio)
         )
 
-#%% Find levels
-    def find_levels(self, u):
+# %% Find levels
+    def find_levels(self, u, step):
         u_min = 0
-        u_max = u_max = u.vector()[:].max()
+        u_max = u.vector()[:].max()
+
+        # exponent = math.ceil(abs(math.log10(u_max))) + 1 # old version
+        # u_max = int(u_max * pow(10, exponent)) / pow(10, exponent)
         
-        exponent = math.ceil(abs(math.log10(u_max))) + 1
-        u_max = int(u_max * pow(10, exponent)) / pow(10, exponent)
-        self.levels = numpy.linspace(u_min, u_max, 11)
+        # u_max = int(u_max * pow(10, exponent)) / pow(10, exponent)
+        exponent = math.ceil(abs(math.log10(u_max))) 
+        u_max = step*pow(10, -exponent) * int(u_max/(step*pow(10, -exponent))) # Найти ближайшее снизу к u_max число, чтобы отличие было максимум на величину шага
+
+        self.levels = numpy.linspace(u_min, u_max, int(
+            (u_max-u_min)/(step*pow(10, -exponent))) + 1 
+        )
     
+    def find_levels_with_exponent(self, u, exponent, step):
+        u_min = 0
+        u_max = u.vector()[:].max()
+
+        u_exp = math.ceil(abs(math.log10(u_max)))
+        u_max = int(u_max * pow(10, u_exp)) / pow(10, u_exp)
+        
+        self.levels = numpy.linspace(u_min, u_max, int(
+            (u_max-u_min)/(step*pow(10, -exponent))) + 1 
+        )
+        
+    def find_exponent(self, u):
+        u_max = u.vector()[:].max()
+        self.exponent = math.ceil(abs(math.log10(u_max)))

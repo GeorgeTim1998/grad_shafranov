@@ -112,20 +112,23 @@ bc = DirichletBC(V, u_D, fu.Dirichlet_boundary)
 # %% Solve
 [r_2, r] = geometry.operator_weights(V)
 
-boundary_conditions.spheromak_boundary_condition(
-    psi_0=p.psi_0, R=p.R, alpha=p.alpha)
+# boundary_conditions.spheromak_boundary_condition(
+#     psi_0=p.psi_0, R=p.R, alpha=p.alpha)
 point_sources = fu.Array_Expression(fu.ArrayOfPointSources(psd.PointSource(1)))
 
 dx = Measure('dx', domain=geometry.mesh, subdomain_data=markers)
 
 # %% Solve stationary
+source = e.point_source_t0(R=p.R, problem=p)
 a = dot(grad(u)/r, grad(r_2*v))*dx
 L = sum(point_sources[2:len(point_sources)])*r*v*dx(0) + \
-    boundary_conditions.spheromak_right_hand_expr*r*v*dx(2)
+    source*r*v*dx(2) #!!!
 
 u0 = Function(V)
 solve(a == L, u0, bc)
-p.find_levels(u0)
+p.find_levels(u0, step=p.step)
+# p.find_exponent(u0)
+# p.find_levels_with_exponent(u0,exponent=p.exponent, step=p.step)
 
 fu.What_time_is_it(t0, 'Initial problem solved')
 fu.countour_plot_via_mesh(geometry, u0, levels=p.levels,
@@ -142,8 +145,6 @@ for i in range(len(dt)):
     source = e.moving_point_source(
         R=p.R, a=p.disp_fact*p.ves_inner_radius*p.t[i+1]/p.tm, t=p.t[i+1], problem=p)
 
-    fu.fenics_plot(p, interpolate(source, V), PATH, '', '')
-    
     F = dot(grad(u)/r, grad(r_2*v))*dx + \
         fu.M0*mu*sg / dt[i] * (u - u0)*r*v*dx - \
         sum(point_sources[2:len(point_sources)])*r*v*dx(0) - \
@@ -152,6 +153,7 @@ for i in range(len(dt)):
     solve(F == 0, u, bc)
 
     fu.What_time_is_it(t0, "Problem solved for t = %f" % p.t[i+1])
+    # p.find_levels_with_exponent(u, exponent=p.exponent, step=p.step)
     fu.countour_plot_via_mesh(geometry, u, levels=p.levels,
                               PATH=PATH, plot_title='')
     fu.countour_plot_via_mesh_nocolorbar(geometry, u, levels=p.levels,
