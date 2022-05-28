@@ -99,7 +99,7 @@ class Geometry:
         logger.info( "Number of cells: %d, Number of vertices: %d" % (self.mesh.num_cells(), self.mesh.num_vertices()) )
 #%% MEPhIST domain
     def outer_mephist_vessel(self):
-        [x, z] = self.__read_data_from_file()
+        [x, z] = self.__read_data_from_file('Mephist_vessel_outer_surface')
         
         point_list = []
 
@@ -107,30 +107,38 @@ class Geometry:
             point_list.append(Point(x[i], z[i]))
             
         self.domain = mshr.Polygon(point_list)
+        self.outer_vessel_contour = [x, z]
         
-        return self.domain
+        return self.outer_vessel_contour
+    
+    def inner_mephist_vessel(self):
+        [x, z] = self.__read_data_from_file('MEPHIST_vessel_inner_surface')
+        
+        point_list = []
+
+        for i in range(len(x)):
+            point_list.append(Point(x[i], z[i]))
+            
+        self.domain = mshr.Polygon(point_list)
+        self.inner_vessel_contour = [x, z]
+        
+        return self.inner_vessel_contour
     
     def __get_column(self, matrix, col):
         return [row[col] for row in matrix]
     
-    def __read_data_from_file(self):
-        file_path = "КонтурКамерыСредний.txt"
+    def __read_data_from_file(self, file_path, folder_name = 'Data'):
+        file_path = "%s/%s.txt" % (folder_name, file_path)
         with open(file_path, "r") as file: # change to Read_from_file func
-            data = [[float(num) for num in line.split('  ')] for line in file]
+            data = [[float(num) for num in line.split(',')] for line in file]
 
-        x = numpy.array(self.__get_column(data, 0))*1e-3
-        z = numpy.array(self.__get_column(data, 1))*1e-3
-        
-        camera_height = 581.69*1e-3
-        z_height = z[-2]
-
-        x = x[0:len(x)-1]
-        z = z[0:len(z)-1]
-
-        z = z - z_height/2 * numpy.ones(len(z))
-        z = z + (camera_height/2 - numpy.amax(z)) * numpy.ones(len(z)) 
-        
-        x = numpy.append(x, numpy.flip(x)) # move it along x axis!
-        z = numpy.append(z, numpy.flip(-z))
+        x = numpy.array(self.__get_column(data, 0))
+        z = numpy.array(self.__get_column(data, 1))
         
         return x, z
+    
+    def write_data_to_file(self, folder_name, file_name, data):
+        file_path = "%s/%s.txt" % (folder_name, file_name)
+        with open(file_path, 'w') as file:
+            for line in data:
+                file.write("%s,%s\n" % (line[0], line[1]))
