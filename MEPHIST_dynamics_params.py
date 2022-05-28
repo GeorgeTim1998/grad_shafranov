@@ -12,19 +12,10 @@ class Problem:
         self.mesh_density = 120
 
         # Vessel info
-        self.centre_point = [0.3, 0]
-        self.ves_inner_radius = 0.05  # inner vessel radius
-        self.ves_outer_radius = 0.15  # outer vessel radius
-
-        self.ves_inner_segments = 100
-        self.ves_outer_segments = int(self.ves_outer_radius
-                                      / self.ves_inner_radius
-                                      * self.ves_inner_segments)
-
-        domain_area = self.__calucate_domain_area()
-        self.area_ratio = 100*math.pi \
-            * (self.ves_outer_radius**2 - self.ves_inner_radius**2) \
-            / domain_area
+        self.centre_point = [0.23, 0]
+        
+        self.vessel_thickness = 0.05
+        self.vessel_inner_size = 0.2
 
         # Physical properties of plasma and vacuum vessel
         self.VACUUM_PERMEABILITY = 1
@@ -33,23 +24,20 @@ class Problem:
 
         self.VACUUM_CONDUCTIVITY = 0
         self.VESSEL_CONDUCTIVITY = 1.4e6
-        # 9e6 - посчитанно с использованием montani2021: sigma ~ T**3/2
-        self.PLASMA_CONDUCTIVITY = 1.4e5
+        self.PLASMA_CONDUCTIVITY = 1.4e5 # 9e6 - посчитанно с использованием montani2021: sigma ~ T**3/2
 
         # Problem params
-        self.psi_0 = 1e-3
-        self.R = 0.3
-        self.alpha = 0.5
+        self.R = self.centre_point[0]
 
         self.ts = M0 \
             * self.VESSEL_PERMEABILITY * self.VESSEL_CONDUCTIVITY \
-            * (self.ves_outer_radius - self.ves_inner_radius)**2
+            * (self.vessel_thickness)**2
 
         self.t0 = 0
-        self.ts_fraction = 0.05
+        self.ts_fraction = 0.1
         self.t_max = self.ts_fraction * self.ts
 
-        self.num_of_t = 8+1  # число точек по времени
+        self.num_of_t = 2+1  # число точек по времени
         self.t = numpy.linspace(self.t0, self.t_max,
                                 self.num_of_t)  # Временной массив
 
@@ -71,29 +59,41 @@ class Problem:
         logger.info(message="t = linspace(%.4e, %.4e, %d)" %
                     (self.t0, self.t_max, int(self.num_of_t)))
         logger.log_n_output_colored_message(
-            colored_message="ts = ", color='green', white_message=str(self.ts)
+            colored_message="ts = ",
+            color='green',
+            white_message=str(self.ts)
         )
         logger.log_n_output_colored_message(
-            colored_message="tm = ", color='green', white_message=str(self.tm)
+            colored_message="tm = ",
+            color='green',
+            white_message=str(self.tm)
         )
 
         logger.log_n_output_colored_message(
-            colored_message="VACUUM_PERMEABILITY = ", color='green', white_message=str(self.VACUUM_PERMEABILITY))
+            colored_message="VACUUM_PERMEABILITY = ", 
+            color='green', 
+            white_message=str(self.VACUUM_PERMEABILITY))
         logger.log_n_output_colored_message(
-            colored_message="VESSEL_PERMEABILITY = ", color='green', white_message=str(self.VESSEL_PERMEABILITY))
+            colored_message="VESSEL_PERMEABILITY = ", 
+            color='green', 
+            white_message=str(self.VESSEL_PERMEABILITY))
         logger.log_n_output_colored_message(
-            colored_message="PLASMA_PERMEABILITY = ", color='green', white_message=str(self.PLASMA_PERMEABILITY))
+            colored_message="PLASMA_PERMEABILITY = ", 
+            color='green', 
+            white_message=str(self.PLASMA_PERMEABILITY))
 
         logger.log_n_output_colored_message(
-            colored_message="VACUUM_CONDUCTIVITY = ", color='green', white_message=str(self.VACUUM_CONDUCTIVITY))
+            colored_message="VACUUM_CONDUCTIVITY = ", 
+            color='green', 
+            white_message=str(self.VACUUM_CONDUCTIVITY))
         logger.log_n_output_colored_message(
-            colored_message="VESSEL_CONDUCTIVITY = ", color='green', white_message=str(self.VESSEL_CONDUCTIVITY))
+            colored_message="VESSEL_CONDUCTIVITY = ", 
+            color='green', 
+            white_message=str(self.VESSEL_CONDUCTIVITY))
         logger.log_n_output_colored_message(
-            colored_message="PLASMA_CONDUCTIVITY = ", color='green', white_message=str(self.PLASMA_CONDUCTIVITY))
-
-        logger.log_n_output_colored_message(
-            colored_message="Area ratio: ", color='green', white_message=str(self.area_ratio)
-        )
+            colored_message="PLASMA_CONDUCTIVITY = ", 
+            color='green', 
+            white_message=str(self.PLASMA_CONDUCTIVITY))
 
     def find_levels(self, u, step):  # Find levels for plotting
         u_min = 0
