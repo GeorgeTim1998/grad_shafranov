@@ -124,8 +124,8 @@ def Plot_2D_data_together():  # father
         with open(file_path, "r") as file:  # change to Read_from_file func
             data = [[float(num) for num in line.split(',')] for line in file]
 
-        x = numpy.array(Column(data, 0))
-        u_section = numpy.array(Column(data, 1))
+        x = numpy.array(get_column(data, 0))
+        u_section = numpy.array(get_column(data, 1))
 
         if iteration == 0:
             u0_section = u_section
@@ -211,11 +211,11 @@ def Save_figure(f_expr, mesh_r, mesh_z, addition, PATH, plot_title):
         colored_text="3D countour plot saved to PATH: ", color='green', white_text=file_path)
 
 
-def Write2file_umax_vs_def_mesh(mesh_r, mesh_z, u_max):
-    file_path = "%s.txt" % TEXT_FILE_U_MAX
-    file = open(file_path, "a")  # append write to file mode
+def write_data_to_file(folder_name, file_name, x, y, z=[]):
+    file_path = "%s/%s.txt" % (folder_name, file_name)
+    file = open(file_path, "r")  # append write to file mode
 
-    text = "%s,%s,%s\n" % (mesh_r, mesh_z, u_max)
+    text = "%s,%s,%s\n" % (x, y, z)
     file.write(text)
     file.close()
 
@@ -234,7 +234,7 @@ def Write2file_umax_vs_square_size(mesh_r, mesh_z, u_max, default_mesh_size):
     print(colored("Data saved to PATH: %s" % file_path, 'green'))
 
 
-def Column(matrix, col):
+def get_column(matrix, col):
     return [row[col] for row in matrix]
 
 
@@ -243,8 +243,8 @@ def Plot_umax_vs_def_mesh(name):
     with open("%s.txt" % TEXT_FILE_U_MAX, "r") as file:
         data = [[float(num) for num in line.split(',')] for line in file]
 
-    mesh = Column(data, 0)
-    u_max = Column(data, 2)
+    mesh = get_column(data, 0)
+    u_max = get_column(data, 2)
 
     matplt.scatter(mesh, u_max, linewidth=2)  # magnify w
     # matplt.legend(["u_max vs default mesh size"], loc='best')
@@ -263,8 +263,8 @@ def Plot_umax_vs_square_size(name, default_mesh_size):
     with open("%s_vs_square_mesh_%s.txt" % (TEXT_FILE_U_MAX, default_mesh_size), "r") as file:
         data = [[float(num) for num in line.split(',')] for line in file]
 
-    mesh = Column(data, 0)
-    u_max = Column(data, 2)
+    mesh = get_column(data, 0)
+    u_max = get_column(data, 2)
 
     matplt.scatter(mesh, u_max, linewidth=2)
     # matplt.legend(["u_max vs solution square size"], loc='best')
@@ -451,9 +451,9 @@ def Plot_error_vs_mesh(name):
     with open("%svsmesh.txt" % TEXT_FILE_ERROR, "r") as file:
         data = [[float(num) for num in line.split(',')] for line in file]
 
-    mesh = Column(data, 0)
-    err_max = Column(data, 1)
-    err_L2 = Column(data, 2)
+    mesh = get_column(data, 0)
+    err_max = get_column(data, 1)
+    err_L2 = get_column(data, 2)
 
     matplt.semilogy(mesh, err_max, 'o', linewidth=2)  # magnify w
     # matplt.legend(["u_max vs default mesh size"], loc='best')
@@ -954,8 +954,8 @@ def plot_error_vs_mesh_from_file(folder_name, file_name, x_lim, PATH):
     with open("%s/%s.txt" % (folder_name, file_name), "r") as file:
         data = [[float(num) for num in line.split(',')] for line in file]
 
-    mesh = Column(data, 0)
-    error = Column(data, 1)
+    mesh = get_column(data, 0)
+    error = get_column(data, 1)
 
     matplt.semilogy(mesh, error, 'o', linewidth=2)  # magnify w
     matplt.xlim(x_lim[0], x_lim[1])
@@ -964,3 +964,37 @@ def plot_error_vs_mesh_from_file(folder_name, file_name, x_lim, PATH):
     matplt.ylabel('Максимальная ошибка, Вб')
 
     save_contour_plot(PATH, '')
+
+def shrink_contour(folder_name, file_name, shrunk_to_point, alpha_x, alpha_z):
+    [x, z] = read_from_file(folder_name, file_name)
+    
+    x_shrinking = shrunk_to_point[0] * numpy.ones(len(x))
+    z_shrinking = shrunk_to_point[1] * numpy.ones(len(x))
+    
+    # print("%s" % [x_mid[0], z_mid[0]])
+    x_shrunk = alpha_x*x + x_shrinking*(1-alpha_x)
+    z_shrunk = alpha_z*z + z_shrinking*(1-alpha_z)
+    
+    matplt.plot(x, z)
+    matplt.plot(x_shrunk, z_shrunk)
+    matplt.xticks(numpy.linspace(0.1, 0.4, 7))
+    matplt.grid(True)
+    matplt.gca().set_aspect("equal")
+    # matplt.show()
+    
+    from geometry import Geometry
+    
+    ge = Geometry()
+    data = numpy.transpose([x_shrunk,z_shrunk])
+    ge.write_data_to_file('Data', 'MEPHIST_vessel_inner_surface', data)    
+        
+def read_from_file(folder_name, file_name):
+    file_path = "%s/%s.txt" % (folder_name, file_name)
+    with open(file_path, "r") as file: # change to Read_from_file func
+        data = [[float(num) for num in line.split(',')] for line in file]
+    
+    x = numpy.array(get_column(data, 0))
+    z = numpy.array(get_column(data, 1))
+
+    return x, z    
+    
