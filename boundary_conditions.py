@@ -14,7 +14,7 @@ class BoundaryConditions:
         
         self.spheromak_sympy()
         self.spheromak_source()
-        self.log_spheromak_boundary()
+        self.__log_spheromak_boundary()
         self.psi_sol_expr = Expression(self.spheromak_text, degree = 2)
 
     def spheromak_sympy(self):
@@ -31,7 +31,7 @@ class BoundaryConditions:
         
         return self.spheromak_right_hand_expr
         
-    def log_spheromak_boundary(self):
+    def __log_spheromak_boundary(self):
         logger.info("R = %s, alpha = %s" % (self.R, self.alpha))
         logger.info("psi_0 = %s" % self.psi_0)
         logger.info("psi_sol = %s" % self.spheromak_text)
@@ -52,7 +52,7 @@ class BoundaryConditions:
         
         self.tokamak_D_config_sympy()
         self.tokamak_D_config_source()
-        self.log_tokamak_D_config_boundary()
+        self.__log_tokamak_D_config_boundary()
         self.psi_sol_expr = Expression(self.tokamak_D_config_text, degree = 2)
 
     def tokamak_D_config_sympy(self):
@@ -69,7 +69,7 @@ class BoundaryConditions:
         
         return self.tokamak_D_config_right_hand_expr
         
-    def log_tokamak_D_config_boundary(self):
+    def __log_tokamak_D_config_boundary(self):
         logger.log_n_output_colored_message(colored_message="psi_0 = ", color = 'green', white_message=str(self.psi_0))
         
         logger.log_n_output_colored_message(colored_message="eps (ellipse) = ", color = 'green', white_message=str(self.eps))
