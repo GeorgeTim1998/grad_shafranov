@@ -98,8 +98,8 @@ class Geometry:
         logger.log_n_output_colored_message(colored_message="Mesh density = ", color='green', white_message=str(self.density))
         logger.info( "Number of cells: %d, Number of vertices: %d" % (self.mesh.num_cells(), self.mesh.num_vertices()) )
 #%% MEPhIST domain
-    def mephist_vessel(self):
-        [x, z] = self.read_data_from_file()
+    def outer_mephist_vessel(self):
+        [x, z] = self.__read_data_from_file()
         
         point_list = []
 
@@ -110,16 +110,16 @@ class Geometry:
         
         return self.domain
     
-    def Column(self, matrix, col):
+    def __get_column(self, matrix, col):
         return [row[col] for row in matrix]
     
-    def read_data_from_file(self):
+    def __read_data_from_file(self):
         file_path = "КонтурКамерыСредний.txt"
         with open(file_path, "r") as file: # change to Read_from_file func
             data = [[float(num) for num in line.split('  ')] for line in file]
 
-        x = numpy.array(self.Column(data, 0))*1e-3
-        z = numpy.array(self.Column(data, 1))*1e-3
+        x = numpy.array(self.__get_column(data, 0))*1e-3
+        z = numpy.array(self.__get_column(data, 1))*1e-3
         
         camera_height = 581.69*1e-3
         z_height = z[-2]
