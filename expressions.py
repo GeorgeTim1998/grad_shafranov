@@ -45,7 +45,7 @@ class Expressions:
         logger.log_n_output_colored_message(
             colored_message="Displacement: ",
             color='green',
-            white_message="disp_fact*vessl_rad*t/tm = %s*%s*%.3e/%.3e" % (str(problem.disp_fact), str(problem.ves_inner_radius), t, problem.tm))
+            white_message="disp_fact*vessl_rad*t/tm = %s*%s*%.3e/%.3e" % (str(problem.disp_fact), str(problem.vessel_inner_size), t, problem.tm))
         fu.print_colored_n_white(colored_text='ts = ',
                                  color='green', white_text="%.3e" % problem.ts)
         logger.log_n_output_colored_message(
@@ -77,7 +77,7 @@ class Expressions:
         logger.log_n_output_colored_message(
             colored_message="Displacement: ",
             color='green',
-            white_message="disp_fact*vessl_rad*t/tm = %s*%s*%.3e/%.3e" % (str(problem.disp_fact), str(problem.ves_inner_radius), t, problem.tm))
+            white_message="disp_fact*vessl_rad*t/tm = %s*%s*%.3e/%.3e" % (str(problem.disp_fact), str(problem.vessel_inner_size), t, problem.tm))
         fu.print_colored_n_white(colored_text='ts = ',
                                  color='green', white_text="%.3e" % problem.ts)
         logger.log_n_output_colored_message(
@@ -86,7 +86,7 @@ class Expressions:
         x = sympy.symbols('x[0]')
         z = sympy.symbols('x[1]')
 
-        sigma = problem.ves_inner_radius*0.25
+        sigma = problem.vessel_inner_size*0.25
         j0 = M.I/(math.pi*sigma**2)
         logger.info(message="sigma = %.3e" % sigma)
         logger.info(message="j0 = I/(pi*sigma**2) = %.3e" % j0)
@@ -107,7 +107,7 @@ class Expressions:
         x = sympy.symbols('x[0]')
         z = sympy.symbols('x[1]')
 
-        sigma = problem.ves_inner_radius*0.25
+        sigma = problem.vessel_inner_size*0.25
         j0 = M.I/(math.pi*sigma**2)
         logger.info(message="sigma = %.3e" % sigma)
         logger.info(message="j0 = I/(pi*sigma**2) = %.3e" % j0)
