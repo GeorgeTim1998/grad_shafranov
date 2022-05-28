@@ -802,7 +802,7 @@ def countour_plot_via_mesh_nocolorbar(geometry, u, levels, PATH, plot_title):
         return u_max
 
 
-def fenics_plot(problem, u, PATH, plot_title, todostr):
+def fenics_plot(problem, u, PATH, plot_title='', todostr=''):
     fig = plot(u)
     if todostr == 'colorbar':
         pylab.colorbar(fig).set_label("\u03C8(r, z), Вб")
