@@ -734,7 +734,9 @@ def spheromak_pressure(psi_0, R, alpha):
     return L
 
 
-def countour_plot_via_mesh(geometry, u, levels, PATH, plot_title):
+def countour_plot_via_mesh(geometry, u, levels, PATH, plot_title='',
+                           current_disp=0,
+                           plt_vessel=False):
     u_min = u.vector()[:].min()
     u_max = u.vector()[:].max()
     if u_min == u_max:
@@ -745,17 +747,21 @@ def countour_plot_via_mesh(geometry, u, levels, PATH, plot_title):
             *geometry.mesh.coordinates().reshape((-1, 2)).T, triangles=geometry.mesh.cells())
         u_array = u.compute_vertex_values(geometry.mesh)
 
+        if plt_vessel == True:
+            matplt.plot(geometry.outer_vessel_contour[0],
+                        geometry.outer_vessel_contour[1],
+                        c='k', linewidth=1)
+            matplt.plot(geometry.inner_vessel_contour[0],
+                        geometry.inner_vessel_contour[1],
+                        c='k', linewidth=1)
+        
         matplt.xticks(numpy.array([0.1, 0.2, 0.3, 0.4, 0.5]))
-        # matplt.yticks(numpy.array([0, 0.3, 0.5]))
         matplt.grid(True)
         fig = matplt.tricontour(triang, u_array, levels)
-        # matplt.xlim(geometry.r1, geometry.r2)
-        # matplt.ylim(geometry.z1, geometry.z2)
-        # matplt.xlim(0, 0.5)
-        # matplt.ylim(-0.6, 0.6)
+        
+        matplt.scatter(current_disp, 0, c='r', linewidth=2.5) if current_disp != 0 else 0
 
         matplt.xlabel("r, м")
-        # matplt.xlabel("a)", va = "bottom", ha = "right")
         matplt.ylabel("z, м")
         matplt.colorbar(fig).set_label("\u03C8(r, z), Вб")
         matplt.gca().set_aspect("equal")
@@ -772,7 +778,9 @@ def countour_plot_via_mesh(geometry, u, levels, PATH, plot_title):
 
         return u_max
     
-def countour_plot_via_mesh_nocolorbar(geometry, u, levels, PATH, plot_title):
+def countour_plot_via_mesh_nocolorbar(geometry, u, levels, PATH,
+                                      plot_title='', current_disp=0,
+                                      plt_vessel=False):
     u_min = u.vector()[:].min()
     u_max = u.vector()[:].max()
     if u_min == u_max:
@@ -783,17 +791,21 @@ def countour_plot_via_mesh_nocolorbar(geometry, u, levels, PATH, plot_title):
             *geometry.mesh.coordinates().reshape((-1, 2)).T, triangles=geometry.mesh.cells())
         u_array = u.compute_vertex_values(geometry.mesh)
 
+        if plt_vessel == True:
+            matplt.plot(geometry.outer_vessel_contour[0],
+                        geometry.outer_vessel_contour[1],
+                        c='k', linewidth=1)
+            matplt.plot(geometry.inner_vessel_contour[0],
+                        geometry.inner_vessel_contour[1],
+                        c='k', linewidth=1)
+        
         matplt.xticks(numpy.array([0.1, 0.2, 0.3, 0.4, 0.5]))
-        # matplt.yticks(numpy.array([0, 0.3, 0.5]))
         matplt.grid(True)
         matplt.tricontour(triang, u_array, levels)
-        # matplt.xlim(geometry.r1, geometry.r2)
-        # matplt.ylim(geometry.z1, geometry.z2)
-        # matplt.xlim(0, 0.5)
-        # matplt.ylim(-0.6, 0.6)
+        
+        matplt.scatter(current_disp, 0, c='r', linewidth=2.5) if current_disp != 0 else 0
 
         matplt.xlabel("r, м")
-        # matplt.xlabel("a)", va = "bottom", ha = "right")
         matplt.ylabel("z, м")
         matplt.gca().set_aspect("equal")
 
