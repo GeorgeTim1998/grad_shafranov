@@ -13,7 +13,7 @@ class Problem:
 
         # Vessel info
         self.centre_point = [0.3, 0]
-        self.ves_inner_radius = 0.1  # inner vessel radius
+        self.ves_inner_radius = 0.05  # inner vessel radius
         self.ves_outer_radius = 0.15  # outer vessel radius
 
         self.ves_inner_segments = 100
