@@ -6,12 +6,40 @@ import matplotlib.pyplot as matplt
 import matplotlib.tri as tri
 import funcs as fu
 
-mesh = fn.RectangleMesh(fn.Point(-1, -1), fn.Point(1, 1), 100, 100)
-f = fn.Expression("10*(1-pow(x[0] - 1, 2)-pow(x[1]-1, 2))", degree=2)
-V = fn.FunctionSpace(mesh, 'P', 1)
-print(fn.interpolate(f, V).vector().max())
-fn.plot(fn.interpolate(f, V))
-matplt.show()
+fu.shrink_contour('Data',
+                  'Mephist_vessel_outer_surface',
+                  shrunk_to_point = [0.25, 0],
+                  alpha_x=0.7,
+                  alpha_z=0.8)
+
+# def get_column(matrix, col):
+#     return [row[col] for row in matrix]
+    
+# def read_data_from_file():
+#     file_path = "Data/Mephist_vessel_outer_surface.txt"
+#     with open(file_path, "r") as file:  # change to Read_from_file func
+#         data = [[float(num) for num in line.split(',')] for line in file]
+
+#     x = np.array(get_column(data, 0))
+#     z = np.array(get_column(data, 1))
+
+#     return x, z
+
+# [x,z] = read_data_from_file()
+    
+# matplt.plot(x, z)
+# matplt.xticks(np.linspace(0.1, 0.4, 7))
+# matplt.grid(True)
+# matplt.gca().set_aspect("equal")
+# # matplt.savefig('Data/Mephist_vessel_outer_surface.svg',dpi=350)
+# matplt.show()
+
+# mesh = fn.RectangleMesh(fn.Point(-1, -1), fn.Point(1, 1), 100, 100)
+# f = fn.Expression("10*(1-pow(x[0] - 1, 2)-pow(x[1]-1, 2))", degree=2)
+# V = fn.FunctionSpace(mesh, 'P', 1)
+# print(fn.interpolate(f, V).vector().max())
+# fn.plot(fn.interpolate(f, V))
+# matplt.show()
 
 # fu.plot_error_vs_mesh_from_file(folder_name='Errors', file_name='1D_problem_09052022_235717', x_lim=[0, 1000], PATH='1D_problem')
 # fu.plot_Dina_results("DINA")
