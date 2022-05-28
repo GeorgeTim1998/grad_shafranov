@@ -107,9 +107,12 @@ class Geometry:
             point_list.append(Point(x[i], z[i]))
             
         self.domain = mshr.Polygon(point_list)
+        
+        x = numpy.append(x, x[0])
+        z = numpy.append(z, z[0])
         self.outer_vessel_contour = [x, z]
         
-        return self.outer_vessel_contour
+        return self.domain
     
     def inner_mephist_vessel(self):
         [x, z] = self.__read_data_from_file('MEPHIST_vessel_inner_surface')
@@ -120,9 +123,12 @@ class Geometry:
             point_list.append(Point(x[i], z[i]))
             
         self.domain = mshr.Polygon(point_list)
+        
+        x = numpy.append(x, x[0])
+        z = numpy.append(z, z[0])
         self.inner_vessel_contour = [x, z]
         
-        return self.inner_vessel_contour
+        return self.domain
     
     def __get_column(self, matrix, col):
         return [row[col] for row in matrix]
