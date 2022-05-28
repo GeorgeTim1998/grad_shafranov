@@ -34,9 +34,11 @@ e = Expressions()
 domain = geometry.rectangle_domain(
     area=[p.domain_geometry[0], p.domain_geometry[1], p.domain_geometry[2], p.domain_geometry[3]])
 circle1 = geometry.circle_domain(centre_point=p.centre_point,
-                                 radius=p.ves_inner_radius, segments=p.ves_inner_segments)
+                                 radius=p.ves_inner_radius,
+                                 segments=p.ves_inner_segments)
 circle2 = geometry.circle_domain(centre_point=p.centre_point,
-                                 radius=p.ves_outer_radius, segments=p.ves_outer_segments)
+                                 radius=p.ves_outer_radius,
+                                 segments=p.ves_outer_segments)
 
 ring = circle2 - circle1
 
