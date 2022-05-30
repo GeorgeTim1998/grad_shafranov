@@ -6,11 +6,13 @@ import matplotlib.pyplot as matplt
 import matplotlib.tri as tri
 import funcs as fu
 
-fu.shrink_contour('Data',
-                  'Mephist_vessel_outer_surface',
-                  shrunk_to_point = [0.25, 0],
-                  alpha_x=0.7,
-                  alpha_z=0.8)
+fu.plot_error_vs_mesh_from_file('Errors', 'Spheromak_09052022_224524', [0, 1000], "SHOW_NOW")
+
+# fu.shrink_contour('Data',
+#                   'Mephist_vessel_outer_surface',
+#                   shrunk_to_point = [0.25, 0],
+#                   alpha_x=0.7,
+#                   alpha_z=0.8)
 
 # def get_column(matrix, col):
 #     return [row[col] for row in matrix]
