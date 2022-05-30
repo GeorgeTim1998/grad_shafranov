@@ -52,7 +52,7 @@ class Problem:
         # Plotting arrays and levels
         self.levels = 20
         self.amount_of_levels = 20  # for a method below! (find_levels)
-        self.step = 0.2  # Шаг для линий уровня. Если максимум ф-ии 1.2e-3, то шаг будет self.step*e-3
+        self.step = 0.1  # Шаг для линий уровня. Если максимум ф-ии 1.2e-3, то шаг будет self.step*e-3
 
         self.__log_problem_params()
 
