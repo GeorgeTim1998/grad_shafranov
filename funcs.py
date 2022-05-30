@@ -1,5 +1,3 @@
-from matplotlib.pyplot import text
-from numpy import mat
 import MEPHIST_data as MEPH
 from imports import *
 import time
@@ -968,14 +966,19 @@ def plot_error_vs_mesh_from_file(folder_name, file_name, x_lim, PATH):
 
     mesh = get_column(data, 0)
     error = get_column(data, 1)
+    
+    # curve_fit(approximate_errors, mesh, error)    
 
-    matplt.semilogy(mesh, error, 'o', linewidth=2)  # magnify w
+    matplt.loglog(mesh, error, 'o', linewidth=2)  # magnify w
     matplt.xlim(x_lim[0], x_lim[1])
     matplt.grid(True)
     matplt.xlabel('Плотность сетки')
     matplt.ylabel('Максимальная ошибка, Вб')
 
     save_contour_plot(PATH, '')
+    
+def approximate_errors(x, a, b, c):
+    return a * numpy.exp(-b * x) + c
 
 def shrink_contour(folder_name, file_name, shrunk_to_point, alpha_x, alpha_z):
     [x, z] = read_from_file(folder_name, file_name)
