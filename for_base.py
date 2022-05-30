@@ -1,5 +1,6 @@
 import time
 import numpy
+import math
 import datetime
 import matplotlib.pyplot as matplt
 from scipy.optimize import curve_fit
@@ -7,8 +8,12 @@ from scipy.optimize import curve_fit
 def get_column(matrix, col):
     return [row[col] for row in matrix]
 
-def approximate_errors(x, a, b, c):
-    return a * numpy.exp(-b * x**3) + c
+def func1(x, a, b):
+    return a * x + b
+
+def func2(x, a, b):
+    return math.exp(b)*x**a
+
 
 def plot_error_vs_mesh_from_file(folder_name, file_name, x_lim, PATH):
     with open("%s/%s.txt" % (folder_name, file_name), "r") as file:
@@ -17,10 +22,11 @@ def plot_error_vs_mesh_from_file(folder_name, file_name, x_lim, PATH):
     mesh = get_column(data, 0)
     error = get_column(data, 1)
     
-    popt, pcov = curve_fit(approximate_errors, mesh, error)    
-
-    matplt.plot(mesh, error, 'o', linewidth=2)  # magnify w
-    matplt.plot(numpy.array(mesh), approximate_errors(numpy.array(mesh), popt[0], popt[1], popt[2]), linewidth=1)  # magnify w
+    popt, pcov = curve_fit(func1, numpy.log(mesh), numpy.log(error))    
+    print(popt)
+    matplt.loglog(numpy.array(mesh), func2(numpy.array(mesh), *popt), linewidth=1)  # magnify w
+    matplt.loglog(mesh, error, 'o', linewidth=2)  # magnify w
+    
     matplt.xlim(x_lim[0], x_lim[1])
     matplt.grid(True)
     matplt.xlabel('Плотность сетки')
@@ -47,4 +53,4 @@ def save_contour_plot(PATH, plot_title):
     print("3D countour plot saved to PATH: %s" % file_path)
     time.sleep(1)
     
-plot_error_vs_mesh_from_file('Errors', 'Spheromak_09052022_224524', [0, 1000], "SHOW_NOW")
+plot_error_vs_mesh_from_file('Errors', '1D_problem_09052022_235717', [0, 1000], "SHOW_NOW")
