@@ -147,26 +147,31 @@ for i in range(len(dt)):
 
     source = e.moving_point_source(
         R=p.R,
-        a=p.disp_fact*p.vessel_thickness*p.t[i+1]/p.tm,
+        a=p.disp_fact*p.vessel_inner_size*p.t[i+1]/p.tm,
         t=p.t[i+1],
         problem=p)
 
-    current_disp_point = float(- p.disp_fact*p.vessel_thickness
+    current_disp_point = float(- p.disp_fact*p.vessel_inner_size
                                * p.t[i+1]/p.tm)
 
+    # F = dot(grad(u)/r, grad(r_2*v))*dx \
+    #     + fu.M0*mu*sg / dt[i] * (u - u0)*r*v*dx \
+    #     - sum(point_sources[2:len(point_sources)])*r*v*dx(0) \
+    #     - source*r*v*dx(2)
     F = dot(grad(u)/r, grad(r_2*v))*dx \
-        + fu.M0*mu*sg / dt[i] * (u - u0)*r*v*dx \
         - sum(point_sources[2:len(point_sources)])*r*v*dx(0) \
         - source*r*v*dx(2)
 
     solve(F == 0, u, bc)
+    # p.find_levels(u, step=p.step)
 
     fu.What_time_is_it(t0, "Problem solved for t = %f" % p.t[i+1])
     # p.find_levels_with_exponent(u, exponent=p.exponent, step=p.step)
     fu.countour_plot_via_mesh(geometry, u, levels=p.levels,
                               PATH=PATH,
                               current_disp=p.R-current_disp_point,
-                              plt_vessel=True)
+                              plt_vessel=True,
+                              plot_title=str(current_disp_point))
     fu.countour_plot_via_mesh_nocolorbar(geometry, u, levels=p.levels,
                                          PATH="%s_nobar" % PATH,
                                          current_disp=p.R-current_disp_point,
@@ -174,7 +179,8 @@ for i in range(len(dt)):
 
     u0 = u
 
-    fu.print_colored(text='Iteration finished', color='yellow')
+    fu.print_colored(text="Iteration finished. %d/%d = %.2f" 
+                     % (i, len(dt)-1, 100*i/(len(dt)-1)), color='yellow')
 
 
 logger.log_n_output_colored_message(

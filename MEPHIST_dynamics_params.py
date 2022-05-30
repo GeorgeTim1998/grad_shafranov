@@ -12,10 +12,10 @@ class Problem:
         self.mesh_density = 120
 
         # Vessel info
-        self.centre_point = [0.23, 0]
+        self.centre_point = [0.2, 0]
         
         self.vessel_thickness = 0.05
-        self.vessel_inner_size = 0.2
+        self.vessel_inner_size = 0.02
 
         # Physical properties of plasma and vacuum vessel
         self.VACUUM_PERMEABILITY = 1
@@ -24,7 +24,7 @@ class Problem:
 
         self.VACUUM_CONDUCTIVITY = 0
         self.VESSEL_CONDUCTIVITY = 1.4e6
-        self.PLASMA_CONDUCTIVITY = 1.4e5 # 9e6 - посчитанно с использованием montani2021: sigma ~ T**3/2
+        self.PLASMA_CONDUCTIVITY = 0 #8e5 #1.4e5 # 9e6 - посчитанно с использованием montani2021: sigma ~ T**3/2
 
         # Problem params
         self.R = self.centre_point[0]
@@ -34,17 +34,18 @@ class Problem:
             * (self.vessel_thickness)**2
 
         self.t0 = 0
-        self.ts_fraction = 0.1
+        self.ts_fraction = 0.5
+        self.ts_fraction_tm = 0.1
         self.t_max = self.ts_fraction * self.ts
 
-        self.num_of_t = 2+1  # число точек по времени
+        self.disp_fact = 1  # множитель характерного смещения. Умножаем на радиус камеры
+        self.tm = self.ts_fraction_tm * self.ts
+
+        self.num_of_t = 2+1  # число точек по времени +1 из-за 0
         self.t = numpy.linspace(self.t0, self.t_max,
                                 self.num_of_t)  # Временной массив
 
         # Характерное время смещения. Вычисляется как часть скинового времени
-        self.tm = 0.8 * self.ts_fraction * self.ts
-
-        self.disp_fact = 0.4  # множитель характерного смещения. Умножаем на радиус камеры
 
         self.boundary_condition_str = '0'
 
@@ -67,6 +68,16 @@ class Problem:
             colored_message="tm = ",
             color='green',
             white_message=str(self.tm)
+        )
+        logger.log_n_output_colored_message(
+            colored_message="ts_fract_t_max = ",
+            color='green',
+            white_message=str(self.ts_fraction)
+        )
+        logger.log_n_output_colored_message(
+            colored_message="ts_fraction_tm = ",
+            color='green',
+            white_message=str(self.ts_fraction_tm)
         )
 
         logger.log_n_output_colored_message(

@@ -86,7 +86,7 @@ class Expressions:
         x = sympy.symbols('x[0]')
         z = sympy.symbols('x[1]')
 
-        sigma = problem.vessel_inner_size*0.25
+        sigma = problem.vessel_inner_size#M.a/0.13*0.04
         j0 = M.I/(math.pi*sigma**2)
         logger.info(message="sigma = %.3e" % sigma)
         logger.info(message="j0 = I/(pi*sigma**2) = %.3e" % j0)
@@ -107,7 +107,7 @@ class Expressions:
         x = sympy.symbols('x[0]')
         z = sympy.symbols('x[1]')
 
-        sigma = problem.vessel_inner_size*0.25
+        sigma = problem.vessel_inner_size
         j0 = M.I/(math.pi*sigma**2)
         logger.info(message="sigma = %.3e" % sigma)
         logger.info(message="j0 = I/(pi*sigma**2) = %.3e" % j0)
