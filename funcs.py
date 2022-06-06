@@ -599,6 +599,7 @@ def plot_mesh(mesh, path):
 
     matplt.xlabel("r, м")
     matplt.ylabel("z, м")
+    matplt.xticks([0.1, 0.2, 0.3, 0.4, 0.5])
     matplt.gca().set_aspect("equal")
 
     Save_figure('', 100, 100, '', path, "")
@@ -761,6 +762,8 @@ def countour_plot_via_mesh(geometry, u, levels, PATH, plot_title='',
 
         matplt.xlabel("r, м")
         matplt.ylabel("z, м")
+        matplt.xlim([0, 0.55])
+        # matplt.ylim([-0.6, 0.6])
         matplt.colorbar(fig).set_label("\u03C8(r, z), Вб")
         matplt.gca().set_aspect("equal")
 
@@ -798,6 +801,7 @@ def countour_plot_via_mesh_nocolorbar(geometry, u, levels, PATH,
                         c='k', linewidth=1)
         
         matplt.xticks(numpy.array([0.1, 0.2, 0.3, 0.4, 0.5]))
+        # matplt.xlim([geometry.domain_boundary_coordinates[0]])
         matplt.grid(True)
         matplt.tricontour(triang, u_array, levels)
         
