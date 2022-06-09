@@ -106,3 +106,7 @@ $ dolfin-version
 # Expression with unknown function
 funcc = Expression("u>=-0.02 ? 1 : 0", u=u, degree=2)
 fu.countour_plot_via_mesh(geometry, interpolate(funcc, V), levels = p.levels, PATH = PATH, plot_title = '')
+
+# Add my own module to anaconda path
+conda develop ./Example/qwe.py -n fenicsproject
+conda develop path/to/python/file -n fenicsproject
