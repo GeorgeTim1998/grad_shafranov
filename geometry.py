@@ -3,6 +3,9 @@ import logger
 import mshr
 import numpy
 class Geometry:
+    def register_plot_domain(self, plot_domain):
+        self.plot_domain = plot_domain
+        
     def operator_weights(self, V):
         r_2 = interpolate(Expression('x[0]*x[0]', degree = 2), V) # interpolation is needed so that 'a' could evaluate deriviations and such
         r = Expression('x[0]', degree = 1) # interpolation is needed so that 'a' could evaluate deriviations and such
