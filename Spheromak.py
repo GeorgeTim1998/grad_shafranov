@@ -25,9 +25,9 @@ p = Problem()
 #%% Domain and mesh definition
 r_dom = p.domain_boundary_coordinates
 # for default_mesh in p.default_mesh_array:
-geometry.rectangle_mesh_init(r1 = r_dom[0], r2 = r_dom[1], z1 = r_dom[2], z2 = r_dom[3], default_mesh = p.default_mesh)
-# geometry.arbitrary_mesh_init(p.mesh_density)
-# fu.plot_mesh(geometry.mesh, PATH)
+# geometry.rectangle_mesh_init(r1 = r_dom[0], r2 = r_dom[1], z1 = r_dom[2], z2 = r_dom[3], default_mesh = p.default_mesh)
+geometry.arbitrary_mesh_init(p.mesh_density)
+fu.plot_mesh(geometry.mesh, PATH)
 
 #%% Define function space and
 V = FunctionSpace(geometry.mesh, 'P', 1) # standard triangular mesh
