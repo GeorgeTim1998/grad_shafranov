@@ -34,6 +34,7 @@ e = Expressions()
 domain = geometry.rectangle_domain(
     area=[p.domain_geometry[0], p.domain_geometry[1], p.domain_geometry[2], p.domain_geometry[3]])
 
+geometry.register_plot_domain(p.plot_domain)
 mephist_inner_surface = geometry.inner_mephist_vessel()
 mephist_outer_surface = geometry.outer_mephist_vessel()
 
@@ -49,8 +50,8 @@ geometry.generate_mesh_in_domain(domain=domain, density=p.mesh_density)
 markers = MeshFunction("size_t", geometry.mesh,
                        geometry.mesh.topology().dim(), geometry.mesh.domains())
 
-fu.fenics_plot(p, markers, PATH)
-fu.fenics_plot(p, markers, "%s_nobar" % PATH)
+# fu.fenics_plot(p, markers, PATH)
+# fu.fenics_plot(p, markers, "%s_nobar" % PATH)
 
 # %% Step coefficients classes
 
@@ -124,18 +125,14 @@ L = sum(point_sources[2:len(point_sources)])*r*v*dx(0) + \
 u0 = Function(V)
 solve(a == L, u0, bc)
 p.find_levels(u0, step=p.step)
-# p.find_exponent(u0)
-# p.find_levels_with_exponent(u0,exponent=p.exponent, step=p.step)
 
 fu.What_time_is_it(t0, 'Initial problem solved')
 fu.countour_plot_via_mesh(geometry, u0, levels=p.levels,
                           PATH=PATH,
                           current_disp=p.R,
-                          plt_vessel=True)
-fu.countour_plot_via_mesh_nocolorbar(geometry, u0, levels=p.levels,
-                                     PATH="%s_nobar" % PATH,
-                                     current_disp=p.R,
-                                     plt_vessel=True)
+                          plt_vessel=True,
+                          colorbar=True)
+# fu.fenics_plot(p, u0, PATH, colorbar=True)
 
 dt = numpy.diff(p.t)
 for i in range(len(dt)):
@@ -170,11 +167,9 @@ for i in range(len(dt)):
     fu.countour_plot_via_mesh(geometry, u, levels=p.levels,
                               PATH=PATH,
                               current_disp=p.R-current_disp_point,
-                              plt_vessel=True)
-    fu.countour_plot_via_mesh_nocolorbar(geometry, u, levels=p.levels,
-                                         PATH="%s_nobar" % PATH,
-                                         current_disp=p.R-current_disp_point,
-                                         plt_vessel=True)
+                              plt_vessel=True,
+                              do_plasma_centre=True,
+                              colorbar=True)
 
     u0 = u
 
@@ -182,5 +177,6 @@ for i in range(len(dt)):
                      % (i, len(dt)-1, 100*i/(len(dt)-1)), color='yellow')
 
 
+fu.What_time_is_it(t0, message='Done')
 logger.log_n_output_colored_message(
     colored_message="'Done'\n", color='red', white_message='')
