@@ -9,33 +9,33 @@ from geometry import Geometry
 import point_source_data as psd
 import numpy as np
 
-ge = Geometry()
-ps = psd.PointSource(1)
-r = np.transpose(ps.r)[0]
-z = np.transpose(ps.r)[1]
+# ge = Geometry()
+# ps = psd.PointSource(1)
+# r = np.transpose(ps.r)[0]
+# z = np.transpose(ps.r)[1]
 
-ge.outer_mephist_vessel()
-ge.inner_mephist_vessel()
-matplt.plot(ge.outer_vessel_contour[0],
-            ge.outer_vessel_contour[1],
-            c='k', linewidth=1)
-matplt.plot(ge.inner_vessel_contour[0],
-            ge.inner_vessel_contour[1],
-            c='k', linewidth=1)
+# ge.outer_mephist_vessel()
+# ge.inner_mephist_vessel()
+# matplt.plot(ge.outer_vessel_contour[0],
+#             ge.outer_vessel_contour[1],
+#             c='k', linewidth=1)
+# matplt.plot(ge.inner_vessel_contour[0],
+#             ge.inner_vessel_contour[1],
+#             c='k', linewidth=1)
 
-matplt.scatter(r, z, c='g')
+# matplt.scatter(r, z, c='g')
 
-matplt.xlabel("r, м")
-matplt.ylabel("z, м")
-matplt.xticks([0.1, 0.2, 0.3, 0.4, 0.5])
+# matplt.xlabel("r, м")
+# matplt.ylabel("z, м")
+# matplt.xticks([0.1, 0.2, 0.3, 0.4, 0.5])
 
-matplt.xlim([0.05, 0.55])
-matplt.ylim([-0.4, 0.4])
-matplt.grid(True)
-matplt.gca().set_aspect("equal")
-fu.save_contour_plot(PATH="SHOW_NOW", plot_title='')
+# matplt.xlim([0.05, 0.55])
+# matplt.ylim([-0.4, 0.4])
+# # matplt.grid(True)
+# matplt.gca().set_aspect("equal")
+# fu.save_contour_plot(PATH="SHOW_NOW", plot_title='')
 
-# fu.plot_error_vs_mesh_from_file('Errors', 'Spheromak_09052022_224524', [0, 1000], "SHOW_NOW")
+fu.plot_error_vs_mesh_from_file('Errors', 'Spheromak_09052022_224524', [0, 1000], "SHOW_NOW")
 
 # fu.shrink_contour('Data',
 #                   'Mephist_vessel_outer_surface',
