@@ -154,13 +154,13 @@ for i in range(len(dt)):
     current_disp_point = float(- p.disp_fact*p.vessel_inner_size
                                * p.t[i+1]/p.tm)
 
-    F = dot(grad(u)/r, grad(r_2*v))*dx \
-        + fu.M0*mu*sg / dt[i] * (u - u0)*r*v*dx \
-        - sum(point_sources[2:len(point_sources)])*r*v*dx(0) \
-        - source*r*v*dx(2)
     # F = dot(grad(u)/r, grad(r_2*v))*dx \
+    #     + fu.M0*mu*sg / dt[i] * (u - u0)*r*v*dx \
     #     - sum(point_sources[2:len(point_sources)])*r*v*dx(0) \
     #     - source*r*v*dx(2)
+    F = dot(grad(u)/r, grad(r_2*v))*dx \
+        - sum(point_sources[2:len(point_sources)])*r*v*dx(0) \
+        - source*r*v*dx(2)
 
     solve(F == 0, u, bc)
     # p.find_levels(u, step=p.step)
@@ -170,8 +170,7 @@ for i in range(len(dt)):
     fu.countour_plot_via_mesh(geometry, u, levels=p.levels,
                               PATH=PATH,
                               current_disp=p.R-current_disp_point,
-                              plt_vessel=True,
-                              plot_title=str(current_disp_point))
+                              plt_vessel=True)
     fu.countour_plot_via_mesh_nocolorbar(geometry, u, levels=p.levels,
                                          PATH="%s_nobar" % PATH,
                                          current_disp=p.R-current_disp_point,

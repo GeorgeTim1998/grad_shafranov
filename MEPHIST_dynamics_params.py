@@ -41,7 +41,7 @@ class Problem:
         self.disp_fact = 1  # множитель характерного смещения. Умножаем на радиус камеры
         self.tm = self.ts_fraction_tm * self.ts
 
-        self.num_of_t = 2+1  # число точек по времени +1 из-за 0
+        self.num_of_t = 40+1  # число точек по времени +1 из-за 0
         self.t = numpy.linspace(self.t0, self.t_max,
                                 self.num_of_t)  # Временной массив
 
