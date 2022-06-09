@@ -703,6 +703,9 @@ def countour_plot_via_mesh(geometry, u, levels, PATH,
             *geometry.mesh.coordinates().reshape((-1, 2)).T, triangles=geometry.mesh.cells())
         u_array = u.compute_vertex_values(geometry.mesh)
 
+        if do_plasma_centre == True:        
+            matplt.scatter(current_disp, 0, c='r', linewidth=2.5) if current_disp != 0 else 0
+            
         fig = matplt.tricontour(triang, u_array, levels)
         matplt.gca().set_aspect("equal")
         
@@ -726,10 +729,6 @@ def countour_plot_via_mesh(geometry, u, levels, PATH,
 
         if grid == True:
             matplt.grid(True)
-        
-        if do_plasma_centre == True:        
-            matplt.scatter(current_disp, 0, c='r', linewidth=2.5) if current_disp != 0 else 0
-
         
         if colorbar == True:
             matplt.colorbar(fig).set_label("\u03C8(r, z), Вб")
