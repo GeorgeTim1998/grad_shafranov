@@ -6,7 +6,7 @@ import matplotlib.pyplot as matplt
 from scipy.optimize import curve_fit
 
 FONT = {'family': "Times New Roman",
-        'size': 15}
+        'size': 22}
 matplt.rc('font', **FONT)
 params = {'mathtext.default': 'regular' }          
 matplt.rcParams.update(params)
@@ -59,4 +59,4 @@ def save_contour_plot(PATH, plot_title):
     print("3D countour plot saved to PATH: %s" % file_path)
     time.sleep(1)
     
-plot_error_vs_mesh_from_file('Errors', 'Soloviev_24012022_170000', [0, 1050], "SHOW_NOW")
+plot_error_vs_mesh_from_file('Errors', 'Spheromak_09052022_224524', [0, 1050], "SHOW_NOW")
