@@ -366,57 +366,6 @@ def Array_Expression(text_array):
 
     return expression_array
 
-
-def Contour_plot(r_area, z_area, u, path, f_expr, mesh, plot_title, contour_amount):
-    # avoid hitting points outside the domain
-    tol, point_num = 0.001, DEFAULT_MESH + 1
-    r = numpy.linspace(r_area[0] + tol, r_area[1] - tol, point_num)
-    z = numpy.linspace(z_area[0] + tol, z_area[1] -
-                       tol, int(point_num*mesh[1]/mesh[0]))
-
-    levels = numpy.linspace(-1e-3, 0, 21)
-    u_contour = numpy.zeros([len(z), len(r)])
-
-    for i in range(len(r)):
-        for j in range(len(z)):
-            u_contour[j, i] = u(r[i], z[j])
-
-    if u_contour.max() == u_contour.min():
-        print(colored("\u03C8 is the save everywhere!", 'red'))
-        print(colored('u_max = ', 'green') + str(u.vector()[:].max()))
-        print(colored('u_min = ', 'green') + str(u.vector()[:].min()))
-        print(colored('u_max - u_min = ', 'green') +
-              str(u.vector()[:].max() - u.vector()[:].min()))
-
-        logger.info("u_max = %s" % str(u.vector()[:].max()))
-        logger.info("u_min = %s" % str(u.vector()[:].min()))
-        logger.info("u_max - u_min = %s" %
-                    str(u.vector()[:].max() - u.vector()[:].min()))
-        return 0
-    else:
-        matplt.contour(r, z, u_contour, levels)
-        matplt.xlim(r_area[0], r_area[1])
-        matplt.ylim(z_area[0], z_area[1])
-
-        matplt.xlabel("r, м")
-        matplt.ylabel("z, м")
-        matplt.colorbar(format="%.0e").set_label("\u03C8(r, z), Вб")
-        matplt.gca().set_aspect("equal")
-
-    print(colored('u_max = ', 'green') + str(u.vector()[:].max()))
-    print(colored('u_min = ', 'green') + str(u.vector()[:].min()))
-    print(colored('u_max - u_min = ', 'green') +
-          str(u.vector()[:].max() - u.vector()[:].min()))
-
-    logger.info("u_max = %s" % str(u.vector()[:].max()))
-    logger.info("u_min = %s" % str(u.vector()[:].min()))
-    logger.info("u_max - u_min = %s" %
-                str(u.vector()[:].max() - u.vector()[:].min()))
-
-    Save_figure(f_expr, mesh[0], mesh[1], '', path, plot_title)
-    return 0
-
-
 def Mesh_to_xml():
     file = File('Mesh/file.xml')
 
@@ -733,11 +682,19 @@ def spheromak_pressure(psi_0, R, alpha):
     return L
 
 
-def countour_plot_via_mesh(geometry, u, levels, PATH, plot_title='',
+def countour_plot_via_mesh(geometry, u, levels, PATH,
+                           plot_title='',
                            current_disp=0,
-                           plt_vessel=False):
+                           do_plasma_centre = False,
+                           plt_vessel=False,
+                           xticks_array = [],
+                           yticks_array = [],
+                           grid = False,
+                           colorbar = False):
+
     u_min = u.vector()[:].min()
     u_max = u.vector()[:].max()
+    
     if u_min == u_max:
         logger.log_n_output(message="Trivial solution. u = %s" %
                             u_max, color='red')
@@ -746,6 +703,14 @@ def countour_plot_via_mesh(geometry, u, levels, PATH, plot_title='',
             *geometry.mesh.coordinates().reshape((-1, 2)).T, triangles=geometry.mesh.cells())
         u_array = u.compute_vertex_values(geometry.mesh)
 
+        fig = matplt.tricontour(triang, u_array, levels)
+        matplt.gca().set_aspect("equal")
+        
+        matplt.xlim(geometry.plot_domain[0], geometry.plot_domain[1])
+        matplt.ylim(geometry.plot_domain[2], geometry.plot_domain[3])
+        matplt.xlabel("r, м")
+        matplt.ylabel("z, м")
+        
         if plt_vessel == True:
             matplt.plot(geometry.outer_vessel_contour[0],
                         geometry.outer_vessel_contour[1],
@@ -753,19 +718,21 @@ def countour_plot_via_mesh(geometry, u, levels, PATH, plot_title='',
             matplt.plot(geometry.inner_vessel_contour[0],
                         geometry.inner_vessel_contour[1],
                         c='k', linewidth=1)
-        
-        matplt.xticks(numpy.array([0.1, 0.2, 0.3, 0.4, 0.5]))
-        matplt.grid(True)
-        fig = matplt.tricontour(triang, u_array, levels)
-        
-        matplt.scatter(current_disp, 0, c='r', linewidth=2.5) if current_disp != 0 else 0
+            
+        if xticks_array != []:
+            matplt.xticks(numpy.array(xticks_array))
+        if yticks_array != []:
+            matplt.xticks(numpy.array(yticks_array))
 
-        matplt.xlabel("r, м")
-        matplt.ylabel("z, м")
-        matplt.xlim([0, 0.55])
-        # matplt.ylim([-0.6, 0.6])
-        matplt.colorbar(fig).set_label("\u03C8(r, z), Вб")
-        matplt.gca().set_aspect("equal")
+        if grid == True:
+            matplt.grid(True)
+        
+        if do_plasma_centre == True:        
+            matplt.scatter(current_disp, 0, c='r', linewidth=2.5) if current_disp != 0 else 0
+
+        
+        if colorbar == True:
+            matplt.colorbar(fig).set_label("\u03C8(r, z), Вб")
 
         logger.log_n_output_colored_message(
             colored_message="u_max = ", color='green', white_message=str(u_max))
@@ -779,46 +746,48 @@ def countour_plot_via_mesh(geometry, u, levels, PATH, plot_title='',
 
         return u_max
     
-def countour_plot_via_mesh_nocolorbar(geometry, u, levels, PATH,
-                                      plot_title='', current_disp=0,
-                                      plt_vessel=False):
-    u_min = u.vector()[:].min()
-    u_max = u.vector()[:].max()
-    if u_min == u_max:
-        logger.log_n_output(message="Trivial solution. u = %s" %
-                            u_max, color='red')
-    else:
-        triang = tri.Triangulation(
-            *geometry.mesh.coordinates().reshape((-1, 2)).T, triangles=geometry.mesh.cells())
-        u_array = u.compute_vertex_values(geometry.mesh)
+# def countour_plot_via_mesh_nocolorbar(geometry, u, levels, PATH,
+#                                       plot_title='', current_disp=0,
+#                                       plt_vessel=False):
+#     u_min = u.vector()[:].min()
+#     u_max = u.vector()[:].max()
+#     if u_min == u_max:
+#         logger.log_n_output(message="Trivial solution. u = %s" %
+#                             u_max, color='red')
+#     else:
+#         triang = tri.Triangulation(
+#             *geometry.mesh.coordinates().reshape((-1, 2)).T, triangles=geometry.mesh.cells())
+#         u_array = u.compute_vertex_values(geometry.mesh)
 
-        if plt_vessel == True:
-            matplt.plot(geometry.outer_vessel_contour[0],
-                        geometry.outer_vessel_contour[1],
-                        c='k', linewidth=1)
-            matplt.plot(geometry.inner_vessel_contour[0],
-                        geometry.inner_vessel_contour[1],
-                        c='k', linewidth=1)
+#         if plt_vessel == True:
+#             matplt.plot(geometry.outer_vessel_contour[0],
+#                         geometry.outer_vessel_contour[1],
+#                         c='k', linewidth=1)
+#             matplt.plot(geometry.inner_vessel_contour[0],
+#                         geometry.inner_vessel_contour[1],
+#                         c='k', linewidth=1)
         
-        matplt.xticks(numpy.array([0.1, 0.2, 0.3, 0.4, 0.5]))
-        # matplt.xlim([geometry.domain_boundary_coordinates[0]])
-        matplt.grid(True)
-        matplt.tricontour(triang, u_array, levels)
+#         matplt.xticks(numpy.array([0.1, 0.2, 0.3, 0.4, 0.5]))
+#         # matplt.xlim([geometry.domain_boundary_coordinates[0]])
+#         matplt.grid(True)
+#         matplt.tricontour(triang, u_array, levels)
         
-        matplt.scatter(current_disp, 0, c='r', linewidth=2.5) if current_disp != 0 else 0
+#         matplt.scatter(current_disp, 0, c='r', linewidth=2.5) if current_disp != 0 else 0
 
-        matplt.xlabel("r, м")
-        matplt.ylabel("z, м")
-        matplt.gca().set_aspect("equal")
+#         matplt.xlabel("r, м")
+#         matplt.ylabel("z, м")
+#         matplt.gca().set_aspect("equal")
 
-        save_contour_plot(PATH, plot_title)
+#         save_contour_plot(PATH, plot_title)
 
-        return u_max
+#         return u_max
 
 
-def fenics_plot(problem, u, PATH, plot_title='', todostr=''):
+def fenics_plot(problem, u, PATH,
+                plot_title='',
+                colorbar=False):
     fig = plot(u)
-    if todostr == 'colorbar':
+    if colorbar == True:
         pylab.colorbar(fig).set_label("\u03C8(r, z), Вб")
 
     matplt.xlim(problem.domain_geometry[0], problem.domain_geometry[1])
@@ -837,15 +806,17 @@ def save_contour_plot(PATH, plot_title):
 
     path_my_file = 'Figures/%s/%s' % (PATH, time_title)
     file_path = "%s.png" % path_my_file
+    
     logger.info(file_path)
 
-    matplt.title(plot_title)  # titled figure for my self
-    # no title figure for reports
+    matplt.title(plot_title)
     matplt.savefig(file_path, dpi=DPI, bbox_inches="tight")
-    matplt.close()  # close created plot
+    matplt.close()
 
     print_colored_n_white(
-        colored_text="3D countour plot saved to PATH: ", color='green', white_text=file_path)
+        colored_text="3D countour plot saved to PATH: ",
+        color='green',
+        white_text=file_path)
     time.sleep(1)
 
 
