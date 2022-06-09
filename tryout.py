@@ -9,8 +9,12 @@ from geometry import Geometry
 import point_source_data as psd
 import numpy as np
 
+import Example.qwe as mod
+
+print(mod.a)
+
 # ge = Geometry()
-# ps = psd.PointSource(1)
+# ps = psd.PointSource(19oc v)
 # r = np.transpose(ps.r)[0]
 # z = np.transpose(ps.r)[1]
 
@@ -35,7 +39,7 @@ import numpy as np
 # matplt.gca().set_aspect("equal")
 # fu.save_contour_plot(PATH="SHOW_NOW", plot_title='')
 
-fu.plot_error_vs_mesh_from_file('Errors', 'Spheromak_09052022_224524', [0, 1000], "SHOW_NOW")
+# fu.plot_error_vs_mesh_from_file('Errors', 'Spheromak_09052022_224524', [0, 1000], "SHOW_NOW")
 
 # fu.shrink_contour('Data',
 #                   'Mephist_vessel_outer_surface',
