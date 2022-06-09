@@ -110,3 +110,8 @@ fu.countour_plot_via_mesh(geometry, interpolate(funcc, V), levels = p.levels, PA
 # Add my own module to anaconda path
 conda develop ./Example/qwe.py -n fenicsproject
 conda develop path/to/python/file -n fenicsproject
+
+# ideas for log
+>>> for i,j  in a.__dict__.items():
+...     print(i)
+...     print(j)
