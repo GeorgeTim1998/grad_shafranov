@@ -704,9 +704,9 @@ def countour_plot_via_mesh(geometry, u, levels, PATH,
         u_array = u.compute_vertex_values(geometry.mesh)
 
         if do_plasma_centre == True:        
-            matplt.scatter(current_disp, 0, c='r', linewidth=2.5) if current_disp != 0 else 0
+            matplt.scatter(current_disp, 0, c='r', linewidth=2.5, zorder=3) if current_disp != 0 else 0
             
-        fig = matplt.tricontour(triang, u_array, levels)
+        fig = matplt.tricontour(triang, u_array, levels, zorder=2)
         matplt.gca().set_aspect("equal")
         
         matplt.xlim(geometry.plot_domain[0], geometry.plot_domain[1])
@@ -717,10 +717,10 @@ def countour_plot_via_mesh(geometry, u, levels, PATH,
         if plt_vessel == True:
             matplt.plot(geometry.outer_vessel_contour[0],
                         geometry.outer_vessel_contour[1],
-                        c='k', linewidth=1)
+                        c='k', linewidth=1, zorder=1)
             matplt.plot(geometry.inner_vessel_contour[0],
                         geometry.inner_vessel_contour[1],
-                        c='k', linewidth=1)
+                        c='k', linewidth=1, zorder=1)
             
         if xticks_array != []:
             matplt.xticks(numpy.array(xticks_array))
