@@ -19,7 +19,7 @@ class Problem:
         self.centre_point = [0.2, 0]
         
         self.vessel_thickness = 0.05
-        self.vessel_inner_size = 0.02
+        self.plasma_step_length = 0.02
 
         # Physical properties of plasma and vacuum vessel
         self.VACUUM_PERMEABILITY = 1

@@ -145,11 +145,11 @@ for i in range(len(dt)):
 
     source = e.moving_point_source(
         R=p.R,
-        a=p.disp_fact*p.vessel_inner_size*p.t[i+1]/p.tm,
+        a=p.disp_fact*p.plasma_step_length*p.t[i+1]/p.tm,
         t=p.t[i+1],
         problem=p)
 
-    current_disp_point = float(- p.disp_fact*p.vessel_inner_size
+    current_disp_point = float(- p.disp_fact*p.plasma_step_length
                                * p.t[i+1]/p.tm)
 
     F = dot(grad(u)/r, grad(r_2*v))*dx \
