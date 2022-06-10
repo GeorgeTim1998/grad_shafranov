@@ -50,7 +50,7 @@ geometry.generate_mesh_in_domain(domain=domain, density=p.mesh_density)
 markers = MeshFunction("size_t", geometry.mesh,
                        geometry.mesh.topology().dim(), geometry.mesh.domains())
 
-# fu.fenics_plot(p, markers, PATH)
+fu.fenics_plot(p, markers, PATH)
 # fu.fenics_plot(p, markers, "%s_nobar" % PATH)
 
 # %% Step coefficients classes
@@ -131,6 +131,7 @@ fu.countour_plot_via_mesh(geometry, u0, levels=p.levels,
                           PATH=PATH,
                           current_disp=p.R,
                           plt_vessel=True,
+                          do_plasma_centre=True,
                           colorbar=True)
 # fu.fenics_plot(p, u0, PATH, colorbar=True)
 
@@ -151,13 +152,13 @@ for i in range(len(dt)):
     current_disp_point = float(- p.disp_fact*p.vessel_inner_size
                                * p.t[i+1]/p.tm)
 
-    # F = dot(grad(u)/r, grad(r_2*v))*dx \
-    #     + fu.M0*mu*sg / dt[i] * (u - u0)*r*v*dx \
-    #     - sum(point_sources[2:len(point_sources)])*r*v*dx(0) \
-    #     - source*r*v*dx(2)
     F = dot(grad(u)/r, grad(r_2*v))*dx \
+        + fu.M0*mu*sg / dt[i] * (u - u0)*r*v*dx \
         - sum(point_sources[2:len(point_sources)])*r*v*dx(0) \
         - source*r*v*dx(2)
+    # F = dot(grad(u)/r, grad(r_2*v))*dx \
+    #     - sum(point_sources[2:len(point_sources)])*r*v*dx(0) \
+    #     - source*r*v*dx(2)
 
     solve(F == 0, u, bc)
     # p.find_levels(u, step=p.step)
