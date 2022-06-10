@@ -8,12 +8,12 @@ from funcs import M0
 
 class Problem:
     def __init__(self):
-        self.domain_factors = numpy.array([1, 4, 4, 4])#numpy.array([1, 2, 1.5, 1.5])
+        self.domain_factors = numpy.array([1, 3, 2.5, 2.5])#numpy.array([1, 2, 1.5, 1.5])
         self.domain_geometry0 = numpy.array([0.05, 0.55, -0.4, 0.4])
         self.domain_geometry = self.domain_factors * self.domain_geometry0
         
         self.plot_domain = self.domain_geometry0
-        self.mesh_density = 350
+        self.mesh_density = 240
 
         # Vessel info
         self.centre_point = [0.2, 0]
@@ -27,7 +27,7 @@ class Problem:
         self.PLASMA_PERMEABILITY = 1
 
         self.VACUUM_CONDUCTIVITY = 0
-        self.VESSEL_CONDUCTIVITY = 1.4e6
+        self.VESSEL_CONDUCTIVITY = 1.4e7 #1.4e6
         self.PLASMA_CONDUCTIVITY = 0 #8e5 #1.4e5 # 9e6 - посчитанно с использованием montani2021: sigma ~ T**3/2
 
         # Problem params
@@ -45,7 +45,7 @@ class Problem:
         self.disp_fact = 1  # множитель характерного смещения. Умножаем на радиус камеры
         self.tm = self.ts_fraction_tm * 0.004410000000000001#self.ts
 
-        self.num_of_t = 40+1  # число точек по времени +1 из-за 0
+        self.num_of_t = 1  # число точек по времени +1 из-за 0
         self.t = numpy.linspace(self.t0, self.t_max,
                                 self.num_of_t)  # Временной массив
 
