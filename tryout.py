@@ -9,9 +9,28 @@ from geometry import Geometry
 import point_source_data as psd
 import numpy as np
 
-import Example.qwe as mod
+[x_inner, z_inner] = fu.read_from_file('Data', 'iter_outer1')
+[x_outer, z_outer] = fu.read_from_file('Data', 'iter_inner1')
+[x_FW, z_FW] = fu.read_from_file('Data', 'iter_FW1')
 
-print(mod.a)
+# z_inner = z_inner + 1 
+# z_outer = z_outer + 1 
+# z_FW = z_FW + 1 
+
+matplt.plot(x_inner, z_inner, c='r')
+matplt.plot(x_outer, z_outer, c='b')
+matplt.plot(x_FW, z_FW, c='k')
+
+matplt.gca().set_aspect("equal")
+matplt.xlim([0, 13])
+matplt.ylim([-9, 9])
+matplt.grid(True)
+
+matplt.show()
+
+# fu.write_data_to_file('Data', 'iter_outer1', [x_outer, z_outer])
+# fu.write_data_to_file('Data', 'iter_inner1', [x_inner, z_inner])
+# fu.write_data_to_file('Data', 'iter_FW1', [x_FW, z_FW])
 
 # ge = Geometry()
 # ps = psd.PointSource(19oc v)
@@ -125,6 +144,7 @@ print(mod.a)
 
 # matplt.plot(x, z)
 # matplt.grid(true)
+
 # matplt.gca().set_aspect("equal")
 # matplt.xlim(0, 0.6)
 # matplt.ylim(-0.4, 0.4)

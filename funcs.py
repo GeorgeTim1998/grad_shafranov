@@ -209,15 +209,15 @@ def Save_figure(f_expr, mesh_r, mesh_z, addition, PATH, plot_title):
         colored_text="3D countour plot saved to PATH: ", color='green', white_text=file_path)
 
 
-def write_data_to_file(folder_name, file_name, x, y, z=[]):
-    file_path = "%s/%s.txt" % (folder_name, file_name)
-    file = open(file_path, "r")  # append write to file mode
+# def write_data_to_file(folder_name, file_name, x, y, z=[]):
+#     file_path = "%s/%s.txt" % (folder_name, file_name)
+#     file = open(file_path, "r")  # append write to file mode
+    
+#     text = "%s,%s,%s\n" % (x, y, z)
+#     file.write(text)
+#     file.close()
 
-    text = "%s,%s,%s\n" % (x, y, z)
-    file.write(text)
-    file.close()
-
-    print(colored("Data saved to PATH: %s" % file_path, 'green'))
+#     print(colored("Data saved to PATH: %s" % file_path, 'green'))
 
 
 def Write2file_umax_vs_square_size(mesh_r, mesh_z, u_max, default_mesh_size):
@@ -986,4 +986,11 @@ def read_from_file(folder_name, file_name):
     z = numpy.array(get_column(data, 1))
 
     return x, z    
-    
+
+def write_data_to_file(folder_name, file_name, data):
+    if len(data) == 2:
+        data = numpy.transpose(data)
+    file_path = "%s/%s.txt" % (folder_name, file_name)
+    with open(file_path, 'w') as file:
+        for line in data:
+            file.write("%s,%s\n" % (line[0], line[1]))
