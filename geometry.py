@@ -133,6 +133,48 @@ class Geometry:
         
         return self.domain
     
+    def inner_iter_vessel(self):
+        [x, z] = self.__read_data_from_file('iter_FW2')
+        
+        point_list = []
+
+        for i in range(len(x)):
+            point_list.append(Point(x[i], z[i]))
+            
+        self.domain = mshr.Polygon(point_list)
+        
+        self.inner_vessel_contour = [x, z]
+        
+        return self.domain
+    
+    def outer_iter_vessel(self):
+        [x, z] = self.__read_data_from_file('iter_outer2')
+        
+        point_list = []
+
+        for i in range(len(x)):
+            point_list.append(Point(x[i], z[i]))
+            
+        self.domain = mshr.Polygon(point_list)
+        
+        self.outer_vessel_contour = [x, z]
+        
+        return self.domain
+    
+    def iter_FW(self):
+        [x, z] = self.__read_data_from_file('iter_FW2')
+        
+        point_list = []
+
+        for i in range(len(x)):
+            point_list.append(Point(x[i], z[i]))
+            
+        self.domain = mshr.Polygon(point_list)
+        
+        self.outer_vessel_contour = [x, z]
+        
+        return self.domain
+    
     def __get_column(self, matrix, col):
         return [row[col] for row in matrix]
     
