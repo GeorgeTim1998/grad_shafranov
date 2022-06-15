@@ -784,6 +784,7 @@ def countour_plot_via_mesh(geometry, u, levels, PATH,
 
 def fenics_plot(problem, u, PATH,
                 plot_title='',
+                xticks=[],
                 colorbar=False):
     fig = plot(u)
     if colorbar == True:
@@ -791,7 +792,9 @@ def fenics_plot(problem, u, PATH,
 
     matplt.xlim(problem.domain_geometry[0], problem.domain_geometry[1])
     matplt.ylim(problem.domain_geometry[2], problem.domain_geometry[3])
-    matplt.xticks(numpy.array([0.1, 0.2, 0.3, 0.4, 0.5]))
+    
+    if xticks != []:
+        matplt.xticks(numpy.array(xticks))
     
     matplt.gca().set_aspect("equal")
     matplt.xlabel("r, м")
