@@ -1,4 +1,4 @@
-# import mshr
+import mshr
 import fenics as fn
 
 import numpy as np
@@ -9,24 +9,49 @@ from geometry import Geometry
 import point_source_data as psd
 import numpy as np
 
-[x_inner, z_inner] = fu.read_from_file('Data', 'iter_outer1')
-[x_outer, z_outer] = fu.read_from_file('Data', 'iter_inner1')
-[x_FW, z_FW] = fu.read_from_file('Data', 'iter_FW1')
+[x_inner, z_inner] = fu.read_from_file('Data', 'iter_outer2')
+[x_outer, z_outer] = fu.read_from_file('Data', 'iter_inner2')
+[x_FW, z_FW] = fu.read_from_file('Data', 'iter_FW2')
 
-# z_inner = z_inner + 1 
-# z_outer = z_outer + 1 
-# z_FW = z_FW + 1 
+# x_inner = np.flip(x_inner)
+# z_inner = np.flip(z_inner)
 
-matplt.plot(x_inner, z_inner, c='r')
-matplt.plot(x_outer, z_outer, c='b')
-matplt.plot(x_FW, z_FW, c='k')
+# x_outer = np.flip(x_outer)
+# z_outer = np.flip(z_outer)
 
-matplt.gca().set_aspect("equal")
-matplt.xlim([0, 13])
-matplt.ylim([-9, 9])
-matplt.grid(True)
+# x_FW = np.flip(x_FW)
+# z_FW = np.flip(z_FW)
 
+# fu.write_data_to_file('Data', 'iter_outer2', data=[x_outer, z_outer])
+# fu.write_data_to_file('Data', 'iter_inner2', data=[x_inner, z_inner])
+# fu.write_data_to_file('Data', 'iter_FW2', data=[x_FW, z_FW])
+
+point_list = []
+for i in range(len(x_FW)):
+    point_list.append(fn.Point(x_FW[i], z_FW[i]))
+
+domain = mshr.Polygon(point_list)
+mesh = mshr.generate_mesh(domain, 28)
+fn.plot(mesh)
 matplt.show()
+
+
+
+print('done')
+# # z_inner = z_inner + 1 
+# # z_outer = z_outer + 1 
+# # z_FW = z_FW + 1 
+
+# matplt.plot(x_inner, z_inner, c='r')
+# matplt.plot(x_outer, z_outer, c='b')
+# matplt.plot(x_FW, z_FW, c='k')
+
+# matplt.gca().set_aspect("equal")
+# matplt.xlim([0, 13])
+# matplt.ylim([-9, 9])
+# matplt.grid(True)
+
+# matplt.show()
 
 # fu.write_data_to_file('Data', 'iter_outer1', [x_outer, z_outer])
 # fu.write_data_to_file('Data', 'iter_inner1', [x_inner, z_inner])
