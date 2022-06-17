@@ -129,7 +129,7 @@ p.find_levels(u0, step=p.step)
 fu.What_time_is_it(t0, 'Initial problem solved')
 fu.countour_plot_via_mesh(geometry, u0, levels=p.levels,
                           PATH=PATH,
-                          current_disp=p.R,
+                          current_disp=[p.disp_x[0], p.disp_z[0]],
                           plt_vessel=True,
                           do_plasma_centre=True,
                           colorbar=True)
@@ -149,9 +149,6 @@ for i in range(len(dt)):
         t=p.t[i+1],
         problem=p)
 
-    current_disp_point = float(- p.disp_fact*p.plasma_step_length
-                               * p.t[i+1]/p.tm)
-
     F = dot(grad(u)/r, grad(r_2*v))*dx \
         + fu.M0*mu*sg / dt[i] * (u - u0)*r*v*dx \
         - sum(point_sources[2:len(point_sources)])*r*v*dx(0) \
@@ -167,7 +164,7 @@ for i in range(len(dt)):
     # p.find_levels_with_exponent(u, exponent=p.exponent, step=p.step)
     fu.countour_plot_via_mesh(geometry, u, levels=p.levels,
                               PATH=PATH,
-                              current_disp=p.R-current_disp_point,
+                              current_disp=[p.disp_x[i+1], p.disp_z[i+1]],
                               plt_vessel=True,
                               do_plasma_centre=True,
                               colorbar=True)

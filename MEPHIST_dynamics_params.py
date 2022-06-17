@@ -17,6 +17,7 @@ class Problem:
 
         # Vessel info
         self.centre_point = [0.2, 0]
+        self.centre_point_final = [0.3, 0]
         
         self.vessel_thickness = 0.05
         self.plasma_step_length = 0.02
@@ -47,6 +48,11 @@ class Problem:
 
         self.num_of_t = 35+1  # число точек по времени +1 из-за 0
         self.t = numpy.linspace(self.t0, self.t_max,
+                                self.num_of_t)  # Временной массив
+        
+        self.disp_x = numpy.linspace(self.centre_point[0], self.centre_point_final[0],
+                                self.num_of_t)  # Временной массив
+        self.disp_z = numpy.linspace(self.centre_point[1], self.centre_point_final[1],
                                 self.num_of_t)  # Временной массив
 
         # Характерное время смещения. Вычисляется как часть скинового времени
