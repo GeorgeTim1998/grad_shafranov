@@ -143,6 +143,8 @@ class Geometry:
             
         self.domain = mshr.Polygon(point_list)
         
+        x = numpy.append(x, x[0])
+        z = numpy.append(z, z[0])
         self.inner_vessel_contour = [x, z]
         
         return self.domain
@@ -157,6 +159,8 @@ class Geometry:
             
         self.domain = mshr.Polygon(point_list)
         
+        x = numpy.append(x, x[0])
+        z = numpy.append(z, z[0])
         self.outer_vessel_contour = [x, z]
         
         return self.domain
@@ -171,6 +175,8 @@ class Geometry:
             
         self.domain = mshr.Polygon(point_list)
         
+        x = numpy.append(x, x[0])
+        z = numpy.append(z, z[0])
         self.inner_vessel_contour = [x, z]
         
         return self.domain
