@@ -32,16 +32,19 @@ e = Expressions()
 
 # %% Domain and mesh definition
 domain = geometry.rectangle_domain(
-    area=[p.domain_geometry[0], p.domain_geometry[1], p.domain_geometry[2], p.domain_geometry[3]])
+    area=[p.domain_geometry[0],
+          p.domain_geometry[1],
+          p.domain_geometry[2],
+          p.domain_geometry[3]])
 
 geometry.register_plot_domain(p.plot_domain)
-mephist_inner_surface = geometry.iter_FW()
-mephist_outer_surface = geometry.outer_iter_vessel()
+iter_inner_surface = geometry.iter_FW()
+iter_outer_surface = geometry.outer_iter_vessel()
 
-vacuum_vessel = mephist_outer_surface - mephist_inner_surface
+vacuum_vessel = iter_outer_surface - iter_inner_surface
 
 domain.set_subdomain(1, vacuum_vessel)  # vessel
-domain.set_subdomain(2, mephist_inner_surface)  # plasma
+domain.set_subdomain(2, iter_inner_surface)  # plasma
 
 geometry.generate_mesh_in_domain(domain=domain, density=p.mesh_density)
 
@@ -50,7 +53,7 @@ geometry.generate_mesh_in_domain(domain=domain, density=p.mesh_density)
 markers = MeshFunction("size_t", geometry.mesh,
                        geometry.mesh.topology().dim(), geometry.mesh.domains())
 
-fu.fenics_plot(p, markers, PATH)
+# fu.fenics_plot(p, markers, PATH)
 # fu.fenics_plot(p, markers, "%s_nobar" % PATH)
 
 # %% Step coefficients classes
