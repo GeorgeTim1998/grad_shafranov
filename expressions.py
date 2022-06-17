@@ -123,7 +123,6 @@ class Expressions:
         return Expression(f_text, degree=2)
     
     def iter_point_source(self,
-                          r0,
                           problem,
                           a=[0, 0]):
         x = sympy.symbols('x[0]')
@@ -135,7 +134,7 @@ class Expressions:
         logger.info(message="sigma = %.3e" % sigma)
         logger.info(message="j0 = I/(pi*sigma**2) = %.3e" % j0)
 
-        f_expr = M0*x*j0 * sympy.exp(-((x-r0[0]-a[0])**2 + (z-r0[1]-a[1])**2) / sigma**2)
+        f_expr = M0*x*j0 * sympy.exp(-((x-a[0])**2 + (z-a[1])**2) / sigma**2)
 
         f_text = sympy.printing.ccode(f_expr)
         f_text = f_text.replace('exp', 'std::exp')
