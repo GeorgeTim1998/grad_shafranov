@@ -19,10 +19,10 @@ from ITER_params import Problem
 
 # %% Pre-programm stuff
 t0 = time.time()
-current_pyfile = "\n\n---------MEPHIST_dynamics.py---------"
+current_pyfile = "\n\n---------ITER.py---------"
 logger.log_n_output("%s" % current_pyfile, 'red')
 fu.print_colored("Date_Time is: %s" % fu.Time_name(), 'cyan')
-PATH = 'MEPHIST_dynamics'
+PATH = 'ITER'
 
 # %% Needed objects and contour levels
 boundary_conditions = BoundaryConditions()
@@ -48,13 +48,14 @@ domain.set_subdomain(2, iter_inner_surface)  # plasma
 
 geometry.generate_mesh_in_domain(domain=domain, density=p.mesh_density)
 
-# fu.fenics_plot(geometry.mesh, PATH, '', '')
+# fu.fenics_plot(p, geometry.mesh, PATH, limits=1)
 
 markers = MeshFunction("size_t", geometry.mesh,
                        geometry.mesh.topology().dim(), geometry.mesh.domains())
 
-# fu.fenics_plot(p, markers, PATH)
-# fu.fenics_plot(p, markers, "%s_nobar" % PATH)
+fu.fenics_plot(p, markers, PATH)
+fu.fenics_plot(p, markers, "%s_nobar" % PATH)
+
 
 # %% Step coefficients classes
 
@@ -99,12 +100,6 @@ V = FunctionSpace(geometry.mesh, 'P', 1)  # standard triangular mesh
 mu = Permeability(geometry.mesh, degree=0)
 sg = Conductivity(geometry.mesh, degree=0)
 
-# fu.fenics_plot(interpolate(sg, V), PATH, '', 'colorbar')
-# fu.countour_plot_via_mesh(geometry, interpolate(
-#     mu, V), levels=p.levels, PATH=PATH, plot_title='Permeability')
-# fu.countour_plot_via_mesh(geometry, interpolate(
-#     sg, V), levels=p.levels, PATH=PATH, plot_title='Conductivity')
-
 u = TrialFunction(V)  # u must be defined as function before expression def
 v = TestFunction(V)
 
@@ -120,23 +115,33 @@ point_sources = fu.Array_Expression(fu.ArrayOfPointSources(psd.PointSource(1)))
 dx = Measure('dx', domain=geometry.mesh, subdomain_data=markers)
 
 # %% Solve stationary
-source = e.point_source_t0(R=p.centre_point[0], problem=p)
+source = e.iter_point_source(problem=p, a=[p.disp_x[0], p.disp_z[0]])
 a = dot(grad(u)/r, grad(r_2*v))*dx
-L = sum(point_sources[2:len(point_sources)])*r*v*dx(0) + \
-    source*r*v*dx(2)  # !!!
+L = source*r*v*dx(2)  # !!!
 
 u0 = Function(V)
 solve(a == L, u0, bc)
-p.find_levels(u0, step=p.step)
+# p.find_levels(u0, step=p.step)
 
 fu.What_time_is_it(t0, 'Initial problem solved')
 fu.countour_plot_via_mesh(geometry, u0, levels=p.levels,
                           PATH=PATH,
-                          current_disp=p.R,
+                          current_disp=p.centre_point,
                           plt_vessel=True,
                           do_plasma_centre=True,
-                          colorbar=True)
-# fu.fenics_plot(p, u0, PATH, colorbar=True)
+                          colorbar=True,
+                          xticks_array=p.xticks,
+                          grid=True)
+fu.What_time_is_it(t0, 'Plot with bar plotted')
+fu.countour_plot_via_mesh(geometry, u0, levels=p.levels,
+                          PATH=PATH+'_nobar',
+                          current_disp=p.centre_point,
+                          plt_vessel=True,
+                          do_plasma_centre=True,
+                          colorbar=False,
+                          xticks_array=p.xticks,
+                          grid=True)
+fu.What_time_is_it(t0, 'Plot with no bar plotted')
 
 dt = numpy.diff(p.t)
 for i in range(len(dt)):
@@ -146,14 +151,8 @@ for i in range(len(dt)):
     u = Function(V)
     v = TestFunction(V)
 
-    source = e.moving_point_source(
-        R=p.R,
-        a=p.disp_fact*p.plasma_step_length*p.t[i+1]/p.tm,
-        t=p.t[i+1],
-        problem=p)
-
-    current_disp_point = float(- p.disp_fact*p.plasma_step_length
-                               * p.t[i+1]/p.tm)
+    source = e.iter_point_source(problem=p,
+                                 a=[p.disp_x[i+1], p.disp_z[i+1]])
 
     F = dot(grad(u)/r, grad(r_2*v))*dx \
         + fu.M0*mu*sg / dt[i] * (u - u0)*r*v*dx \
@@ -169,11 +168,21 @@ for i in range(len(dt)):
     fu.What_time_is_it(t0, "Problem solved for t = %f" % p.t[i+1])
     # p.find_levels_with_exponent(u, exponent=p.exponent, step=p.step)
     fu.countour_plot_via_mesh(geometry, u, levels=p.levels,
-                              PATH=PATH,
-                              current_disp=p.R-current_disp_point,
+                              PATH=PATH+'_nobar',
+                              current_disp=[p.disp_x[i+1], p.disp_z[i+1]],
                               plt_vessel=True,
                               do_plasma_centre=True,
-                              colorbar=True)
+                              colorbar=False,
+                              grid=True,
+                              xticks_array=p.xticks)
+    fu.countour_plot_via_mesh(geometry, u, levels=p.levels,
+                              PATH=PATH,
+                              current_disp=[p.disp_x[i+1], p.disp_z[i+1]],
+                              plt_vessel=True,
+                              do_plasma_centre=True,
+                              colorbar=True,
+                              grid=True,
+                              xticks_array=p.xticks)
 
     u0 = u
 
