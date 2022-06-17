@@ -684,7 +684,7 @@ def spheromak_pressure(psi_0, R, alpha):
 
 def countour_plot_via_mesh(geometry, u, levels, PATH,
                            plot_title='',
-                           current_disp=0,
+                           current_disp=[0, 0],
                            do_plasma_centre = False,
                            plt_vessel=False,
                            xticks_array = [],
@@ -704,7 +704,7 @@ def countour_plot_via_mesh(geometry, u, levels, PATH,
         u_array = u.compute_vertex_values(geometry.mesh)
 
         if do_plasma_centre == True:        
-            matplt.scatter(current_disp, 0, c='r', linewidth=2.5, zorder=3) if current_disp != 0 else 0
+            matplt.scatter(current_disp[0], current_disp[1], c='r', linewidth=2.5, zorder=3) if current_disp != 0 else 0
             
         fig = matplt.tricontour(triang, u_array, levels, zorder=2)
         matplt.gca().set_aspect("equal")
@@ -786,15 +786,20 @@ def fenics_plot(problem, u, PATH,
                 plot_title='',
                 xticks=[],
                 yticks=[],
-                colorbar=False):
+                limits=0,
+                colorbar=False,
+                show=False):
     # fig = plot(u, linewidth=0.5)
     fig = plot(u)
     if colorbar == True:
         pylab.colorbar(fig).set_label("\u03C8(r, z), Вб")
 
-    matplt.xlim(problem.domain_geometry0[0], problem.domain_geometry0[1])
-    # matplt.ylim(0, problem.domain_geometry[3])
-    matplt.ylim(problem.domain_geometry0[2], problem.domain_geometry0[3])
+    if limits == 0:
+        matplt.xlim(problem.domain_geometry0[0], problem.domain_geometry0[1])
+        matplt.ylim(problem.domain_geometry0[2], problem.domain_geometry0[3])
+    else:
+        matplt.xlim(problem.domain_geometry[0], problem.domain_geometry[1])
+        matplt.ylim(problem.domain_geometry[2], problem.domain_geometry[3])
     
     if xticks != []:
         matplt.xticks(numpy.array(xticks))
@@ -806,6 +811,9 @@ def fenics_plot(problem, u, PATH,
     matplt.xlabel("r, м")
     matplt.ylabel("z, м")
     matplt.grid(True)
+    
+    if show != False:
+        matplt.show()
     save_contour_plot(PATH, plot_title)
 
 
