@@ -171,7 +171,7 @@ class Geometry:
             
         self.domain = mshr.Polygon(point_list)
         
-        self.outer_vessel_contour = [x, z]
+        self.inner_vessel_contour = [x, z]
         
         return self.domain
     

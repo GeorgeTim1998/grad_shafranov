@@ -792,9 +792,9 @@ def fenics_plot(problem, u, PATH,
     if colorbar == True:
         pylab.colorbar(fig).set_label("\u03C8(r, z), Вб")
 
-    matplt.xlim(problem.domain_geometry[0], problem.domain_geometry[1])
-    matplt.ylim(0, problem.domain_geometry[3])
-    # matplt.ylim(problem.domain_geometry[2], problem.domain_geometry[3])
+    matplt.xlim(problem.domain_geometry0[0], problem.domain_geometry0[1])
+    # matplt.ylim(0, problem.domain_geometry[3])
+    matplt.ylim(problem.domain_geometry0[2], problem.domain_geometry0[3])
     
     if xticks != []:
         matplt.xticks(numpy.array(xticks))
