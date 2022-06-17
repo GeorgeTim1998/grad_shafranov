@@ -45,7 +45,7 @@ domain.set_subdomain(2, mephist_inner_surface)  # plasma
 
 geometry.generate_mesh_in_domain(domain=domain, density=p.mesh_density)
 
-# fu.fenics_plot(geometry.mesh, PATH, '', '')
+fu.fenics_plot(p, geometry.mesh, PATH)
 
 markers = MeshFunction("size_t", geometry.mesh,
                        geometry.mesh.topology().dim(), geometry.mesh.domains())
