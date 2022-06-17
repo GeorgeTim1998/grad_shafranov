@@ -1,0 +1,9 @@
+{
+    "vessel_thickness": 1,
+    "plasma_size": 1,
+    "conductivity": {
+        "vacuum": 0,
+        "vessel": 1e6,
+        "plasma": 0
+    }
+}
