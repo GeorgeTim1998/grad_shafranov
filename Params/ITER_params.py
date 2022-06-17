@@ -22,8 +22,7 @@ class Problem:
         self.I = 15e6
         self.centre_point = [6.5, 0.75]
         self.centre_point_final = [5, 3.5]
-        self.plasma_size = 1
-        self.plasma_step_length = 0.5
+        self.plasma_size = 0.5
 
         # Physical properties of plasma and vacuum vessel
         self.VACUUM_PERMEABILITY = 1
@@ -35,7 +34,6 @@ class Problem:
         self.PLASMA_CONDUCTIVITY = 0 #8e5 #1.4e5 # 9e6 - посчитанно с использованием montani2021: sigma ~ T**3/2
 
         # Problem params
-
         self.ts = M0 \
             * self.VESSEL_PERMEABILITY * self.VESSEL_CONDUCTIVITY \
             * (self.vessel_thickness)**2 # vessel skin time
@@ -45,7 +43,6 @@ class Problem:
         self.ts_fraction_tm = 0.1
         self.t_max = self.ts_fraction * self.ts
 
-        # self.disp_fact = 1  # множитель характерного смещения. Умножаем на радиус камеры
         self.tm = self.ts # characteristic time of plasma displacement
 
         self.num_of_t = 5+1  # число точек по времени +1 из-за 0
