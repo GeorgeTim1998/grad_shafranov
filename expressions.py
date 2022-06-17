@@ -128,7 +128,7 @@ class Expressions:
         x = sympy.symbols('x[0]')
         z = sympy.symbols('x[1]')
 
-        sigma = problem.plasma_step_length
+        sigma = problem.plasma_size
         j0 = problem.I/(math.pi*sigma**2)
         
         logger.info(message="sigma = %.3e" % sigma)
