@@ -30,7 +30,7 @@ class Problem:
         self.PLASMA_PERMEABILITY = 1
 
         self.VACUUM_CONDUCTIVITY = 0
-        self.VESSEL_CONDUCTIVITY = 1.4e7 #1.4e6
+        self.VESSEL_CONDUCTIVITY = 8.9e6 #1.4e6
         self.PLASMA_CONDUCTIVITY = 0 #8e5 #1.4e5 # 9e6 - посчитанно с использованием montani2021: sigma ~ T**3/2
 
         # Problem params
@@ -41,11 +41,11 @@ class Problem:
         self.t0 = 0
         self.ts_fraction = 0.5
         self.ts_fraction_tm = 0.1
-        self.t_max = self.ts_fraction * self.ts
+        self.t_max = 30e-3 #ms from article  #self.ts_fraction * self.ts
 
-        self.tm = self.ts # characteristic time of plasma displacement
+        self.tm = self.ts_fraction_tm * self.t_max # characteristic time of plasma displacement
 
-        self.num_of_t = 5+1  # число точек по времени +1 из-за 0
+        self.num_of_t = 39+1  # число точек по времени +1 из-за 0
         self.t = numpy.linspace(self.t0, self.t_max,
                                 self.num_of_t)  # Временной массив
 
@@ -63,27 +63,49 @@ class Problem:
         self.step = 0.1  # Шаг для линий уровня. Если максимум ф-ии 1.2e-3, то шаг будет self.step*e-3
         self.amount_of_levels = 20  # for a method below! (find_levels)
         self.xticks = numpy.linspace(2, 12, 6)
+        self.shrink_step = 2
+        self.shrink = True
 
         self.__log_problem_params()
 
-    def find_levels(self, u, step):  # Find levels for plotting
+    def find_levels(self, u, step,
+                    shrink=False,
+                    shrink_step=0):  # Find levels for plotting
         u_min = u.vector()[:].min()
         u_max = u.vector()[:].max()
 
-        exponent = math.ceil(
-            abs(math.log10(abs(u_max))))# u_max
+        if u_max <= 1:
+            exponent = math.ceil(
+                abs(math.log10(abs(u_max))))# u_max
+            u_max = step \
+                * pow(10, -exponent) \
+                * int((u_max) / (step*pow(10, -exponent)))
+            u_min = step \
+                * pow(10, -exponent) \
+                * int((u_min) / (step*pow(10, -exponent)))
+            self.levels = numpy.linspace(u_min, u_max, int(
+                (u_max-u_min) / (step*pow(10, -exponent))) + 1
+            )
+        else:
+            exponent = math.floor(
+                abs(math.log10(abs(u_max))))# u_max
+            u_max = step \
+                * pow(10, exponent) \
+                * int((u_max) / (step*pow(10, exponent)))
+            u_min = step \
+                * pow(10, exponent) \
+                * int((u_min) / (step*pow(10, exponent)))
+            self.levels = numpy.linspace(u_min, u_max, int(
+                (u_max-u_min) / (step*pow(10, exponent))) + 1
+            )
+            
+        if shrink == True:
+            self.levels = self.levels[0:len(self.levels):shrink_step]
         # Найти ближайшее снизу к u_max число, чтобы отличие было максимум на величину шага
+        return 0
 
-        u_max = step \
-            * pow(10, -exponent) \
-            * int((u_max) / (step*pow(10, -exponent)))
-        u_min = step \
-            * pow(10, -exponent) \
-            * int((u_min) / (step*pow(10, -exponent)))
 
-        self.levels = numpy.linspace(u_min, u_max, int(
-            (u_max-u_min) / (step*pow(10, -exponent))) + 1
-        )
+
         
     def find_levels_with_exponent(self, u, exponent, step):
         u_min = 0

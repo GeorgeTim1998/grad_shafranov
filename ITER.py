@@ -29,6 +29,7 @@ boundary_conditions = BoundaryConditions()
 geometry = Geometry()
 p = Problem()
 e = Expressions()
+fu.What_time_is_it(t0, 'Problem params logged')
 
 # %% Domain and mesh definition
 domain = geometry.rectangle_domain(
@@ -55,7 +56,7 @@ markers = MeshFunction("size_t", geometry.mesh,
 
 fu.fenics_plot(p, markers, PATH)
 fu.fenics_plot(p, markers, "%s_nobar" % PATH)
-
+fu.What_time_is_it(t0, 'Markers of domains plotted')
 
 # %% Step coefficients classes
 
@@ -110,8 +111,6 @@ bc = DirichletBC(V, u_D, fu.Dirichlet_boundary)
 # %% Solve
 [r_2, r] = geometry.operator_weights(V)
 
-point_sources = fu.Array_Expression(fu.ArrayOfPointSources(psd.PointSource(1)))
-
 dx = Measure('dx', domain=geometry.mesh, subdomain_data=markers)
 
 # %% Solve stationary
@@ -121,7 +120,9 @@ L = source*r*v*dx(2)  # !!!
 
 u0 = Function(V)
 solve(a == L, u0, bc)
-# p.find_levels(u0, step=p.step)
+p.find_levels(u0, step=p.step,
+              shrink=p.shrink,
+              shrink_step=p.shrink_step)
 
 fu.What_time_is_it(t0, 'Initial problem solved')
 fu.countour_plot_via_mesh(geometry, u0, levels=p.levels,
@@ -154,13 +155,11 @@ for i in range(len(dt)):
     source = e.iter_point_source(problem=p,
                                  a=[p.disp_x[i+1], p.disp_z[i+1]])
 
-    F = dot(grad(u)/r, grad(r_2*v))*dx \
-        + fu.M0*mu*sg / dt[i] * (u - u0)*r*v*dx \
-        - sum(point_sources[2:len(point_sources)])*r*v*dx(0) \
-        - source*r*v*dx(2)
     # F = dot(grad(u)/r, grad(r_2*v))*dx \
-    #     - sum(point_sources[2:len(point_sources)])*r*v*dx(0) \
+    #     + fu.M0*mu*sg / dt[i] * (u - u0)*r*v*dx \
     #     - source*r*v*dx(2)
+    F = dot(grad(u)/r, grad(r_2*v))*dx \
+        - source*r*v*dx(2)
 
     solve(F == 0, u, bc)
     # p.find_levels(u, step=p.step)
