@@ -20,7 +20,7 @@ class Problem:
         self.centre_point_final = [0.3, 0]
         
         self.vessel_thickness = 0.05
-        self.plasma_step_length = 0.02
+        self.plasma_size = 0.02
 
         # Physical properties of plasma and vacuum vessel
         self.VACUUM_PERMEABILITY = 1
@@ -28,7 +28,7 @@ class Problem:
         self.PLASMA_PERMEABILITY = 1
 
         self.VACUUM_CONDUCTIVITY = 0
-        self.VESSEL_CONDUCTIVITY = 1.4e7 #1.4e6
+        self.VESSEL_CONDUCTIVITY = 1.4e6 #1.4e7
         self.PLASMA_CONDUCTIVITY = 0 #8e5 #1.4e5 # 9e6 - посчитанно с использованием montani2021: sigma ~ T**3/2
 
         # Problem params
@@ -46,10 +46,11 @@ class Problem:
         self.disp_fact = 1  # множитель характерного смещения. Умножаем на радиус камеры
         self.tm = self.ts_fraction_tm * 0.004410000000000001#self.ts
 
-        self.num_of_t = 35+1  # число точек по времени +1 из-за 0
+        self.num_of_t = 39+1  # число точек по времени +1 из-за 0
         self.t = numpy.linspace(self.t0, self.t_max,
                                 self.num_of_t)  # Временной массив
         
+        self.I = M.MEPhIST().I*0.1
         self.disp_x = numpy.linspace(self.centre_point[0], self.centre_point_final[0],
                                 self.num_of_t)  # Временной массив
         self.disp_z = numpy.linspace(self.centre_point[1], self.centre_point_final[1],
@@ -63,6 +64,7 @@ class Problem:
         self.levels = 50
         self.amount_of_levels = 20  # for a method below! (find_levels)
         self.step = 0.1  # Шаг для линий уровня. Если максимум ф-ии 1.2e-3, то шаг будет self.step*e-3
+        self.xticks = numpy.array([0.1, 0.2, 0.3, 0.4, 0.5])
 
         self.__log_problem_params()
 
@@ -99,54 +101,11 @@ class Problem:
         )
         
     def __log_problem_params(self):
-        logger.info(message="t = linspace(%.4e, %.4e, %d)" %
-                    (self.t0, self.t_max, int(self.num_of_t)))
-        logger.log_n_output_colored_message(
-            colored_message="ts = ",
-            color='green',
-            white_message=str(self.ts)
-        )
-        logger.log_n_output_colored_message(
-            colored_message="tm = ",
-            color='green',
-            white_message=str(self.tm)
-        )
-        logger.log_n_output_colored_message(
-            colored_message="ts_fract_t_max = ",
-            color='green',
-            white_message=str(self.ts_fraction)
-        )
-        logger.log_n_output_colored_message(
-            colored_message="ts_fraction_tm = ",
-            color='green',
-            white_message=str(self.ts_fraction_tm)
-        )
-
-        logger.log_n_output_colored_message(
-            colored_message="VACUUM_PERMEABILITY = ", 
-            color='green', 
-            white_message=str(self.VACUUM_PERMEABILITY))
-        logger.log_n_output_colored_message(
-            colored_message="VESSEL_PERMEABILITY = ", 
-            color='green', 
-            white_message=str(self.VESSEL_PERMEABILITY))
-        logger.log_n_output_colored_message(
-            colored_message="PLASMA_PERMEABILITY = ", 
-            color='green', 
-            white_message=str(self.PLASMA_PERMEABILITY))
-
-        logger.log_n_output_colored_message(
-            colored_message="VACUUM_CONDUCTIVITY = ", 
-            color='green', 
-            white_message=str(self.VACUUM_CONDUCTIVITY))
-        logger.log_n_output_colored_message(
-            colored_message="VESSEL_CONDUCTIVITY = ", 
-            color='green', 
-            white_message=str(self.VESSEL_CONDUCTIVITY))
-        logger.log_n_output_colored_message(
-            colored_message="PLASMA_CONDUCTIVITY = ", 
-            color='green', 
-            white_message=str(self.PLASMA_CONDUCTIVITY))
+        for attribute in self.__dict__:
+            logger.log_n_output_colored_message(
+                colored_message=attribute + ' = ',
+                color='green',
+                white_message=str(self.__dict__[attribute]))
 
 
 
