@@ -117,7 +117,7 @@ point_sources = fu.Array_Expression(fu.ArrayOfPointSources(psd.PointSource(1)))
 dx = Measure('dx', domain=geometry.mesh, subdomain_data=markers)
 
 # %% Solve stationary
-source = e.point_source_t0(R=p.centre_point[0], problem=p)
+source = e.iter_point_source(p, [p.disp_x[0], p.disp_z[0]])
 a = dot(grad(u)/r, grad(r_2*v))*dx
 L = sum(point_sources[2:len(point_sources)])*r*v*dx(0) + \
     source*r*v*dx(2)  # !!!
@@ -128,11 +128,21 @@ p.find_levels(u0, step=p.step)
 
 fu.What_time_is_it(t0, 'Initial problem solved')
 fu.countour_plot_via_mesh(geometry, u0, levels=p.levels,
-                          PATH=PATH,
-                          current_disp=[p.disp_x[0], p.disp_z[0]],
-                          plt_vessel=True,
-                          do_plasma_centre=True,
-                          colorbar=True)
+                            PATH=PATH+'_nobar',
+                            current_disp=[p.disp_x[0], p.disp_z[0]],
+                            plt_vessel=True,
+                            do_plasma_centre=True,
+                            colorbar=False,
+                            grid=True,
+                            xticks_array=p.xticks)
+fu.countour_plot_via_mesh(geometry, u0, levels=p.levels,
+                            PATH=PATH,
+                            current_disp=[p.disp_x[0], p.disp_z[0]],
+                            plt_vessel=True,
+                            do_plasma_centre=True,
+                            colorbar=True,
+                            grid=True,
+                            xticks_array=p.xticks)
 # fu.fenics_plot(p, u0, PATH, colorbar=True)
 
 dt = numpy.diff(p.t)
@@ -143,19 +153,15 @@ for i in range(len(dt)):
     u = Function(V)
     v = TestFunction(V)
 
-    source = e.moving_point_source(
-        R=p.R,
-        a=p.disp_fact*p.plasma_step_length*p.t[i+1]/p.tm,
-        t=p.t[i+1],
-        problem=p)
+    source = e.iter_point_source(p, [p.disp_x[i+1], p.disp_z[i+1]])
 
-    F = dot(grad(u)/r, grad(r_2*v))*dx \
-        + fu.M0*mu*sg / dt[i] * (u - u0)*r*v*dx \
-        - sum(point_sources[2:len(point_sources)])*r*v*dx(0) \
-        - source*r*v*dx(2)
     # F = dot(grad(u)/r, grad(r_2*v))*dx \
+    #     + fu.M0*mu*sg / dt[i] * (u - u0)*r*v*dx \
     #     - sum(point_sources[2:len(point_sources)])*r*v*dx(0) \
     #     - source*r*v*dx(2)
+    F = dot(grad(u)/r, grad(r_2*v))*dx \
+        - sum(point_sources[2:len(point_sources)])*r*v*dx(0) \
+        - source*r*v*dx(2)
 
     solve(F == 0, u, bc)
     # p.find_levels(u, step=p.step)
@@ -163,11 +169,21 @@ for i in range(len(dt)):
     fu.What_time_is_it(t0, "Problem solved for t = %f" % p.t[i+1])
     # p.find_levels_with_exponent(u, exponent=p.exponent, step=p.step)
     fu.countour_plot_via_mesh(geometry, u, levels=p.levels,
+                              PATH=PATH+'_nobar',
+                              current_disp=[p.disp_x[i+1], p.disp_z[i+1]],
+                              plt_vessel=True,
+                              do_plasma_centre=True,
+                              colorbar=False,
+                              grid=True,
+                              xticks_array=p.xticks)
+    fu.countour_plot_via_mesh(geometry, u, levels=p.levels,
                               PATH=PATH,
                               current_disp=[p.disp_x[i+1], p.disp_z[i+1]],
                               plt_vessel=True,
                               do_plasma_centre=True,
-                              colorbar=True)
+                              colorbar=True,
+                              grid=True,
+                              xticks_array=p.xticks)
 
     u0 = u
 
